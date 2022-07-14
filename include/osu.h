@@ -1,16 +1,15 @@
-#ifndef OSUU_H
-#define OSUU_H
+#ifndef OSU_H
+#define OSU_H
 
-#include <stdio.h>
-#include <stdlib.h>
+// https://osu.ppy.sh/wiki/en/Client/File_formats
+#include "file/beatmap.h"
+#include "file/replay.h"
+#include "file/storyboard.h"
 
-#include "file/structure.h"
+// https://github.com/ppy/osu/tree/master/osu.Game.Rulesets.Catch/Objects
+#include "mode/ctb.h"
 
-typedef struct Osu {
-    Structure *structure;
-} Osu;
-
-Osu osu_init();
-void osu_free(Osu *);
+// https://github.com/ppy/osu/blob/master/osu.Game/Utils/LegacyRandom.cs
+#include "util/legacy_random.h"
 
 #endif
