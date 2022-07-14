@@ -1,24 +1,25 @@
+# TODO Do something with this export LD_LIBRARY_PATH="./bin/lib;$LD_LIBRARY_PATH"
 CC=gcc
-CFLAGS=-Wall -c -g -I./include
 BINFLR=bin/
 
 # Main Library
-LFLAGS=-shared
+CFLAGS=-Wall -c -Iinclude/
+LFLAGS=-lm -shared
 TARGET=libosu.so
 
 all: BINFLR=bin/lib/
-all: CFLAGS+=-fPIC
+all: CFLAGS+=-fPIC -g
 all: $(TARGET)
 
-%.o: src/*/%.c include/*/%.h | $(BINFLR)
+%.o: %.c | $(BINFLR)
 	$(CC) $(CFLAGS) -o $(BINFLR)$(notdir $@) $<
 
-$(TARGET): $(addsuffix .o, $(basename $(notdir $(shell find include/ -type f)))) # FIX THIS - BEFORE `$(wildcard include/*/*.h)` OR `$(wildcard include/*.h)`
+$(TARGET): $(addsuffix .o, $(basename $(shell find include/ -type f -name "*.h" | grep -Po '(?<=include/).*' | sed 's/^/src\//')))
 	$(CC) -o $(BINFLR)$@ $(addprefix $(BINFLR), $(notdir $^)) $(LFLAGS)
 
 # Test Executable
-LFLAGS_TEST=-losu -g
-TARGET_TEST=$(wildcard test/*.c)
+LFLAGS_TEST=-g -Iinclude/ -Lbin/lib/ -losu
+TARGET_TEST=$(shell find test/*.c -type f)
 
 test: BINFLR=bin/exe/
 test: $(basename $(TARGET_TEST))
@@ -28,8 +29,8 @@ test: $(basename $(TARGET_TEST))
 
 # Make bin/ folder
 $(BINFLR):
-	[ -d $(BINFLR) ] || mkdir -p $(BINFLR)
+	mkdir -p $@/lib $@/exe
 
 # Clean up
 clean:
-	rm -rf $(BINFLR)
+	rm -rf $(BINFLR)lib/* $(BINFLR)exe/*
