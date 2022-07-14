@@ -1,25 +1,38 @@
 #include <osu.h>
 #include "global.h"
 
-#define osu_init_file_EXCEPTION (1)
-void test_osu_file_init();
+#define t_of_beatmap_init_EXCEPTION (1)
+void t_of_beatmap_init();
 
 int main(void) {
     TRY {
-        test_osu_file_init();
-
-        puts("Test Succeeded! No Exception was caught.");
-    } CATCH (osu_init_file_EXCEPTION) {
-        puts("Test Failed! An Exception has occurred.");
+        t_of_beatmap_init();
+    } CATCH (t_of_beatmap_init_EXCEPTION) {
+        printf("Exception Caught %d\n", t_of_beatmap_init_EXCEPTION);
     } ETRY;
 }
 
-void test_osu_file_init() {
-    Osu osu = osu_init();
+void t_of_beatmap_init() {
+    Beatmap beatmap = of_beatmap_init();
 
-    osu.structure = osus_init("./test/files/Go Ichinose - Mizuumi (K 3 V R A L) [test].osu");
-    if (osu.structure == NULL) {
+    of_beatmap_set(&beatmap, "./test/nekodex - new beginnings (pishifat) [osu testing].osu");
+    if (beatmap.metadata.artist == NULL || strcmp("nekodex", beatmap.metadata.artist) != 0) {
         THROW;
     }
-    free(structure);
+
+    LegacyRandom lr = legacyrandom_init(omc_processor_RNGSEED);
+    BananaShower bs;
+    for (int i = 0; i < beatmap.num_ho; i++) {
+        if ((beatmap.hit_objects + i)->ho_type == spinner) {
+            bs = omc_bananashower_init(*(beatmap.hit_objects + i));
+            break;
+        }
+    }
+    lr = omc_bananashower_xoffset(&bs, lr);
+    omc_bananashower_free(&bs);
+
+    of_beatmap_free(&beatmap);
+    if (beatmap.hit_objects != NULL) {
+        THROW;
+    }
 }
