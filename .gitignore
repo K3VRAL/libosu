@@ -2,3 +2,4 @@ bin/
 *.o
 libctb.so
 test_*
+test/maps/

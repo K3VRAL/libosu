@@ -14,13 +14,13 @@ typedef struct LegacyRandom {
     int bitIndex;
 } LegacyRandom;
 
-LegacyRandom legacyrandom_init(int);
-unsigned int legacyrandom_nextuint(LegacyRandom *);
-int legacyrandom_next(LegacyRandom *);
-double legacyrandom_nextdouble(LegacyRandom *);
-int legacyrandom_nextupper(LegacyRandom *, int);
-int legacyrandom_nextlowerupper(LegacyRandom *, int, int);
-int legacyrandom_nextdoublelowerupper(LegacyRandom *, double, double);
-bool legacyrandom_nextbool(LegacyRandom *);
+LegacyRandom ou_legacyrandom_init(int);
+unsigned int ou_legacyrandom_nextuint(LegacyRandom *);
+int ou_legacyrandom_next(LegacyRandom *);
+double ou_legacyrandom_nextdouble(LegacyRandom *);
+int ou_legacyrandom_nextupper(LegacyRandom *, int);
+int ou_legacyrandom_nextlowerupper(LegacyRandom *, int, int);
+int ou_legacyrandom_nextdoublelowerupper(LegacyRandom *, double, double);
+bool ou_legacyrandom_nextbool(LegacyRandom *);
 
 #endif

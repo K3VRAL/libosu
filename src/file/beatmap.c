@@ -1,4 +1,5 @@
 #include "file/beatmap.h"
+#include "file/beatmap/hit_objects.h"
 
 Beatmap of_beatmap_init() {
     Beatmap beatmap = {
@@ -111,15 +112,15 @@ void of_beatmap_set(Beatmap *beatmap, char *file_path) {
                 break;
 
             case timing_points:
-                ofb_timingpoints_add(&beatmap->timing_points, &beatmap->num_tp, line);
+                ofb_timingpoints_add_string(&beatmap->timing_points, &beatmap->num_tp, line);
                 break;
 
             case colours:
-                ofb_colours_add(&beatmap->colours, &beatmap->num_colour, line);
+                ofb_colours_add_string(&beatmap->colours, &beatmap->num_colour, line);
                 break;
 
             case hit_objects:
-                ofb_hitobjects_add(&beatmap->hit_objects, &beatmap->num_ho, line);
+                ofb_hitobjects_add_string(&beatmap->hit_objects, &beatmap->num_ho, line);
                 break;
         }
     }
@@ -127,4 +128,16 @@ void of_beatmap_set(Beatmap *beatmap, char *file_path) {
     if (line) {
         free(line);
     }
+}
+
+void of_beatmap_tofile(Beatmap beatmap, FILE *fp) {
+    ofb_structure_tofile(beatmap.structure, fp);
+    ofb_general_tofile(beatmap.general, fp);
+    ofb_editor_tofile(beatmap.editor, fp);
+    ofb_metadata_tofile(beatmap.metadata, fp);
+    ofb_difficulty_tofile(beatmap.difficulty, fp);
+    ofb_events_tofile(beatmap.events, beatmap.num_event, fp);
+    ofb_timingpoints_tofile(beatmap.timing_points, beatmap.num_tp, fp);
+    ofb_colours_tofile(beatmap.colours, beatmap.num_colour, fp);
+    // ofb_hitobjects_tofile(beatmap.hit_objects, beatmap.num_ho, fp); // TODO
 }

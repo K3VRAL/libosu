@@ -44,5 +44,6 @@ typedef struct Beatmap {
 Beatmap of_beatmap_init();
 void of_beatmap_free(Beatmap *);
 void of_beatmap_set(Beatmap *, char *);
+void of_beatmap_tofile(Beatmap, FILE *);
 
 #endif

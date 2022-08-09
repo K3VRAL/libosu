@@ -1,6 +1,17 @@
 #include "file/beatmap/timing_points.h"
 
-void ofb_timingpoints_add(TimingPoint **tp, unsigned int *num, char *string) {
+void ofb_timingpoints_add(TimingPoint **tp, unsigned int *num, TimingPoint timing_point) {
+    if (*tp == NULL) {
+        // If there is no space; make space
+        *tp = calloc(1, sizeof(TimingPoint));
+    } else {
+        // If there is space; make more space
+        *tp = realloc(*tp, (*num + 1) * sizeof(TimingPoint));
+    }
+    *(*tp + *num) = timing_point;
+}
+
+void ofb_timingpoints_add_string(TimingPoint **tp, unsigned int *num, char *string) {
     char *token = strtok(string, ",");
     if (token != NULL) {
         if (*tp == NULL) {
@@ -26,4 +37,35 @@ void ofb_timingpoints_add(TimingPoint **tp, unsigned int *num, char *string) {
 void ofb_timingpoints_free(TimingPoint **tp) {
     free(*tp);
     *tp = NULL;
+}
+
+void ofb_timingpoints_tofile(TimingPoint *tp, unsigned int num, FILE *fp) {
+    fputs("[TimingPoints]\n", fp);
+    for (int i = 0; i < num; i++) {
+        int time_size = ((tp + i)->time == 0 ? 1 : (floor(log10(abs((tp + i)->time))) + 1 + ((tp + i)->time < 0 ? 1 : 0)));
+
+        int beatlength_size_floor = ((int) (tp + i)->beat_length == 0 ? 1 : (floor(log10(abs((int) (tp + i)->beat_length))) + 1 + ((int) (tp + i)->beat_length < 0 ? 1 : 0)));
+        int trailing_zeros = 0;
+        char analysing_trail[beatlength_size_floor + 12];
+        sprintf(analysing_trail, "%.12f", (tp + i)->beat_length);
+        for (int i = 0; i < strlen(analysing_trail); i++) {
+            if (analysing_trail[i] == '0') {
+                trailing_zeros--;
+            } else {
+                trailing_zeros = 12;
+            }
+        }
+
+        int meter_size = ((tp + i)->meter == 0 ? 1 : (floor(log10(abs((tp + i)->meter))) + 1 + ((tp + i)->meter < 0 ? 1 : 0)));
+        int sampleset_size = ((tp + i)->sample_set == 0 ? 1 : (floor(log10(abs((tp + i)->sample_set))) + 1 + ((tp + i)->sample_set < 0 ? 1 : 0)));
+        int sampleindex_size = ((tp + i)->sample_index == 0 ? 1 : (floor(log10(abs((tp + i)->sample_index))) + 1 + ((tp + i)->sample_index < 0 ? 1 : 0)));
+        int volume_size = ((tp + i)->volume == 0 ? 1 : (floor(log10(abs((tp + i)->volume))) + 1 + ((tp + i)->volume < 0 ? 1 : 0)));
+        int uninherited_size = 1;
+        int effects_size = ((tp + i)->effects == 0 ? 1 : (floor(log10(abs((tp + i)->effects))) + 1 + ((tp + i)->effects < 0 ? 1 : 0)));
+        char *output = malloc((time_size + 1 + (beatlength_size_floor + trailing_zeros) + 1 + meter_size + 1 +sampleset_size + 1 + sampleindex_size + 1 + volume_size + 1 + uninherited_size + 1 + effects_size + 2) * sizeof(char));
+        sprintf(output, "%d,%.*f,%d,%d,%d,%d,%d,%d\n", (tp + i)->time, trailing_zeros, (tp + i)->beat_length, (tp + i)->meter, (tp + i)->sample_set, (tp + i)->sample_index, (tp + i)->volume, (tp + i)->uninherited, (tp + i)->effects);
+        fputs(output, fp);
+        free(output);
+    }
+    fputs("\n", fp);
 }

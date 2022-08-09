@@ -1,6 +1,9 @@
 #ifndef OFB_EVENTS_H
 #define OFB_EVENTS_H
 
+#include <stdio.h>
+#include <stdlib.h>
+
 // TODO
 
 // typedef struct E {
@@ -19,7 +22,8 @@ typedef struct Event {
     // E event;
 } Event;
 
-void ofb_events_free(Event **);
 void ofb_events_set(Event **, unsigned int *, char *);
+void ofb_events_free(Event **);
+void ofb_events_tofile(Event *, unsigned int, FILE *);
 
 #endif

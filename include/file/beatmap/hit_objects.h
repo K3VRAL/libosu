@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 // https://osu.ppy.sh/wiki/en/Client/File_formats/Osu_%28file_format%29#hit-circles
 typedef struct HOCircle {} HOCircle;
@@ -72,8 +73,10 @@ typedef struct HitObject {
     HOSample hit_sample;
 } HitObject;
 
+void ofb_hitobjects_add(HitObject **, unsigned int *, HitObject);
+void ofb_hitobjects_add_string(HitObject **, unsigned int *, char *);
 void ofb_hitobjects_free(HitObject **, unsigned int);
-void ofb_hitobjects_add(HitObject **, unsigned int *, char *);
 void ofb_hitobjects_sort(HitObject **, unsigned int);
+void ofb_hitobjects_tofile(HitObject *, unsigned int, FILE *);
 
 #endif

@@ -1,0 +1,54 @@
+osu file format v14
+
+[General]
+AudioFilename: empty.mp3
+AudioLeadIn: 0
+PreviewTime: 1
+Countdown: 0
+SampleSet: Normal
+StackLeniency: 0.7
+Mode: 2
+LetterboxInBreaks: 0
+UseSkinSprites: 1
+WidescreenStoryboard: 1
+SamplesMatchPlaybackRate: 1
+
+[Editor]
+DistanceSpacing: 1.1
+BeatDivisor: 2
+GridSize: 4
+TimelineZoom: 0.8
+
+[Metadata]
+Title:em
+TitleUnicode:em
+Artist:e
+ArtistUnicode:e
+Creator:emp
+Version:empt
+Source:
+Tags:
+
+[Difficulty]
+HPDrainRate:0
+CircleSize:0
+OverallDifficulty:0
+ApproachRate:0
+SliderMultiplier:0
+SliderTickRate:0
+
+[Events]
+//Background and Video events
+//Break Periods
+//Storyboard Layer 0 (Background)
+//Storyboard Layer 1 (Fail)
+//Storyboard Layer 2 (Pass)
+//Storyboard Layer 3 (Foreground)
+//Storyboard Layer 4 (Overlay)
+//Storyboard Sound Samples
+
+[TimingPoints]
+
+[Colours]
+
+[HitObjects]

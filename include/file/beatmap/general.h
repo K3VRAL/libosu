@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include <math.h>
 
 // https://osu.ppy.sh/wiki/en/Client/File_formats/Osu_%28file_format%29#general
 typedef struct General {
@@ -30,7 +31,8 @@ typedef struct General {
 } General;
 
 General ofb_general_init();
-void ofb_general_free(General *);
 void ofb_general_set(General *, char *);
+void ofb_general_free(General *);
+void ofb_general_tofile(General, FILE *);
 
 #endif

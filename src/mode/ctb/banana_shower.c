@@ -46,10 +46,10 @@ LegacyRandom omc_bananashower_xoffset(BananaShower *bs, LegacyRandom lr) {
 
 LegacyRandom omc_bananashower_xoffsetuntilindex(BananaShower *bs, LegacyRandom lr, int index) {
     for (int i = 0; i < index; i++) {
-        (bs->bananas + i)->x = (float) (legacyrandom_nextdouble(&lr) * omc_playfield_WIDTH);
-        legacyrandom_next(&lr);
-        legacyrandom_next(&lr);
-        legacyrandom_next(&lr);
+        (bs->bananas + i)->x = (float) (ou_legacyrandom_nextdouble(&lr) * omc_playfield_WIDTH);
+        ou_legacyrandom_next(&lr);
+        ou_legacyrandom_next(&lr);
+        ou_legacyrandom_next(&lr);
     }
     return lr;
 }

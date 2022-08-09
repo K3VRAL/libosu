@@ -3,7 +3,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <string.h>
+#include <math.h>
 
 // https://osu.ppy.sh/wiki/en/Client/File_formats/Osu_%28file_format%29#metadata
 typedef struct Metadata {
@@ -21,7 +23,8 @@ typedef struct Metadata {
 } Metadata;
 
 Metadata ofb_metadata_init();
-void ofb_metadata_free(Metadata *);
 void ofb_metadata_set(Metadata *, char *);
+void ofb_metadata_free(Metadata *);
+void ofb_metadata_tofile(Metadata, FILE *);
 
 #endif

@@ -1,6 +1,18 @@
 #include "file/beatmap/hit_objects.h"
+#include <stdio.h>
 
-void ofb_hitobjects_add(HitObject **ho, unsigned int *num, char *string) {
+void ofb_hitobjects_add(HitObject **ho, unsigned int *num, HitObject hit_objects) {
+    if (*ho == NULL) {
+        // If there is no space; make space
+        *ho = calloc(1, sizeof(HitObject));
+    } else {
+        // If there is space; make more space
+        *ho = realloc(*ho, (*num + 1) * sizeof(HitObject));
+    }
+    *(*ho + *num) = hit_objects;
+}
+
+void ofb_hitobjects_add_string(HitObject **ho, unsigned int *num, char *string) {
     char *copy = strdup(string);
     char *token = strtok(string, ",");
     if (token != NULL) {
@@ -10,6 +22,7 @@ void ofb_hitobjects_add(HitObject **ho, unsigned int *num, char *string) {
         } else {
             // If there is space; make more space
             *ho = realloc(*ho, (*num + 1) * sizeof(HitObject));
+            memset((*ho + *num), 0, sizeof(HitObject)); // TODO Check if this works
         }
         // Set data
         (*ho + *num)->x = (int) strtol(token, NULL, 10);
@@ -162,4 +175,101 @@ void ofb_hitobjects_sort(HitObject **ho, unsigned int num) {
             }
         }
     }
+}
+
+void ofb_hitobjects_tofile(HitObject *ho, unsigned int num, FILE *fp) {
+    fputs("[HitObjects]\n", fp);
+    for (int i = 0; i < num; i++) {
+        char *output;
+        int len_x = ((ho + i)->x == 0 ? 1 : (floor(log10(abs((ho + i)->x))) + 1 + ((ho + i)->x < 0 ? 1 : 0)));
+        int len_y = ((ho + i)->y == 0 ? 1 : (floor(log10(abs((ho + i)->y))) + 1 + ((ho + i)->y < 0 ? 1 : 0)));
+        int len_time = ((ho + i)->time == 0 ? 1 : (floor(log10(abs((ho + i)->time))) + 1 + ((ho + i)->time < 0 ? 1 : 0)));
+        int len_type = ((ho + i)->type == 0 ? 1 : (floor(log10(abs((ho + i)->type))) + 1 + ((ho + i)->type < 0 ? 1 : 0)));
+        int len_hitsound = ((ho + i)->hit_sound == 0 ? 1 : (floor(log10(abs((ho + i)->hit_sound))) + 1 + ((ho + i)->hit_sound < 0 ? 1 : 0)));
+        int len_total = len_x + 1 + len_y + 1 + len_time + 1 + len_type + 1 + len_hitsound;
+        bool with_sample = false;
+        int len_hitsample = 0;
+        if ((ho + i)->hit_sample.normal_set != 0 ||
+            (ho + i)->hit_sample.addition_set != 0 ||
+            (ho + i)->hit_sample.index != 0 ||
+            (ho + i)->hit_sample.volume != 0 ||
+            (ho + i)->hit_sample.filename != NULL) {
+                with_sample = true;
+                int len_normalset = ((ho + i)->hit_sample.normal_set == 0 ? 1 : (floor(log10(abs((ho + i)->hit_sample.normal_set))) + 1 + ((ho + i)->hit_sample.normal_set < 0 ? 1 : 0)));
+                int len_additionset = ((ho + i)->hit_sample.addition_set == 0 ? 1 : (floor(log10(abs((ho + i)->hit_sample.addition_set))) + 1 + ((ho + i)->hit_sample.addition_set < 0 ? 1 : 0)));
+                int len_index = ((ho + i)->hit_sample.index == 0 ? 1 : (floor(log10(abs((ho + i)->hit_sample.index))) + 1 + ((ho + i)->hit_sample.index < 0 ? 1 : 0)));
+                int len_volume = ((ho + i)->hit_sample.volume == 0 ? 1 : (floor(log10(abs((ho + i)->hit_sample.volume))) + 1 + ((ho + i)->hit_sample.volume < 0 ? 1 : 0)));
+                int len_filename = ((ho + i)->hit_sample.filename != NULL ? strlen((ho + i)->hit_sample.filename) : 0);
+                len_hitsample = 1 + len_normalset + 1 + len_additionset + 1 + len_index + 1 + len_volume + 1 + len_filename;
+        }
+        switch ((ho + i)->ho_type) {
+            case circle:
+                if (with_sample) {
+                    output = malloc((len_total + len_hitsample + 2) * sizeof(char));
+                    sprintf(output, "%d,%d,%d,%d,%d,%d:%d:%d:%d:%s\n",
+                        (ho + i)->x,
+                        (ho + i)->y,
+                        (ho + i)->time,
+                        (ho + i)->type,
+                        (ho + i)->hit_sound,
+                        (ho + i)->hit_sample.normal_set,
+                        (ho + i)->hit_sample.addition_set,
+                        (ho + i)->hit_sample.index,
+                        (ho + i)->hit_sample.volume,
+                        (ho + i)->hit_sample.filename
+                    );
+                } else {
+                    output = malloc((len_total + 2) * sizeof(char));
+                    sprintf(output, "%d,%d,%d,%d,%d\n",
+                        (ho + i)->x,
+                        (ho + i)->y,
+                        (ho + i)->time,
+                        (ho + i)->type,
+                        (ho + i)->hit_sound
+                    );
+                }
+                break;
+
+            // TODO
+            case slider:
+                if (with_sample) {
+                    output = malloc((len_total + 2) * sizeof(char));
+                } else {
+                    output = malloc((len_total + 2) * sizeof(char));
+                }
+                break;
+
+            case spinner:
+                if (with_sample) {
+                    output = malloc((len_total + 1 + len_hitsample + 2) * sizeof(char));
+                    sprintf(output, "%d,%d,%d,%d,%d,%d,%d:%d:%d:%d:%s\n",
+                        (ho + i)->x,
+                        (ho + i)->y,
+                        (ho + i)->time,
+                        (ho + i)->type,
+                        (ho + i)->hit_sound,
+                        (ho + i)->ho.spinner.end_time,
+                        (ho + i)->hit_sample.normal_set,
+                        (ho + i)->hit_sample.addition_set,
+                        (ho + i)->hit_sample.index,
+                        (ho + i)->hit_sample.volume,
+                        (ho + i)->hit_sample.filename
+                    );
+                } else {
+                    output = malloc((len_total + 1 + 2) * sizeof(char));
+                    sprintf(output, "%d,%d,%d,%d,%d,%d\n",
+                        (ho + i)->x,
+                        (ho + i)->y,
+                        (ho + i)->time,
+                        (ho + i)->type,
+                        (ho + i)->hit_sound,
+                        (ho + i)->ho.spinner.end_time
+                    );
+                }
+                break;
+        }
+        fputs(output, fp);
+        free(output);
+    }
+    fputs("\n", fp);
 }
