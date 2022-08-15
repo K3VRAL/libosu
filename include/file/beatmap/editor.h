@@ -3,8 +3,11 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <string.h>
 #include <math.h>
+
+#include "unrelated/comparing.h"
 
 // https://osu.ppy.sh/wiki/en/Client/File_formats/Osu_%28file_format%29#editor
 typedef struct Editor {
@@ -19,6 +22,6 @@ typedef struct Editor {
 Editor ofb_editor_init();
 void ofb_editor_set(Editor *, char *);
 void ofb_editor_free(Editor *);
-void ofb_editor_tofile(Editor, FILE *);
+void ofb_editor_tofile(Editor *, FILE *);
 
 #endif

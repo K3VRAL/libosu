@@ -22,10 +22,10 @@ void of_beatmap_free(Beatmap *beatmap) {
     ofb_editor_free(&beatmap->editor);
     ofb_metadata_free(&beatmap->metadata);
     ofb_difficulty_free(&beatmap->difficulty);
-    ofb_events_free(&beatmap->events);
-    ofb_timingpoints_free(&beatmap->timing_points);
-    ofb_colours_free(&beatmap->colours);
-    ofb_hitobjects_free(&beatmap->hit_objects, beatmap->num_ho);
+    ofb_events_free(beatmap->events);
+    ofb_timingpoints_free(beatmap->timing_points);
+    ofb_colours_free(beatmap->colours);
+    ofb_hitobjects_free(beatmap->hit_objects, beatmap->num_ho);
 }
 
 void of_beatmap_set(Beatmap *beatmap, char *file_path) {
@@ -130,14 +130,14 @@ void of_beatmap_set(Beatmap *beatmap, char *file_path) {
     }
 }
 
-void of_beatmap_tofile(Beatmap beatmap, FILE *fp) {
-    ofb_structure_tofile(beatmap.structure, fp);
-    ofb_general_tofile(beatmap.general, fp);
-    ofb_editor_tofile(beatmap.editor, fp);
-    ofb_metadata_tofile(beatmap.metadata, fp);
-    ofb_difficulty_tofile(beatmap.difficulty, fp);
-    ofb_events_tofile(beatmap.events, beatmap.num_event, fp);
-    ofb_timingpoints_tofile(beatmap.timing_points, beatmap.num_tp, fp);
-    ofb_colours_tofile(beatmap.colours, beatmap.num_colour, fp);
+void of_beatmap_tofile(Beatmap *beatmap, FILE *fp) {
+    ofb_structure_tofile(&beatmap->structure, fp);
+    ofb_general_tofile(&beatmap->general, fp);
+    ofb_editor_tofile(&beatmap->editor, fp);
+    ofb_metadata_tofile(&beatmap->metadata, fp);
+    ofb_difficulty_tofile(&beatmap->difficulty, fp);
+    ofb_events_tofile(beatmap->events, beatmap->num_event, fp);
+    ofb_timingpoints_tofile(beatmap->timing_points, beatmap->num_tp, fp);
+    ofb_colours_tofile(beatmap->colours, beatmap->num_colour, fp);
     // ofb_hitobjects_tofile(beatmap.hit_objects, beatmap.num_ho, fp); // TODO
 }

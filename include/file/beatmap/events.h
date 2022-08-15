@@ -23,7 +23,7 @@ typedef struct Event {
 } Event;
 
 void ofb_events_set(Event **, unsigned int *, char *);
-void ofb_events_free(Event **);
+void ofb_events_free(Event *);
 void ofb_events_tofile(Event *, unsigned int, FILE *);
 
 #endif

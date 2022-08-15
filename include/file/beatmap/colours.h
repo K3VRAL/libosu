@@ -6,6 +6,8 @@
 #include <string.h>
 #include <math.h>
 
+#include "unrelated/comparing.h"
+
 // https://osu.ppy.sh/wiki/en/Client/File_formats/Osu_%28file_format%29#colours
 typedef struct Colour {
     unsigned char red;
@@ -15,7 +17,7 @@ typedef struct Colour {
 
 void ofb_colours_add(Colour **, unsigned int *, Colour);
 void ofb_colours_add_string(Colour **, unsigned int *, char *);
-void ofb_colours_free(Colour **);
+void ofb_colours_free(Colour *);
 void ofb_colours_tofile(Colour *, unsigned int, FILE *);
 
 #endif

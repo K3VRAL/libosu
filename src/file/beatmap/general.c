@@ -9,7 +9,7 @@ General ofb_general_init() {
         .countdown = 1,
         .sample_set = strdup("Normal"),
         .stack_leniency = 0.7,
-        .mode = 2,
+        .mode = 0,
         .letterbox_in_breaks = false,
         .story_fire_in_front = true,
         .use_skin_sprites = false,
@@ -52,7 +52,7 @@ void ofb_general_set(General *general, char *key_value_pair) {
     char *token = strtok(key_value_pair, ":");
     if (token != NULL) {
         char *key = strdup(token);
-        char *value = strtok(NULL, ":");
+        char *value = strtok(NULL, "\0");
         if (value != NULL) {
             if (*(value + 0) == ' ') {
                 value++;
@@ -116,147 +116,108 @@ void ofb_general_set(General *general, char *key_value_pair) {
     }
 }
 
-void ofb_general_tofile(General general, FILE *fp) {
+void ofb_general_tofile(General *general, FILE *fp) {
     fputs("[General]\n", fp);
-    struct {
-        char *name;
-        union {
-            char *cp;
-            int n;
-            double d;
-            bool b;
-        } info;
-        enum {
-            cp,
-            n,
-            d,
-            b
-        } type;
-    } data[] = {
+    General original = ofb_general_init();
+    ComparingGeneral data[] = {
         {
             .name = "AudioFilename",
-            .info.cp = general.audio_filename,
-            .type = cp,
+            .info.cp = &general->audio_filename,
+            .original.cp = &original.audio_filename,
+            .type = g_cp,
         }, {
             .name = "AudioLeadIn",
-            .info.n = general.audio_lead_in,
-            .type = n,
+            .info.n = &general->audio_lead_in,
+            .original.n = &original.audio_lead_in,
+            .type = g_n,
         }, {
             .name = "AudioHash",
-            .info.cp = general.audio_hash,
-            .type = cp,
+            .info.cp = &general->audio_hash,
+            .original.cp = &original.audio_hash,
+            .type = g_cp,
         }, {
             .name = "PreviewTime",
-            .info.n = general.preview_time,
-            .type = n,
+            .info.n = &general->preview_time,
+            .original.n = &original.preview_time,
+            .type = g_n,
         }, {
             .name = "Countdown",
-            .info.n = general.countdown,
-            .type = n,
+            .info.n = &general->countdown,
+            .original.n = &original.countdown,
+            .type = g_n,
         }, {
             .name = "SampleSet",
-            .info.cp = general.sample_set,
-            .type = cp,
+            .info.cp = &general->sample_set,
+            .original.cp = &original.sample_set,
+            .type = g_cp,
         }, {
             .name = "StackLeniency",
-            .info.d = general.stack_leniency,
-            .type = d,
+            .info.d = &general->stack_leniency,
+            .original.d = &original.stack_leniency,
+            .type = g_d,
         }, {
             .name = "Mode",
-            .info.n = general.mode,
-            .type = n,
+            .info.n = &general->mode,
+            .original.n = &original.mode,
+            .type = g_n,
         }, {
             .name = "LetterboxInBreaks",
-            .info.b = general.letterbox_in_breaks,
-            .type = b,
+            .info.b = &general->letterbox_in_breaks,
+            .original.b = &original.letterbox_in_breaks,
+            .type = g_b,
         }, {
             .name = "StoryFireInFront",
-            .info.b = general.story_fire_in_front,
-            .type = b,
+            .info.b = &general->story_fire_in_front,
+            .original.b = &original.story_fire_in_front,
+            .type = g_b,
         }, {
             .name = "UseSkinSprites",
-            .info.b = general.use_skin_sprites,
-            .type = b,
+            .info.b = &general->use_skin_sprites,
+            .original.b = &original.use_skin_sprites,
+            .type = g_b,
         }, {
             .name = "AlwaysShowPlayfield",
-            .info.b = general.always_show_playfield,
-            .type = b,
+            .info.b = &general->always_show_playfield,
+            .original.b = &original.always_show_playfield,
+            .type = g_b,
         }, {
             .name = "OverlayPosition",
-            .info.cp = general.overlay_position,
-            .type = cp,
+            .info.cp = &general->overlay_position,
+            .original.cp = &original.overlay_position,
+            .type = g_cp,
         }, {
             .name = "SkinPreference",
-            .info.cp = general.skin_preference,
-            .type = cp,
+            .info.cp = &general->skin_preference,
+            .original.cp = &original.skin_preference,
+            .type = g_cp,
         }, {
             .name = "EpilepsyWarning",
-            .info.b = general.epilepsy_warning,
-            .type = b,
+            .info.b = &general->epilepsy_warning,
+            .original.b = &original.epilepsy_warning,
+            .type = g_b,
         }, {
             .name = "CountdownOffset",
-            .info.n = general.countdown_offset,
-            .type = n,
+            .info.n = &general->countdown_offset,
+            .original.n = &original.countdown_offset,
+            .type = g_n,
         }, {
             .name = "SpecialStyle",
-            .info.b = general.special_style,
-            .type = b,
+            .info.b = &general->special_style,
+            .original.b = &original.special_style,
+            .type = g_b,
         }, {
             .name = "WidescreenStoryboard",
-            .info.b = general.widescreen_storyboard,
-            .type = b,
+            .info.b = &general->widescreen_storyboard,
+            .original.b = &original.widescreen_storyboard,
+            .type = g_b,
         }, {
             .name = "SamplesMatchPlaybackRate",
-            .info.b = general.samples_match_playback_rate,
-            .type = b,
+            .info.b = &general->samples_match_playback_rate,
+            .original.b = &original.samples_match_playback_rate,
+            .type = g_b,
         },
     };
-    for (int i = 0; i < 19; i++) {
-        char *output;
-        switch ((data + i)->type) {
-            case cp: {
-                int len = strlen((data + i)->name) + 1 + 1 + 1;
-                output = malloc((len + 1) * sizeof(char));
-                sprintf(output, "%s: ", (data + i)->name);
-                if ((data + i)->info.cp != NULL) {
-                    printf("%d %lu\n", len, len + strlen((data + i)->info.cp));
-                    output = realloc(output, (len + strlen((data + i)->info.cp) + 1) * sizeof(char)); // TODO fix "OverlayPosition"? It's possible that the heap is being smashed/corrupted by another heap
-                    strcat(output, (data + i)->info.cp);
-                    strcat(output, "\n");
-                }
-                break;
-            }
-
-            case n: 
-                output = malloc((strlen((data + i)->name) + 2 + ((data + i)->info.n == 0 ? 1 : (floor(log10(abs((data + i)->info.n))) + 1 + (data + i)->info.n < 0 ? 1 : 0)) + 2) * sizeof(char));
-                sprintf(output, "%s: %d\n", (data + i)->name, (data + i)->info.n);
-                break;
-
-            case d: {
-                int size_floor = ((int) (data + i)->info.d == 0 ? 1 : (floor(log10(abs((int) (data + i)->info.d))) + 1 + ((int) (data + i)->info.d < 0 ? 1 : 0)));
-                int trailing_zeros = 0;
-                char analysing_trail[size_floor + 12];
-                sprintf(analysing_trail, "%.12f", (data + i)->info.d);
-                for (int i = 0; i < strlen(analysing_trail); i++) {
-                    if (analysing_trail[i] == '0') {
-                        trailing_zeros--;
-                    } else {
-                        trailing_zeros = 12;
-                    }
-                }
-                
-                output = malloc((strlen((data + i)->name) + 1 + 1 + (size_floor + trailing_zeros) + 1 + 1) * sizeof(char));
-                sprintf(output, "%s: %*f\n", (data + i)->name, trailing_zeros, (data + i)->info.d);
-                break;
-            }
-
-            case b:
-                output = malloc((strlen((data + i)->name) + 2 + 1 + 2) * sizeof(char));
-                sprintf(output, "%s: %d\n", (data + i)->name, (data + i)->info.b);
-                break;
-        }
-        fputs(output, fp);
-        free(output);
-    }
+    ou_comparing_general(data, 19, fp);
+    ofb_general_free(&original);
     fputs("\n", fp);
 }

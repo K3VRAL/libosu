@@ -7,6 +7,8 @@
 #include <string.h>
 #include <math.h>
 
+#include "unrelated/comparing.h"
+
 // https://osu.ppy.sh/wiki/en/Client/File_formats/Osu_%28file_format%29#timing-points
 typedef struct TimingPoint {
     int time;
@@ -19,9 +21,9 @@ typedef struct TimingPoint {
     int effects;
 } TimingPoint;
 
-void ofb_timingpoints_add(TimingPoint **, unsigned int *, TimingPoint);
+void ofb_timingpoints_add(TimingPoint **, unsigned int, TimingPoint);
 void ofb_timingpoints_add_string(TimingPoint **, unsigned int *, char *);
-void ofb_timingpoints_free(TimingPoint **);
+void ofb_timingpoints_free(TimingPoint *);
 void ofb_timingpoints_tofile(TimingPoint *, unsigned int, FILE *);
 
 #endif

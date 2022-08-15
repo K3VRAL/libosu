@@ -59,7 +59,7 @@ void ofb_metadata_set(Metadata *metadata, char *key_value_pair) {
     char *token = strtok(key_value_pair, ":");
     if (token != NULL) {
         char *key = strdup(token);
-        char *value = strtok(NULL, ":");
+        char *value = strtok(NULL, "\0");
         if (value != NULL) {
             if (*(value + 0) == ' ') {
                 value++;
@@ -97,117 +97,61 @@ void ofb_metadata_set(Metadata *metadata, char *key_value_pair) {
     }
 }
 
-void ofb_metadata_tofile(Metadata metadata, FILE *fp) {
+void ofb_metadata_tofile(Metadata *metadata, FILE *fp) {
     fputs("[Metadata]\n", fp);
-    struct {
-        char *name;
-        union {
-            char *cp;
-            struct {
-                char **cpp;
-                unsigned int ui;
-            } s;
-            int n;
-        } info;
-        enum {
-            cp,
-            s,
-            n
-        } type;
-    } data[] = {
+    ComparingMetadata data[] = {
         {
             .name = "Title",
-            .info.cp = metadata.title,
-            .type = cp,
+            .info.cp = &metadata->title,
+            .type = m_cp,
         },
         {
             .name = "TitleUnicode",
-            .info.cp = metadata.title_unicode,
-            .type = cp,
+            .info.cp = &metadata->title_unicode,
+            .type = m_cp,
         },
         {
             .name = "Artist",
-            .info.cp = metadata.artist,
-            .type = cp,
+            .info.cp = &metadata->artist,
+            .type = m_cp,
         },
         {
             .name = "ArtistUnicode",
-            .info.cp = metadata.artist_unicode,
-            .type = cp,
+            .info.cp = &metadata->artist_unicode,
+            .type = m_cp,
         },
         {
             .name = "Creator",
-            .info.cp = metadata.creator,
-            .type = cp,
+            .info.cp = &metadata->creator,
+            .type = m_cp,
         },
         {
             .name = "Version",
-            .info.cp = metadata.version,
-            .type = cp,
+            .info.cp = &metadata->version,
+            .type = m_cp,
         },
         {
             .name = "Source",
-            .info.cp = metadata.source,
-            .type = cp,
+            .info.cp = &metadata->source,
+            .type = m_cp,
         },
         {
             .name = "Tags",
-            .info.s.cpp = metadata.tags,
-            .info.s.ui = metadata.num_tag,
-            .type = s,
+            .info.s.cpp = &metadata->tags,
+            .info.s.ui = &metadata->num_tag,
+            .type = m_s,
         },
         {
             .name = "BeatmapID",
-            .info.n = metadata.beatmap_id,
-            .type = n,
+            .info.n = &metadata->beatmap_id,
+            .type = m_n,
         },
         {
             .name = "BeatmapSetID",
-            .info.n = metadata.beatmap_set_id,
-            .type = n,
+            .info.n = &metadata->beatmap_set_id,
+            .type = m_n,
         },
     };
-    for (int i = 0; i < 10; i++) {
-        char *output;
-        switch ((data + i)->type) {
-            case cp: {
-                int len = strlen((data + i)->name) + 1 + 1;
-                output = malloc((len + 1) * sizeof(char));
-                sprintf(output, "%s:", (data + i)->name);
-                if ((data + i)->info.cp != NULL) {
-                    output = realloc(output, (len + strlen((data + i)->info.cp) + 1) * sizeof(char));
-                    strcat(output, (data + i)->info.cp);
-                    strcat(output, "\n");
-                }
-                break;
-            }
-
-            case s: {
-                int len = strlen((data + i)->name) + 1 + 1;
-                output = malloc(len * sizeof(char));
-                sprintf(output, "%s:", (data + i)->name);
-                if ((data + i)->info.s.cpp != NULL || (data + i)->info.s.ui != 0) {
-                    for (int j = 0; j < (data + i)->info.s.ui; j++) {
-                        int len_buffer = strlen(*((data + i)->info.s.cpp + j)) + (*((data + i)->info.s.cpp + j + 1) != NULL ? 1 : 0);
-                        len += len_buffer;
-                        char *buffer = malloc((len_buffer + 1) * sizeof(char));
-                        sprintf(buffer, (*((data + i)->info.s.cpp + j + 1) != NULL ? "%s " : "%s"), *((data + i)->info.s.cpp + j));
-                        output = realloc(output, len * sizeof(char));
-                        strcat(output, buffer);
-                        free(buffer);
-                    }
-                }
-                strcat(output, "\n");
-                break;
-            }
-
-            case n:
-                output = malloc((strlen((data + i)->name) + 1 + ((data + i)->info.n == 0 ? 1 : (floor(log10((data + i)->info.n)) + 1 + ((data + i)->info.n < 0 ? 1 : 0)) + 2)) * sizeof(char));
-                sprintf(output, "%s:%d\n", (data + i)->name, (data + i)->info.n);
-                break;
-        }
-        fputs(output, fp);
-        free(output);
-    }
+    ou_comparing_metadata(data, 10, fp);
     fputs("\n", fp);
 }

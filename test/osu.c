@@ -19,11 +19,12 @@ void t_of_beatmap_bananashower(char *file) {
 }
 
 void t_of_beatmap_tofile(char *file, char *output) {
+    remove(output);
     FILE *fp = fopen(output, "a");
     if (fp != NULL) {
         Beatmap beatmap = of_beatmap_init();
         of_beatmap_set(&beatmap, file);
-        of_beatmap_tofile(beatmap, fp);
+        of_beatmap_tofile(&beatmap, fp);
         fclose(fp);
         of_beatmap_free(&beatmap);
     }

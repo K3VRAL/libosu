@@ -23,7 +23,7 @@ void ofb_editor_set(Editor *editor, char *key_value_pair) {
     char *token = strtok(key_value_pair, ":");
     if (token != NULL) {
         char *key = strdup(token);
-        char *value = strtok(NULL, ":");
+        char *value = strtok(NULL, "\0");
         if (value != NULL) {
             if (*(value + 0) == ' ') {
                 value++;
@@ -51,96 +51,34 @@ void ofb_editor_set(Editor *editor, char *key_value_pair) {
     }
 }
 
-void ofb_editor_tofile(Editor editor, FILE *fp) {
+void ofb_editor_tofile(Editor *editor, FILE *fp) {
     fputs("[Editor]\n", fp);
-    struct {
-        char *name;
-        union {
-            int n;
-            double d;
-            struct {
-                int *p;
-                unsigned int n;
-            } s;
-        } info;
-        enum {
-            n,
-            d,
-            s
-        } type;
-    } data[] = {
+    ComparingEditor data[] = {
         {
             .name = "Bookmarks",
             .info.s = {
-                .p = editor.bookmarks,
-                .n = editor.num_bookmark,
+                .p = &editor->bookmarks,
+                .n = &editor->num_bookmark,
             },
-            .type = s,
+            .type = e_s,
         }, {
             .name = "DistanceSpacing",
-            .info.d = editor.distance_spacing,
-            .type = d,
+            .info.d = &editor->distance_spacing,
+            .type = e_d,
         }, {
             .name = "BeatDivisor",
-            .info.d = editor.beat_divisor,
-            .type = d,
+            .info.d = &editor->beat_divisor,
+            .type = e_d,
         }, {
             .name = "GridSize",
-            .info.n = editor.grid_size,
-            .type = n,
+            .info.n = &editor->grid_size,
+            .type = e_n,
         }, {
             .name = "TimelineZoom",
-            .info.d = editor.timeline_zoom,
-            .type = d,
+            .info.d = &editor->timeline_zoom,
+            .type = e_d,
         },
     };
-    for (int i = 0; i < 5; i++) {
-        char *output;
-        switch ((data + i)->type) {
-            case n:
-                output = malloc((strlen((data + i)->name) + ((data + i)->info.n == 0 ? 1 : (floor(log10(abs((data + i)->info.n))) + 1 + ((data + i)->info.n < 0 ? 1 : 0))) + 2) * sizeof(char));
-                sprintf(output, "%s: %d\n", (data + i)->name, (data + i)->info.n);
-                break;
-
-            case d: {
-                int size_floor = ((int) (data + i)->info.d == 0 ? 1 : (floor(log10(abs((int) (data + i)->info.d))) + 1 + ((int) (data + i)->info.d < 0 ? 1 : 0)));
-                int trailing_zeros = 0;
-                char analysing_trail[size_floor + 12];
-                sprintf(analysing_trail, "%.12f", (data + i)->info.d);
-                for (int i = 0; i < strlen(analysing_trail); i++) {
-                    if (analysing_trail[i] == '0') {
-                        trailing_zeros--;
-                    } else {
-                        trailing_zeros = 12;
-                    }
-                }
-
-                output = malloc((strlen((data + i)->name) + 1 + 1 + (size_floor + trailing_zeros) + 1 + 1) * sizeof(char));
-                sprintf(output, "%s: %*f\n", (data + i)->name, trailing_zeros, (data + i)->info.d);
-                break;
-            }
-
-            case s: {
-                int len = strlen((data + i)->name) + 1 + 1 + 1;
-                output = malloc((len + 1) * sizeof(char));
-                sprintf(output, "%s: ", (data + i)->name);
-                if ((data + i)->info.s.p != NULL || (data + i)->info.s.n != 0) {
-                    for (int j = 0; j < (data + i)->info.s.n; j++) {
-                        int len_buffer = 1 + (*((data + i)->info.s.p + j) == 0 ? 1 : (floor(log10(abs(*((data + i)->info.s.p + j)))) + 1 + (*((data + i)->info.s.p + j) < 0 ? 1 : 0)));
-                        len += len_buffer + (j == 0 ? 0 : 1);
-                        char *buffer = malloc((len_buffer + 1) * sizeof(char));
-                        sprintf(buffer, (j == 0 ? "%d" : ",%d"), *((data + i)->info.s.p + j));
-                        output = realloc(output, (len + 1) * sizeof(char));
-                        strcat(output, buffer);
-                        free(buffer);
-                    }
-                }
-                strcat(output, "\n");
-                break;
-            }
-        }
-        fputs(output, fp);
-        free(output);
-    }
+    ou_comparing_editor(data, 5, fp);
     fputs("\n", fp);
 }

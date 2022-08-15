@@ -19,9 +19,12 @@ void ofb_structure_set(Structure *structure, char *string) {
     }
 }
 
-void ofb_structure_tofile(Structure structure, FILE *fp) {
-    char *output = malloc((strlen("osu file format v") + (structure.version == 0 ? 1 :(floor(log10((structure.version)) + 1 + (structure.version < 0 ? 1 : 0))) + 2)) * sizeof(char));
-    sprintf(output, "osu file format v%d\n", structure.version);
+void ofb_structure_tofile(Structure *structure, FILE *fp) {
+    int size_floor = ou_comparing_size(structure->version);
+    int len = strlen("osu file format v") + size_floor + 1;
+    char *output = malloc((len + 1) * sizeof(char));
+    snprintf(output, len, "osu file format v%d", structure->version);
+    strcat(output, "\n");
     fputs(output, fp);
     free(output);
     fputs("\n", fp);

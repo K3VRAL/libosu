@@ -75,8 +75,8 @@ typedef struct HitObject {
 
 void ofb_hitobjects_add(HitObject **, unsigned int *, HitObject);
 void ofb_hitobjects_add_string(HitObject **, unsigned int *, char *);
-void ofb_hitobjects_free(HitObject **, unsigned int);
-void ofb_hitobjects_sort(HitObject **, unsigned int);
+void ofb_hitobjects_free(HitObject *, unsigned int);
+void ofb_hitobjects_sort(HitObject *, unsigned int);
 void ofb_hitobjects_tofile(HitObject *, unsigned int, FILE *);
 
 #endif

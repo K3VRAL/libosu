@@ -10,13 +10,14 @@ void ofb_colours_add(Colour **colour, unsigned int *num, Colour col) {
         *colour = realloc(*colour, (*num + 1) * sizeof(Colour));
     }
     *(*colour + *num) = col;
+    (*num)++;
 }
 
 void ofb_colours_add_string(Colour **colour, unsigned int *num, char *key_value_pair) {
     char *token = strtok(key_value_pair, ":");
     if (token != NULL) {
         char *key = strdup(token);
-        char *value = strtok(NULL, ":");
+        char *value = strtok(NULL, "\0");
         if (value != NULL) {
             if (*(value + 0) == ' ') {
                 value++;
@@ -59,22 +60,24 @@ void ofb_colours_add_string(Colour **colour, unsigned int *num, char *key_value_
     }
 }
 
-void ofb_colours_free(Colour **colour) {
-    if (*colour != NULL) {
-        free(*colour);
-        *colour = NULL;
+void ofb_colours_free(Colour *colour) {
+    if (colour != NULL) {
+        free(colour);
+        colour = NULL;
     }
 }
 
 void ofb_colours_tofile(Colour *colour, unsigned int num, FILE *fp) {
     fputs("[Colours]\n", fp);
     for (int i = 0; i < num; i++) {
-        int i_size = (i == 0 ? 1 : (floor(log10(abs(i))) + 1 + (i < 0 ? 1 : 0)));
-        int blue_size = ((colour + i)->blue == 0 ? 1 : (floor(log10(abs((int) (colour + num)->blue))) + 1 + ((colour + num)->blue < 0 ? 1 : 0)));
-        int green_size = ((colour + i)->green == 0 ? 1 : (floor(log10(abs((int) (colour + num)->green))) + 1 + ((colour + num)->green < 0 ? 1 : 0)));
-        int red_size = ((colour + i)->red == 0 ? 1 : (floor(log10(abs((int) (colour + num)->red))) + 1 + ((colour + num)->red < 0 ? 1 : 0)));
-        char *output = malloc((strlen("Combo") + i_size + 3 + blue_size + 1 + green_size + 1 + red_size + 2) * sizeof(char));
-        sprintf(output, "Combo%d : %d,%d,%d\n", i, (colour + num)->blue, (colour + num)->green, (colour + num)->red);
+        int i_size = ou_comparing_size(i);
+        int blue_size = ou_comparing_size((colour + i)->blue);
+        int green_size = ou_comparing_size((colour + i)->green);
+        int red_size = ou_comparing_size((colour + i)->red);
+        int len = strlen("Combo") + i_size + 1 + 1 + 1 + blue_size + 1 + green_size + 1 + red_size + 1;
+        char *output = malloc((len + 1) * sizeof(char));
+        snprintf(output, len, "Combo%d : %d,%d,%d", i, (colour + num)->blue, (colour + num)->green, (colour + num)->red);
+        strcat(output, "\n");
         fputs(output, fp);
         free(output);
     }
