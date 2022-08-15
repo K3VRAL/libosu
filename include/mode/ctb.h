@@ -3,6 +3,7 @@
 
 #include "ctb/banana_shower.h"
 #include "ctb/banana.h"
+#include "ctb/juice_stream.h"
 #include "ctb/playfield.h"
 #include "ctb/processor.h"
 

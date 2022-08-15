@@ -139,5 +139,5 @@ void of_beatmap_tofile(Beatmap *beatmap, FILE *fp) {
     ofb_events_tofile(beatmap->events, beatmap->num_event, fp);
     ofb_timingpoints_tofile(beatmap->timing_points, beatmap->num_tp, fp);
     ofb_colours_tofile(beatmap->colours, beatmap->num_colour, fp);
-    // ofb_hitobjects_tofile(beatmap.hit_objects, beatmap.num_ho, fp); // TODO
+    ofb_hitobjects_tofile(beatmap->hit_objects, beatmap->num_ho, fp);
 }

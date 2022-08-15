@@ -4,7 +4,7 @@ int ou_comparing_size(int measure) {
     return (measure == 0 ? 1 : (floor(log10(abs(measure))) + 1 + (measure < 0 ? 1 : 0)));
 }
 
-int ou_comparing_trailing(double measure, int size_floor) { // TODO sometimes this breaks with timing points
+int ou_comparing_trailing(double measure, int size_floor) {
     int trailing_zeros = 12;
     int len_size = size_floor + trailing_zeros + 1; 
     char analysing_trail[len_size];

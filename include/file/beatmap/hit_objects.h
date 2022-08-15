@@ -8,6 +8,8 @@
 #include <string.h>
 #include <math.h>
 
+#include "unrelated/comparing.h"
+
 // https://osu.ppy.sh/wiki/en/Client/File_formats/Osu_%28file_format%29#hit-circles
 typedef struct HOCircle {} HOCircle;
 

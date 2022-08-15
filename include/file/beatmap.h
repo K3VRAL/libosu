@@ -19,13 +19,9 @@
 
 typedef struct Beatmap {
     Structure structure;
-
     General general;
-    
     Editor editor;
-    
     Metadata metadata;
-    
     Difficulty difficulty;
     
     Event *events;

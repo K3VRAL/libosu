@@ -22,11 +22,11 @@ void ofb_colours_add_string(Colour **colour, unsigned int *num, char *key_value_
             if (*(value + 0) == ' ') {
                 value++;
             }
-            if (strcmp("Combo", key) == 0) {
-                if (colour == NULL) {
-                    colour = calloc(1, sizeof(Colour));
+            if (strncmp("Combo", key, strlen("Combo")) == 0) {
+                if (*colour == NULL) {
+                    *colour = calloc(1, sizeof(Colour));
                 } else {
-                    colour = realloc(colour, (*num + 1) * sizeof(Colour));
+                    *colour = realloc(*colour, (*num + 1) * sizeof(Colour));
                 }
                 token = strtok(value, ",");
                 enum {
@@ -37,21 +37,21 @@ void ofb_colours_add_string(Colour **colour, unsigned int *num, char *key_value_
                 while (token != NULL) {
                     switch (rgb) {
                         case red:
-                            (*colour + *num)->red = (char) strtol(value, NULL, 10);
+                            (*colour + *num)->red = (char) strtol(token, NULL, 10);
                             rgb = green;
                             break;
 
                         case green:
-                            (*colour + *num)->green = (char) strtol(value, NULL, 10);
+                            (*colour + *num)->green = (char) strtol(token, NULL, 10);
                             rgb = blue;
                             break;
 
                         case blue:
-                            (*colour + *num)->blue = (char) strtol(value, NULL, 10);
+                            (*colour + *num)->blue = (char) strtol(token, NULL, 10);
                             rgb = red; // Because why not
                             break;
                     }
-                    token = strtok(NULL, " ");
+                    token = strtok(NULL, ",");
                 }
                 (*num)++;
             }
@@ -76,7 +76,7 @@ void ofb_colours_tofile(Colour *colour, unsigned int num, FILE *fp) {
         int red_size = ou_comparing_size((colour + i)->red);
         int len = strlen("Combo") + i_size + 1 + 1 + 1 + blue_size + 1 + green_size + 1 + red_size + 1;
         char *output = malloc((len + 1) * sizeof(char));
-        snprintf(output, len, "Combo%d : %d,%d,%d", i, (colour + num)->blue, (colour + num)->green, (colour + num)->red);
+        snprintf(output, len, "Combo%d : %d,%d,%d", i, (colour + i)->red, (colour + i)->green, (colour + i)->blue);
         strcat(output, "\n");
         fputs(output, fp);
         free(output);
