@@ -26,4 +26,9 @@ void ofb_timingpoints_add_string(TimingPoint **, unsigned int *, char *);
 void ofb_timingpoints_free(TimingPoint *);
 void ofb_timingpoints_tofile(TimingPoint *, unsigned int, FILE *);
 
+typedef struct TimingPointData {
+    TimingPoint *timing_points;
+    double beat_length;
+} TimingPointData;
+
 #endif

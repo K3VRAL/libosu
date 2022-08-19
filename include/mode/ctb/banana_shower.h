@@ -15,7 +15,7 @@ typedef struct BananaShower {
 } BananaShower;
 
 
-BananaShower omc_bananashower_init(HitObject);
+BananaShower omc_bananashower_init(HitObject *);
 void omc_bananashower_free(BananaShower *);
 LegacyRandom omc_bananashower_xoffset(BananaShower *, LegacyRandom);
 LegacyRandom omc_bananashower_xoffsetuntilindex(BananaShower *, LegacyRandom, int);

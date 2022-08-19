@@ -60,3 +60,10 @@ void ofb_timingpoints_tofile(TimingPoint *tp, unsigned int num, FILE *fp) {
     }
     fputs("\n", fp);
 }
+
+TimingPointData ofb_timingpointdatas_init(TimingPoint *tp) {
+    TimingPointData tpd = {
+        .timing_points = tp,
+    };
+    return tpd;
+}

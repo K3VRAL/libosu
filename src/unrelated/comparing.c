@@ -21,7 +21,7 @@ int ou_comparing_trailing(double measure, int size_floor) {
         if (analysing_trail[i] == '0') {
             trailing_zeros--;
         } else {
-            trailing_zeros = 11;
+            trailing_zeros = 12 - 1;
         }
     }
     return trailing_zeros;

@@ -1,10 +1,10 @@
 #include "mode/ctb/banana_shower.h"
 
-BananaShower omc_bananashower_init(HitObject hit_object) {
+BananaShower omc_bananashower_init(HitObject *hit_object) {
     BananaShower banana_shower = {
-        .start = hit_object.time,
-        .end = hit_object.ho.spinner.end_time,
-        .duration = hit_object.ho.spinner.end_time - hit_object.time,
+        .start = hit_object->time,
+        .end = hit_object->ho.spinner.end_time,
+        .duration = hit_object->ho.spinner.end_time - hit_object->time,
         .bananas = NULL,
         .num_banana = 0
     };

@@ -96,6 +96,7 @@ void ofb_hitobjects_add_string(HitObject **ho, unsigned int *num, char *string) 
                 while (token != NULL && in_loop) {
                     char used_delim = *(copy + (token - string + strlen(token)));
                     switch (used_delim) {
+                        case '\0':
                         case ',':
                             in_loop = false;
                         case '|':
