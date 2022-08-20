@@ -1,12 +1,11 @@
-#include "file/beatmap/events.h"
+#include "file/beatmap/event.h"
 
-void ofb_events_set(Event **events, unsigned int *num, char *key_value_pair) {
+void ofb_event_setfromstring(Event *events, char *key_value_pair) {
 }
 
-void ofb_events_free(Event *events) {
+void ofb_event_free(Event *events) {
 }
 
-void ofb_events_tofile(Event *events, unsigned int num, FILE *fp) {
-    fputs("[Events]\n", fp);
-    fputs("\n", fp);
+char *ofb_event_tostring(Event events) {
+    return NULL;
 }
