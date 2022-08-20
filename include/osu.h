@@ -7,7 +7,8 @@
 #include "file/storyboard.h"
 
 // https://github.com/ppy/osu/tree/master/osu.Game.Rulesets.Catch/Objects
-#include "mode/ctb.h"
+#include "object/std.h"
+#include "object/ctb.h"
 
 // https://github.com/ppy/osu/blob/master/osu.Game/Utils/LegacyRandom.cs
 #include "util/legacy_random.h"

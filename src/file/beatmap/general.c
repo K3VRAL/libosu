@@ -1,54 +1,6 @@
 #include "file/beatmap/general.h"
 
-General ofb_general_init() {
-    General general = {
-        .audio_filename = NULL,
-        .audio_lead_in = 0,
-        .audio_hash = NULL,
-        .preview_time = -1,
-        .countdown = 1,
-        .sample_set = strdup("Normal"),
-        .stack_leniency = 0.7,
-        .mode = 0,
-        .letterbox_in_breaks = false,
-        .story_fire_in_front = true,
-        .use_skin_sprites = false,
-        .always_show_playfield = false,
-        .overlay_position = strdup("NoChange"),
-        .skin_preference = NULL,
-        .epilepsy_warning = false,
-        .countdown_offset = 0,
-        .special_style = false,
-        .widescreen_storyboard = false,
-        .samples_match_playback_rate = false
-    };
-    return general;
-}
-
-void ofb_general_free(General *general) {
-    if (general->audio_filename != NULL) {
-        free(general->audio_filename);
-        general->audio_filename = NULL;
-    }
-    if (general->audio_hash != NULL) {
-        free(general->audio_hash);
-        general->audio_hash = NULL;
-    }
-    if (general->sample_set != NULL) {
-        free(general->sample_set);
-        general->sample_set = NULL;
-    }
-    if (general->overlay_position != NULL) {
-        free(general->overlay_position);
-        general->overlay_position = NULL;
-    }
-    if (general->skin_preference != NULL) {
-        free(general->skin_preference);
-        general->skin_preference = NULL;
-    }
-}
-
-void ofb_general_set(General *general, char *key_value_pair) {
+void ofb_general_setfromstring(General *general, char *key_value_pair) {
     char *token = strtok(key_value_pair, ":");
     if (token != NULL) {
         char *key = strdup(token);
@@ -116,108 +68,107 @@ void ofb_general_set(General *general, char *key_value_pair) {
     }
 }
 
-void ofb_general_tofile(General *general, FILE *fp) {
-    fputs("[General]\n", fp);
-    General original = ofb_general_init();
+char *ofb_general_tostring(General general) {
+    General original = oos_general_init();
     ComparingGeneral data[] = {
         {
             .name = "AudioFilename",
-            .info.cp = &general->audio_filename,
+            .info.cp = &general.audio_filename,
             .original.cp = &original.audio_filename,
             .type = g_cp,
         }, {
             .name = "AudioLeadIn",
-            .info.n = &general->audio_lead_in,
+            .info.n = &general.audio_lead_in,
             .original.n = &original.audio_lead_in,
             .type = g_n,
         }, {
             .name = "AudioHash",
-            .info.cp = &general->audio_hash,
+            .info.cp = &general.audio_hash,
             .original.cp = &original.audio_hash,
             .type = g_cp,
         }, {
             .name = "PreviewTime",
-            .info.n = &general->preview_time,
+            .info.n = &general.preview_time,
             .original.n = &original.preview_time,
             .type = g_n,
         }, {
             .name = "Countdown",
-            .info.n = &general->countdown,
+            .info.n = &general.countdown,
             .original.n = &original.countdown,
             .type = g_n,
         }, {
             .name = "SampleSet",
-            .info.cp = &general->sample_set,
+            .info.cp = &general.sample_set,
             .original.cp = &original.sample_set,
             .type = g_cp,
         }, {
             .name = "StackLeniency",
-            .info.d = &general->stack_leniency,
+            .info.d = &general.stack_leniency,
             .original.d = &original.stack_leniency,
             .type = g_d,
         }, {
             .name = "Mode",
-            .info.n = &general->mode,
+            .info.n = &general.mode,
             .original.n = &original.mode,
             .type = g_n,
         }, {
             .name = "LetterboxInBreaks",
-            .info.b = &general->letterbox_in_breaks,
+            .info.b = &general.letterbox_in_breaks,
             .original.b = &original.letterbox_in_breaks,
             .type = g_b,
         }, {
             .name = "StoryFireInFront",
-            .info.b = &general->story_fire_in_front,
+            .info.b = &general.story_fire_in_front,
             .original.b = &original.story_fire_in_front,
             .type = g_b,
         }, {
             .name = "UseSkinSprites",
-            .info.b = &general->use_skin_sprites,
+            .info.b = &general.use_skin_sprites,
             .original.b = &original.use_skin_sprites,
             .type = g_b,
         }, {
             .name = "AlwaysShowPlayfield",
-            .info.b = &general->always_show_playfield,
+            .info.b = &general.always_show_playfield,
             .original.b = &original.always_show_playfield,
             .type = g_b,
         }, {
             .name = "OverlayPosition",
-            .info.cp = &general->overlay_position,
+            .info.cp = &general.overlay_position,
             .original.cp = &original.overlay_position,
             .type = g_cp,
         }, {
             .name = "SkinPreference",
-            .info.cp = &general->skin_preference,
+            .info.cp = &general.skin_preference,
             .original.cp = &original.skin_preference,
             .type = g_cp,
         }, {
             .name = "EpilepsyWarning",
-            .info.b = &general->epilepsy_warning,
+            .info.b = &general.epilepsy_warning,
             .original.b = &original.epilepsy_warning,
             .type = g_b,
         }, {
             .name = "CountdownOffset",
-            .info.n = &general->countdown_offset,
+            .info.n = &general.countdown_offset,
             .original.n = &original.countdown_offset,
             .type = g_n,
         }, {
             .name = "SpecialStyle",
-            .info.b = &general->special_style,
+            .info.b = &general.special_style,
             .original.b = &original.special_style,
             .type = g_b,
         }, {
             .name = "WidescreenStoryboard",
-            .info.b = &general->widescreen_storyboard,
+            .info.b = &general.widescreen_storyboard,
             .original.b = &original.widescreen_storyboard,
             .type = g_b,
         }, {
             .name = "SamplesMatchPlaybackRate",
-            .info.b = &general->samples_match_playback_rate,
+            .info.b = &general.samples_match_playback_rate,
             .original.b = &original.samples_match_playback_rate,
             .type = g_b,
         },
     };
-    ou_comparing_general(data, 19, fp);
-    ofb_general_free(&original);
-    fputs("\n", fp);
+    char *output = ou_comparing_general(data, 19);
+    oos_general_free(&original);
+    return output;
 }

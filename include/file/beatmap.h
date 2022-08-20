@@ -12,10 +12,10 @@
 #include "beatmap/editor.h"
 #include "beatmap/metadata.h"
 #include "beatmap/difficulty.h"
-#include "beatmap/events.h"
-#include "beatmap/timing_points.h"
-#include "beatmap/colours.h"
-#include "beatmap/hit_objects.h"
+#include "beatmap/event.h"
+#include "beatmap/timing_point.h"
+#include "beatmap/colour.h"
+#include "beatmap/hit_object.h"
 
 typedef struct Beatmap {
     Structure structure;
@@ -37,7 +37,7 @@ typedef struct Beatmap {
     unsigned int num_ho;
 } Beatmap;
 
-Beatmap of_beatmap_init();
+Beatmap of_beatmap_init(void);
 void of_beatmap_free(Beatmap *);
 void of_beatmap_set(Beatmap *, char *);
 void of_beatmap_tofile(Beatmap *, FILE *);

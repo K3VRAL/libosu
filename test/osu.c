@@ -5,16 +5,16 @@
 void t_of_beatmap_bananashower(char *file) {
     Beatmap beatmap = of_beatmap_init();
     of_beatmap_set(&beatmap, file);
-    LegacyRandom lr = ou_legacyrandom_init(omc_processor_RNGSEED);
+    LegacyRandom lr = ou_legacyrandom_init(ooc_processor_RNGSEED);
     BananaShower bs;
     for (int i = 0; i < beatmap.num_ho; i++) {
         if ((beatmap.hit_objects + i)->ho_type == spinner) {
-            bs = omc_bananashower_init(*(beatmap.hit_objects + i));
+            bs = ooc_bananashower_add((beatmap.hit_objects + i));
             break;
         }
     }
-    lr = omc_bananashower_xoffset(&bs, lr);
-    omc_bananashower_free(&bs);
+    lr = ooc_bananashower_xoffset(&bs, lr);
+    ooc_bananashower_free(&bs);
     of_beatmap_free(&beatmap);
 }
 

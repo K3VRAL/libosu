@@ -11,20 +11,21 @@ all: CFLAGS+=-fPIC -g
 all: $(TARGET)
 
 %.o: %.c | $(BINFLR)
-	$(CC) $(CFLAGS) -o $(BINFLR)$(notdir $@) $<
+	$(shell echo 'lol $@ $<')
+# $(CC) $(CFLAGS) -o $(BINFLR)$(shell echo $@ | perl -pe 's/.+\///') $(shell echo $< | perl -pe 's/((\/.|^.)\K).*?(?=\/)//' | perl -pe 's/\//_/')
 
-$(TARGET): $(addsuffix .o, $(basename $(shell find include/ -type f -name "*.h" | grep -Po '(?<=include/).*' | sed 's/^/src\//')))
+$(TARGET): $(shell find include/ -type f -name "*.h" | perl -pe 's/include\///' | perl -pe 's/\..*//' | perl -pe 's/^/src\//')
 	$(CC) -o $(BINFLR)$@ $(addprefix $(BINFLR), $(notdir $^)) $(LFLAGS)
 
 # Test Executable
 LFLAGS_TEST=-g -Iinclude/ -losu
-TARGET_TEST=$(shell find test/*.c -type f)
+TARGET_TEST=$(shell find test/*.c -type f | perl -pe 's/\..*//')
 
-test: BINFLR=bin/exe/
-test: $(basename $(TARGET_TEST))
+test: BINFLR=bin/
+test: $(TARGET_TEST)
 
 .c:
-	$(CC) -o $(BINFLR)$(addprefix test_, $(notdir $@)) $^ $(LFLAGS_TEST)
+	$(CC) -o $(BINFLR)$(shell echo $@ | perl -pe 's/.+\//test_/') $^ $(LFLAGS_TEST)
 
 # TODO Change ./include
 # Install
@@ -47,8 +48,8 @@ uninstall:
 
 # Make bin/ folder
 $(BINFLR):
-	mkdir -p $@/lib $@/exe
+	$(shell mkdir -p $@/lib)
 
 # Clean up
 clean:
-	rm -rf $(BINFLR)lib/* $(BINFLR)exe/*
+	rm -rf $(BINFLR)*

@@ -26,13 +26,13 @@ typedef struct ComparingEditor {
         e_s,
     } type;
 } ComparingEditor;
-void ou_comparing_editor(ComparingEditor *, unsigned int, FILE *);
+char *ou_comparing_editor(ComparingEditor *, unsigned int);
 
 typedef struct ComparingDifficulty {
     char *name;
     double *info;
 } ComparingDifficulty;
-void ou_comparing_difficulty(ComparingDifficulty *, unsigned int, FILE *);
+char *ou_comparing_difficulty(ComparingDifficulty *, unsigned int);
 
 typedef struct ComparingGeneral {
     char *name;
@@ -55,7 +55,7 @@ typedef struct ComparingGeneral {
         g_b,
     } type;
 } ComparingGeneral;
-void ou_comparing_general(ComparingGeneral *, unsigned int, FILE *);
+char *ou_comparing_general(ComparingGeneral *, unsigned int);
 
 typedef struct ComparingMetadata {
     char *name;
@@ -73,6 +73,6 @@ typedef struct ComparingMetadata {
         m_n,
     } type;
 } ComparingMetadata;
-void ou_comparing_metadata(ComparingMetadata *, unsigned int, FILE *);
+char *ou_comparing_metadata(ComparingMetadata *, unsigned int);
 
 #endif

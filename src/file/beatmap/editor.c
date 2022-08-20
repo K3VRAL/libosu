@@ -1,25 +1,6 @@
 #include "file/beatmap/editor.h"
 
-Editor ofb_editor_init() {
-    Editor editor = {
-        .bookmarks = NULL,
-        .num_bookmark = 0,
-        .distance_spacing = 1.0,
-        .beat_divisor = 4.0,
-        .grid_size = 4,
-        .timeline_zoom = 7.5
-    };
-    return editor;
-}
-
-void ofb_editor_free(Editor *editor) {
-    if (editor->bookmarks != NULL) {
-        free(editor->bookmarks);
-        editor->bookmarks = NULL;
-    }
-}
-
-void ofb_editor_set(Editor *editor, char *key_value_pair) {
+void ofb_editor_setfromstring(Editor *editor, char *key_value_pair) {
     char *token = strtok(key_value_pair, ":");
     if (token != NULL) {
         char *key = strdup(token);
@@ -51,34 +32,32 @@ void ofb_editor_set(Editor *editor, char *key_value_pair) {
     }
 }
 
-void ofb_editor_tofile(Editor *editor, FILE *fp) {
-    fputs("[Editor]\n", fp);
+char *ofb_editor_tostring(Editor editor) {
     ComparingEditor data[] = {
         {
             .name = "Bookmarks",
             .info.s = {
-                .p = &editor->bookmarks,
-                .n = &editor->num_bookmark,
+                .p = &editor.bookmarks,
+                .n = &editor.num_bookmark,
             },
             .type = e_s,
         }, {
             .name = "DistanceSpacing",
-            .info.d = &editor->distance_spacing,
+            .info.d = &editor.distance_spacing,
             .type = e_d,
         }, {
             .name = "BeatDivisor",
-            .info.d = &editor->beat_divisor,
+            .info.d = &editor.beat_divisor,
             .type = e_d,
         }, {
             .name = "GridSize",
-            .info.n = &editor->grid_size,
+            .info.n = &editor.grid_size,
             .type = e_n,
         }, {
             .name = "TimelineZoom",
-            .info.d = &editor->timeline_zoom,
+            .info.d = &editor.timeline_zoom,
             .type = e_d,
         },
     };
-    ou_comparing_editor(data, 5, fp);
-    fputs("\n", fp);
+    return ou_comparing_editor(data, 5);
 }
