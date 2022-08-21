@@ -9,7 +9,7 @@
 #include "object/std/colour.h"
 #include "unrelated/comparing.h"
 
-Colour ofb_colour_addfromstring(char *);
+Colour *ofb_colour_addfromstring(char *);
 char *ofb_colour_tostring(Colour, int);
 
 #endif

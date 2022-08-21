@@ -28,22 +28,17 @@ General oos_general_init(void) {
 void oos_general_free(General *general) {
     if (general->audio_filename != NULL) {
         free(general->audio_filename);
-        general->audio_filename = NULL;
     }
     if (general->audio_hash != NULL) {
         free(general->audio_hash);
-        general->audio_hash = NULL;
     }
     if (general->sample_set != NULL) {
         free(general->sample_set);
-        general->sample_set = NULL;
     }
     if (general->overlay_position != NULL) {
         free(general->overlay_position);
-        general->overlay_position = NULL;
     }
     if (general->skin_preference != NULL) {
         free(general->skin_preference);
-        general->skin_preference = NULL;
     }
 }

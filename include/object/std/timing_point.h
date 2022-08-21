@@ -16,11 +16,6 @@ typedef struct TimingPoint {
     int effects;
 } TimingPoint;
 
-typedef struct TimingPointData {
-    TimingPoint *timing_points;
-    double beat_length;
-} TimingPointData;
-
 void oos_timingpoint_free(TimingPoint *);
 void oos_timingpoint_sort(TimingPoint *, unsigned int);
 

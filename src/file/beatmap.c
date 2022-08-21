@@ -22,9 +22,7 @@ void of_beatmap_free(Beatmap *beatmap) {
     // oos_event_free(beatmap->events); // TODO
     oos_timingpoint_free(beatmap->timing_points);
     oos_colour_free(beatmap->colours);
-    for (int i = 0; i < beatmap->num_ho; i++) {
-        oos_hitobject_free((beatmap->hit_objects + i));
-    }
+    oos_hitobject_free(beatmap->hit_objects, beatmap->num_ho);
 }
 
 void of_beatmap_set(Beatmap *beatmap, char *file_path) {
@@ -110,23 +108,38 @@ void of_beatmap_set(Beatmap *beatmap, char *file_path) {
                 ofb_event_setfromstring(beatmap->events, line);
                 break;
 
-            case timing_points:
+            case timing_points: {
                 beatmap->timing_points = realloc(beatmap->timing_points, (beatmap->num_tp + 1) * sizeof(TimingPoint));
-                *(beatmap->timing_points + beatmap->num_tp) = ofb_timingpoint_addfromstring(line);
-                beatmap->num_tp++;
+                TimingPoint *temp = ofb_timingpoint_addfromstring(line);
+                if (temp != NULL) {
+                    *(beatmap->timing_points + beatmap->num_tp) = *temp;
+                    beatmap->num_tp++;
+                    free(temp);
+                }
                 break;
+            }
 
-            case colours:
+            case colours: {
                 beatmap->colours = realloc(beatmap->colours, (beatmap->num_colour + 1) * sizeof(Colour));
-                *(beatmap->colours + beatmap->num_colour) = ofb_colour_addfromstring(line);
-                beatmap->num_colour++;
+                Colour *temp = ofb_colour_addfromstring(line);
+                if (temp != NULL) {
+                    *(beatmap->colours + beatmap->num_colour) = *temp;
+                    beatmap->num_colour++;
+                    free(temp);
+                }
                 break;
+            }
 
-            case hit_objects:
+            case hit_objects: {
                 beatmap->hit_objects = realloc(beatmap->hit_objects, (beatmap->num_ho + 1) * sizeof(HitObject));
-                *(beatmap->hit_objects + beatmap->num_ho) = ofb_hitobject_addfromstring(line);
-                beatmap->num_ho++;
+                HitObject *temp = ofb_hitobject_addfromstring(line);
+                if (temp != NULL) {
+                    *(beatmap->hit_objects + beatmap->num_ho) = *temp;
+                    beatmap->num_ho++;
+                    free(temp);
+                }
                 break;
+            }
         }
     }
     fclose(fp);
@@ -136,46 +149,82 @@ void of_beatmap_set(Beatmap *beatmap, char *file_path) {
 }
 
 void of_beatmap_tofile(Beatmap *beatmap, FILE *fp) {
-    fputs(ofb_structure_tostring(beatmap->structure), fp);
-    fputs("\n", fp);
+    {
+        char *temp = ofb_structure_tostring(beatmap->structure);
+        fputs(temp, fp);
+        free(temp);
+        fputs("\n", fp);
+    }
 
-    fputs("[General]", fp);
-    fputs(ofb_general_tostring(beatmap->general), fp);
-    fputs("\n", fp);
+    {
+        fputs("[General]\n", fp);
+        char *temp = ofb_general_tostring(beatmap->general);
+        fputs(temp, fp);
+        free(temp);
+        fputs("\n", fp);
+    }
 
-    fputs("[Editor]", fp);
-    fputs(ofb_editor_tostring(beatmap->editor), fp);
-    fputs("\n", fp);
-    
-    fputs("[Metadata]", fp);
-    fputs(ofb_metadata_tostring(beatmap->metadata), fp);
-    fputs("\n", fp);
-    
-    fputs("[Difficulty]", fp);
-    fputs(ofb_difficulty_tostring(beatmap->difficulty), fp);
-    fputs("\n", fp);
-    
-    fputs("[Events]", fp);
-    for (int i = 0; i < beatmap->num_event; i++) {
-        fputs(ofb_event_tostring(*(beatmap->events + i)), fp);
+    {
+        fputs("[Editor]\n", fp);
+        char *temp = ofb_editor_tostring(beatmap->editor);
+        fputs(temp, fp);
+        free(temp);
+        fputs("\n", fp);
     }
-    fputs("\n", fp);
-    
-    fputs("[TimingPoints]", fp);
-    for (int i = 0; i < beatmap->num_tp; i++) {
-        fputs(ofb_timingpoint_tostring(*(beatmap->timing_points + i)), fp);
+
+    {   
+        fputs("[Metadata]\n", fp);
+        char *temp = ofb_metadata_tostring(beatmap->metadata);
+        fputs(temp, fp);
+        free(temp);
+        fputs("\n", fp);
     }
-    fputs("\n", fp);
-    
-    fputs("[Colours]", fp);
-    for (int i = 0; i < beatmap->num_colour; i++) {
-        fputs(ofb_colour_tostring(*(beatmap->colours + i), i), fp);
+
+    {
+        fputs("[Difficulty]\n", fp);
+        char *temp = ofb_difficulty_tostring(beatmap->difficulty);
+        fputs(temp, fp);
+        free(temp);
+        fputs("\n", fp);
     }
-    fputs("\n", fp);
-    
-    fputs("[HitObjects]", fp);
-    for (int i = 0; i < beatmap->num_ho; i++) {
-        fputs(ofb_hitobject_tostring(*(beatmap->hit_objects + i)), fp);
+
+    {
+        fputs("[Events]\n", fp);
+        // for (int i = 0; i < beatmap->num_event; i++) {
+        //     char *temp = ofb_event_tostring(*(beatmap->events + i));
+        //     fputs(, fp);
+        //     free(temp);
+        // }
+        fputs("\n", fp);
     }
-    fputs("\n", fp);
+
+    {
+        fputs("[TimingPoints]\n", fp);
+        for (int i = 0; i < beatmap->num_tp; i++) {
+            char *temp = ofb_timingpoint_tostring(*(beatmap->timing_points + i));
+            fputs(temp, fp);
+            free(temp);
+        }
+        fputs("\n", fp);
+    }
+
+    {
+        fputs("[Colours]\n", fp);
+        for (int i = 0; i < beatmap->num_colour; i++) {
+            char *temp = ofb_colour_tostring(*(beatmap->colours + i), i + 1);
+            fputs(temp, fp);
+            free(temp);
+        }
+        fputs("\n", fp);
+    }
+
+    {   
+        fputs("[HitObjects]\n", fp);
+        for (int i = 0; i < beatmap->num_ho; i++) {
+            char *temp = ofb_hitobject_tostring(*(beatmap->hit_objects + i));
+            fputs(temp, fp);
+            free(temp);
+        }
+        fputs("\n", fp);
+    }
 }
