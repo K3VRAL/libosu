@@ -19,7 +19,7 @@ void of_beatmap_free(Beatmap *beatmap) {
     oos_general_free(&beatmap->general);
     oos_editor_free(&beatmap->editor);
     oos_metadata_free(&beatmap->metadata);
-    // oos_event_free(beatmap->events); // TODO
+    oos_event_free(beatmap->events, beatmap->num_event);
     oos_timingpoint_free(beatmap->timing_points);
     oos_colour_free(beatmap->colours);
     oos_hitobject_free(beatmap->hit_objects, beatmap->num_ho);
@@ -28,10 +28,6 @@ void of_beatmap_free(Beatmap *beatmap) {
 void of_beatmap_set(Beatmap *beatmap, char *file_path) {
     FILE *fp = fopen(file_path, "r");
     if (fp == NULL) {
-        return;
-    }
-    char *extension = strrchr(file_path, '.');
-    if (extension == NULL && strcmp(".osu", extension)) {
         return;
     }
 
@@ -49,11 +45,14 @@ void of_beatmap_set(Beatmap *beatmap, char *file_path) {
         colours,
         hit_objects
     } curr_item = structure;
-    while ((read = getline(&line, &len, fp)) != -1) {
+    while ((read = getline(&line, &len, fp)) != -1) { // TODO put this into unrelated
         if (*(line + read - 2) == '\r') {
             *(line + read - 2) = '\0';
         } else if (*(line + read - 1) == '\n') {
             *(line + read - 1) = '\0';
+        }
+        if (*(line + 0) == '/' && *(line + 1) == '/') {
+            continue;
         }
         if (*(line + 0) == '[') {
             if (strcmp("[General]", line) == 0) {
@@ -104,40 +103,51 @@ void of_beatmap_set(Beatmap *beatmap, char *file_path) {
                 ofb_difficulty_setfromstring(&beatmap->difficulty, line);
                 break;
 
-            case events:
-                ofb_event_setfromstring(beatmap->events, line);
+            case events: {
+                Event *temp;
+                if ((temp = ofb_event_addfromstring(line)) == NULL) {
+                    break;
+                }
+                beatmap->events = realloc(beatmap->events, (beatmap->num_event + 1) * sizeof(Event));
+                *(beatmap->events + beatmap->num_event) = *temp;
+                beatmap->num_event++;
+                free(temp);
                 break;
+            }
 
             case timing_points: {
-                beatmap->timing_points = realloc(beatmap->timing_points, (beatmap->num_tp + 1) * sizeof(TimingPoint));
-                TimingPoint *temp = ofb_timingpoint_addfromstring(line);
-                if (temp != NULL) {
-                    *(beatmap->timing_points + beatmap->num_tp) = *temp;
-                    beatmap->num_tp++;
-                    free(temp);
+                TimingPoint *temp;
+                if ((temp = ofb_timingpoint_addfromstring(line)) == NULL) {
+                    break;
                 }
+                beatmap->timing_points = realloc(beatmap->timing_points, (beatmap->num_tp + 1) * sizeof(TimingPoint));
+                *(beatmap->timing_points + beatmap->num_tp) = *temp;
+                beatmap->num_tp++;
+                free(temp);
                 break;
             }
 
             case colours: {
-                beatmap->colours = realloc(beatmap->colours, (beatmap->num_colour + 1) * sizeof(Colour));
-                Colour *temp = ofb_colour_addfromstring(line);
-                if (temp != NULL) {
-                    *(beatmap->colours + beatmap->num_colour) = *temp;
-                    beatmap->num_colour++;
-                    free(temp);
+                Colour *temp;
+                if ((temp = ofb_colour_addfromstring(line)) == NULL) {
+                    break;
                 }
+                beatmap->colours = realloc(beatmap->colours, (beatmap->num_colour + 1) * sizeof(Colour));
+                *(beatmap->colours + beatmap->num_colour) = *temp;
+                beatmap->num_colour++;
+                free(temp);
                 break;
             }
 
             case hit_objects: {
-                beatmap->hit_objects = realloc(beatmap->hit_objects, (beatmap->num_ho + 1) * sizeof(HitObject));
-                HitObject *temp = ofb_hitobject_addfromstring(line);
-                if (temp != NULL) {
-                    *(beatmap->hit_objects + beatmap->num_ho) = *temp;
-                    beatmap->num_ho++;
-                    free(temp);
+                HitObject *temp;
+                if ((temp = ofb_hitobject_addfromstring(line)) == NULL) {
+                    break;
                 }
+                beatmap->hit_objects = realloc(beatmap->hit_objects, (beatmap->num_ho + 1) * sizeof(HitObject));
+                *(beatmap->hit_objects + beatmap->num_ho) = *temp;
+                beatmap->num_ho++;
+                free(temp);
                 break;
             }
         }
@@ -190,11 +200,11 @@ void of_beatmap_tofile(Beatmap *beatmap, FILE *fp) {
 
     {
         fputs("[Events]\n", fp);
-        // for (int i = 0; i < beatmap->num_event; i++) {
-        //     char *temp = ofb_event_tostring(*(beatmap->events + i));
-        //     fputs(, fp);
-        //     free(temp);
-        // }
+        for (int i = 0; i < beatmap->num_event; i++) {
+            char *temp = ofb_event_tostring(*(beatmap->events + i));
+            fputs(temp, fp);
+            free(temp);
+        }
         fputs("\n", fp);
     }
 
@@ -225,6 +235,5 @@ void of_beatmap_tofile(Beatmap *beatmap, FILE *fp) {
             fputs(temp, fp);
             free(temp);
         }
-        fputs("\n", fp);
     }
 }

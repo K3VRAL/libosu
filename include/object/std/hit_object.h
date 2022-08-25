@@ -52,9 +52,12 @@ typedef union HO {
 } HO;
 
 typedef enum HOType {
-    circle,
-    slider,
-    spinner
+    circle = 1,
+    nc_circle = 5,
+    slider = 2,
+    nc_slider = 6,
+    spinner = 8,
+    nc_spinner = 12
 } HOType;
 
 // https://osu.ppy.sh/wiki/en/Client/File_formats/Osu_%28file_format%29#hit-objects
@@ -62,9 +65,8 @@ typedef struct HitObject {
     int x;
     int y;
     int time;
-    int type;
+    HOType type;
     int hit_sound;
-    HOType ho_type;
     HO ho;
     HOSample hit_sample;
 } HitObject;

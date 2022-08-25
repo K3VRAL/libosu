@@ -7,5 +7,6 @@ typedef struct Structure {
 } Structure;
 
 Structure oos_structure_init(void);
+void oos_structure_free(Structure);
 
 #endif

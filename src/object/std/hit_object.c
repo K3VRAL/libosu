@@ -3,7 +3,7 @@
 void oos_hitobject_free(HitObject *ho, unsigned int num) {
     if (ho != NULL) {
         for (int i = 0; i < num; i++) {
-            if ((ho + i)->ho_type == slider) {
+            if ((ho + i)->type == slider) {
                 if ((ho + i)->ho.slider.curves != NULL) {
                     free((ho + i)->ho.slider.curves);
                 }

@@ -6,3 +6,7 @@ Structure oos_structure_init(void) {
     };
     return structure;
 }
+
+void oos_structure_free(Structure structure) {
+    // Why not
+}

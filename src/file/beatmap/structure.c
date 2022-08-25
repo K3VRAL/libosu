@@ -2,10 +2,12 @@
 
 void ofb_structure_setfromstring(Structure *structure, char *string) {
     char *version = strrchr(string, 'v');
-    if (version != NULL) {
-        memmove(&version[0], &version[1], strlen(version));
-        structure->version = (int) strtol(version, NULL, 10);
+    if (version == NULL) {
+        return;
     }
+    
+    memmove(&version[0], &version[1], strlen(version));
+    structure->version = (int) strtol(version, NULL, 10);
 }
 
 char *ofb_structure_tostring(Structure structure) {

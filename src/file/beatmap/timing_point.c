@@ -3,17 +3,19 @@
 TimingPoint *ofb_timingpoint_addfromstring(char *string) {
     char *token = strtok(string, ",");
     TimingPoint *timing_point = NULL;
-    if (token != NULL) {
-        timing_point = malloc(sizeof(TimingPoint));
-        timing_point->time = (int) strtol(token, NULL, 10);
-        timing_point->beat_length = strtod(strtok(NULL, ","), NULL);
-        timing_point->meter = (int) strtol(strtok(NULL, ","), NULL, 10);
-        timing_point->sample_set = (int) strtol(strtok(NULL, ","), NULL, 10);
-        timing_point->sample_index = (int) strtol(strtok(NULL, ","), NULL, 10);
-        timing_point->volume = (int) strtol(strtok(NULL, ","), NULL, 10);
-        timing_point->uninherited = (bool) strtol(strtok(NULL, ","), NULL, 10);
-        timing_point->effects = (int) strtol(strtok(NULL, ","), NULL, 10);
+    if (token == NULL) {
+        return NULL;
     }
+    
+    timing_point = malloc(sizeof(TimingPoint));
+    timing_point->time = (int) strtol(token, NULL, 10);
+    timing_point->beat_length = strtod(strtok(NULL, ","), NULL);
+    timing_point->meter = (int) strtol(strtok(NULL, ","), NULL, 10);
+    timing_point->sample_set = (int) strtol(strtok(NULL, ","), NULL, 10);
+    timing_point->sample_index = (int) strtol(strtok(NULL, ","), NULL, 10);
+    timing_point->volume = (int) strtol(strtok(NULL, ","), NULL, 10);
+    timing_point->uninherited = (bool) strtol(strtok(NULL, ","), NULL, 10);
+    timing_point->effects = (int) strtol(strtok(NULL, ","), NULL, 10);
     return timing_point;
 }
 

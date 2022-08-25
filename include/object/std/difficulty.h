@@ -12,5 +12,6 @@ typedef struct Difficulty {
 } Difficulty;
 
 Difficulty oos_difficulty_init(void);
+void oos_difficulty_free(Difficulty);
 
 #endif

@@ -2,44 +2,49 @@
 
 void ofb_metadata_setfromstring(Metadata *metadata, char *key_value_pair) {
     char *token = strtok(key_value_pair, ":");
-    if (token != NULL) {
-        char *key = strdup(token);
-        char *value = strtok(NULL, "\0");
-        if (value != NULL) {
-            if (*(value + 0) == ' ') {
-                value++;
-            }
-            if (strcmp("Title", key) == 0) {
-                metadata->title = strdup(value);
-            } else if (strcmp("TitleUnicode", key) == 0) {
-                metadata->title_unicode = strdup(value);
-            } else if (strcmp("Artist", key) == 0) {
-                metadata->artist = strdup(value);
-            } else if (strcmp("ArtistUnicode", key) == 0) {
-                metadata->artist_unicode = strdup(value);
-            } else if (strcmp("Creator", key) == 0) {
-                metadata->creator = strdup(value);
-            } else if (strcmp("Version", key) == 0) {
-                metadata->version = strdup(value);
-            } else if (strcmp("Source", key) == 0) {
-                metadata->source = strdup(value);
-            } else if (strcmp("Tags", key) == 0) {
-                metadata->tags = calloc(1, sizeof(char *));
-                token = strtok(value, " ");
-                while (token != NULL) {
-                    metadata->tags = realloc(metadata->tags, (metadata->num_tag + 1) * sizeof(char *));
-                    *(metadata->tags + metadata->num_tag) = strdup(token);
-                    token = strtok(NULL, " ");
-                    metadata->num_tag++;
-                }
-            } else if (strcmp("BeatmapID", key) == 0) {
-                metadata->beatmap_id = (int) strtol(value, NULL, 10);
-            } else if (strcmp("BeatmapSetID", key) == 0) {
-                metadata->beatmap_set_id = (int) strtol(value, NULL, 10);
-            }
-        }
-        free(key);
+    if (token == NULL) {
+        return;
     }
+
+    char *key = strdup(token);
+    char *value = strtok(NULL, "\0");
+    if (value == NULL) {
+        free(key);
+        return;
+    }
+
+    if (*(value + 0) == ' ') {
+        value++;
+    }
+    if (strcmp("Title", key) == 0) {
+        metadata->title = strdup(value);
+    } else if (strcmp("TitleUnicode", key) == 0) {
+        metadata->title_unicode = strdup(value);
+    } else if (strcmp("Artist", key) == 0) {
+        metadata->artist = strdup(value);
+    } else if (strcmp("ArtistUnicode", key) == 0) {
+        metadata->artist_unicode = strdup(value);
+    } else if (strcmp("Creator", key) == 0) {
+        metadata->creator = strdup(value);
+    } else if (strcmp("Version", key) == 0) {
+        metadata->version = strdup(value);
+    } else if (strcmp("Source", key) == 0) {
+        metadata->source = strdup(value);
+    } else if (strcmp("Tags", key) == 0) {
+        metadata->tags = calloc(1, sizeof(char *));
+        token = strtok(value, " ");
+        while (token != NULL) {
+            metadata->tags = realloc(metadata->tags, (metadata->num_tag + 1) * sizeof(char *));
+            *(metadata->tags + metadata->num_tag) = strdup(token);
+            token = strtok(NULL, " ");
+            metadata->num_tag++;
+        }
+    } else if (strcmp("BeatmapID", key) == 0) {
+        metadata->beatmap_id = (int) strtol(value, NULL, 10);
+    } else if (strcmp("BeatmapSetID", key) == 0) {
+        metadata->beatmap_set_id = (int) strtol(value, NULL, 10);
+    }
+    free(key);
 }
 
 char *ofb_metadata_tostring(Metadata metadata) {

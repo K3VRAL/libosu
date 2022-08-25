@@ -11,3 +11,7 @@ Difficulty oos_difficulty_init(void) {
     };
     return difficulty;
 }
+
+void oos_difficulty_free(Difficulty difficulty) {
+    // Why not
+}

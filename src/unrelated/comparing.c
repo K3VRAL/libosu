@@ -27,6 +27,8 @@ int ou_comparing_trailing(double measure, int size_floor) {
     return trailing_zeros;
 }
 
+// TODO can probably severly simplify
+
 char *ou_comparing_editor(ComparingEditor *data, unsigned int num) {
     char *output = strdup("");
     int len = 0;

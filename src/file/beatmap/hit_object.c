@@ -3,20 +3,25 @@
 HitObject *ofb_hitobject_addfromstring(char *string) {
     char *copy = strdup(string);
     char *token = strtok(string, ",");
-    HitObject *hit_object = NULL;
-    if (token != NULL) {
-        hit_object = calloc(1, sizeof(HitObject));
-        hit_object->x = (int) strtol(token, NULL, 10);
-        hit_object->y = (int) strtol(strtok(NULL, ","), NULL, 10);
-        hit_object->time = (int) strtol(strtok(NULL, ","), NULL, 10);
-        hit_object->type = (int) strtol(strtok(NULL, ","), NULL, 10);
-        hit_object->hit_sound = (int) strtol(strtok(NULL, ","), NULL, 10);
-        if (hit_object->type == 1
-            || hit_object->type == 5) {
-            hit_object->ho_type = circle;
-        } else if (hit_object->type == 2
-            || hit_object->type == 6) {
-            hit_object->ho_type = slider;
+    if (token == NULL) {
+        free(copy);
+        return NULL;
+    }
+
+    HitObject *hit_object = calloc(1, sizeof(HitObject));
+    hit_object->x = (int) strtol(token, NULL, 10);
+    hit_object->y = (int) strtol(strtok(NULL, ","), NULL, 10);
+    hit_object->time = (int) strtol(strtok(NULL, ","), NULL, 10);
+    hit_object->type = (int) strtol(strtok(NULL, ","), NULL, 10);
+    hit_object->hit_sound = (int) strtol(strtok(NULL, ","), NULL, 10);
+    switch (hit_object->type) { // Turn every if statement with enum types to switchs
+        case circle:
+        case nc_circle:
+            // Why not
+            break;
+
+        case slider:
+        case nc_slider:
             hit_object->ho.slider.curve_type = strtok(NULL, "|")[0];
             hit_object->ho.slider.curves = calloc(1, sizeof(HOSliderCurve));
             hit_object->ho.slider.num_curve = 0;
@@ -47,70 +52,74 @@ HitObject *ofb_hitobject_addfromstring(char *string) {
             // `length,edgeSounds,edgeSets` can be removed from a slider and still retain the default propertise
             if ((token = strtok(NULL, ",")) != NULL) {
                 hit_object->ho.slider.length = strtod(token, NULL);
-            }
-            if ((token = strtok(NULL, "|,")) != NULL) {
-                hit_object->ho.slider.edge_sounds = calloc(1, sizeof(int));
-                hit_object->ho.slider.num_edge_sound = 0;
-                in_loop = true;
-                while (token != NULL && in_loop) {
-                    char used_delim = *(copy + (token - string + strlen(token)));
-                    switch (used_delim) {
-                        case ',':
-                            in_loop = false;
-                        case '|':
-                            if (hit_object->ho.slider.edge_sounds != NULL) {
-                                hit_object->ho.slider.edge_sounds = realloc(hit_object->ho.slider.edge_sounds, (hit_object->ho.slider.num_edge_sound + 1) * sizeof(int));
-                                *(hit_object->ho.slider.edge_sounds + hit_object->ho.slider.num_edge_sound) = (int) strtol(token, NULL, 10);
-                                hit_object->ho.slider.num_edge_sound++;
-                            }
-                            break;
+
+                if ((token = strtok(NULL, "|,")) != NULL) {
+                    hit_object->ho.slider.edge_sounds = calloc(1, sizeof(int));
+                    hit_object->ho.slider.num_edge_sound = 0;
+                    in_loop = true;
+                    while (token != NULL && in_loop) {
+                        char used_delim = *(copy + (token - string + strlen(token)));
+                        switch (used_delim) {
+                            case ',':
+                                in_loop = false;
+                            case '|':
+                                if (hit_object->ho.slider.edge_sounds != NULL) {
+                                    hit_object->ho.slider.edge_sounds = realloc(hit_object->ho.slider.edge_sounds, (hit_object->ho.slider.num_edge_sound + 1) * sizeof(int));
+                                    *(hit_object->ho.slider.edge_sounds + hit_object->ho.slider.num_edge_sound) = (int) strtol(token, NULL, 10);
+                                    hit_object->ho.slider.num_edge_sound++;
+                                }
+                                break;
+                        }
+                        if (in_loop) {
+                            token = strtok(NULL, "|,");
+                        }
                     }
-                    if (in_loop) {
-                        token = strtok(NULL, "|,");
+
+                    // TODO simplify code
+                    if ((token = strtok(NULL, ":|,")) != NULL && *(copy + (token - string + strlen(token))) == ':') {
+                        hit_object->ho.slider.edge_sets = calloc(1, sizeof(HOSliderEdge));
+                        hit_object->ho.slider.num_edge_set = 0;
+                        in_loop = true;
+                        while (token != NULL && in_loop) {
+                            char used_delim = *(copy + (token - string + strlen(token)));
+                            switch (used_delim) {
+                                case '\0':
+                                case ',':
+                                    in_loop = false;
+                                case '|':
+                                    (hit_object->ho.slider.edge_sets + hit_object->ho.slider.num_edge_set)->additional = (int) strtol(token, NULL, 10);
+                                    hit_object->ho.slider.num_edge_set++;
+                                    break;
+                                
+                                case ':':
+                                    if (hit_object->ho.slider.edge_sets != NULL) {
+                                        hit_object->ho.slider.edge_sets = realloc(hit_object->ho.slider.edge_sets, (hit_object->ho.slider.num_edge_set + 1) * sizeof(HOSliderEdge));
+                                        (hit_object->ho.slider.edge_sets + hit_object->ho.slider.num_edge_set)->normal = (int) strtol(token, NULL, 10);
+                                    }
+                                    break;
+                            }
+                            if (in_loop) {
+                                token = strtok(NULL, ":|,");
+                            }
+                        }
                     }
                 }
             }
-            if ((token = strtok(NULL, ":|,")) != NULL && *(copy + (token - string + strlen(token))) == ':') {
-                hit_object->ho.slider.edge_sets = calloc(1, sizeof(HOSliderEdge));
-                hit_object->ho.slider.num_edge_set = 0;
-                in_loop = true;
-                while (token != NULL && in_loop) {
-                    char used_delim = *(copy + (token - string + strlen(token)));
-                    switch (used_delim) {
-                        case '\0':
-                        case ',':
-                            in_loop = false;
-                        case '|':
-                            (hit_object->ho.slider.edge_sets + hit_object->ho.slider.num_edge_set)->additional = (int) strtol(token, NULL, 10);
-                            hit_object->ho.slider.num_edge_set++;
-                            break;
-                        
-                        case ':':
-                            if (hit_object->ho.slider.edge_sets != NULL) {
-                                hit_object->ho.slider.edge_sets = realloc(hit_object->ho.slider.edge_sets, (hit_object->ho.slider.num_edge_set + 1) * sizeof(HOSliderEdge));
-                                (hit_object->ho.slider.edge_sets + hit_object->ho.slider.num_edge_set)->normal = (int) strtol(token, NULL, 10);
-                            }
-                            break;
-                    }
-                    if (in_loop) {
-                        token = strtok(NULL, ":|,");
-                    }
-                }
-            }
-        } else if (hit_object->type == 8
-            || hit_object->type == 12) {
-            hit_object->ho_type = spinner;
+            break;
+
+        case spinner:
+        case nc_spinner:
             hit_object->ho.spinner.end_time = (int) strtol(strtok(NULL, ","), NULL, 10);
-        }
-        // If provided string has `hitSample` section (since it can be defaulted)
+            break;
+    }
+    // If provided string has `hitSample` section (since it can be defaulted)
+    if ((token = strtok(NULL, ":")) != NULL) {
+        hit_object->hit_sample.normal_set = (int) strtol(token, NULL, 10);
+        hit_object->hit_sample.addition_set = (int) strtol(strtok(NULL, ":"), NULL, 10);
+        hit_object->hit_sample.index = (int) strtol(strtok(NULL, ":"), NULL, 10);
+        hit_object->hit_sample.volume = (int) strtol(strtok(NULL, ":"), NULL, 10);
         if ((token = strtok(NULL, ":")) != NULL) {
-            hit_object->hit_sample.normal_set = (int) strtol(token, NULL, 10);
-            hit_object->hit_sample.addition_set = (int) strtol(strtok(NULL, ":"), NULL, 10);
-            hit_object->hit_sample.index = (int) strtol(strtok(NULL, ":"), NULL, 10);
-            hit_object->hit_sample.volume = (int) strtol(strtok(NULL, ":"), NULL, 10);
-            if ((token = strtok(NULL, ":")) != NULL) {
-                hit_object->hit_sample.filename = strdup(token);
-            }
+            hit_object->hit_sample.filename = strdup(token);
         }
     }
     free(copy);
@@ -124,19 +133,6 @@ char *ofb_hitobject_tostring(HitObject hit_object) {
     int size_type = ou_comparing_size(hit_object.type);
     int size_hitsound = ou_comparing_size(hit_object.hit_sound);
     int size_total = size_x + 1 + size_y + 1 + size_time + 1 + size_type + 1 + size_hitsound;
-    int size_hitsample = 0;
-    if (hit_object.hit_sample.normal_set != 0 ||
-        hit_object.hit_sample.addition_set != 0 ||
-        hit_object.hit_sample.index != 0 ||
-        hit_object.hit_sample.volume != 0 ||
-        hit_object.hit_sample.filename != NULL) {
-            int size_normalset = ou_comparing_size(hit_object.hit_sample.normal_set);
-            int size_additionset = ou_comparing_size(hit_object.hit_sample.addition_set);
-            int size_index = ou_comparing_size(hit_object.hit_sample.index);
-            int size_volume = ou_comparing_size(hit_object.hit_sample.volume);
-            int size_filename = (hit_object.hit_sample.filename != NULL ? strlen(hit_object.hit_sample.filename) : 0);
-            size_hitsample = 1 + size_normalset + 1 + size_additionset + 1 + size_index + 1 + size_volume + 1 + size_filename + 1;
-    }
     int len = size_total + (1 + 1);
     char *output = malloc(len * sizeof(char));
     snprintf(output, len, "%d,%d,%d,%d,%d",
@@ -146,11 +142,13 @@ char *ofb_hitobject_tostring(HitObject hit_object) {
         hit_object.type,
         hit_object.hit_sound
     );
-    switch (hit_object.ho_type) {
+    switch (hit_object.type) {
         case circle:
+        case nc_circle:
             break;
 
-        case slider: {
+        case slider:
+        case nc_slider: {
             int len_buffer = 1;
             char *buffer = malloc(len_buffer * sizeof(char));
             
@@ -199,20 +197,20 @@ char *ofb_hitobject_tostring(HitObject hit_object) {
                     strcat(buffer, buffer_edge_sound);
                     free(buffer_edge_sound);
                 }
+            }
 
-                if (hit_object.ho.slider.edge_sounds != NULL || hit_object.ho.slider.num_edge_sound > 0) {
-                    for (int j = 0; j < hit_object.ho.slider.num_edge_set; j++) {
-                        int len_buffer_edge_set_normal = ou_comparing_size((hit_object.ho.slider.edge_sets + j)->normal);
-                        int len_buffer_edge_set_additional = ou_comparing_size((hit_object.ho.slider.edge_sets + j)->additional);
-                        int len_edge_set = 1 + len_buffer_edge_set_normal + 1 + len_buffer_edge_set_additional + 1;
-                        char *buffer_edge_set = malloc(len_edge_set * sizeof(char));
-                        snprintf(buffer_edge_set, len_edge_set, (j != 0 ? "|%d:%d" : ",%d:%d"), (hit_object.ho.slider.edge_sets + j)->normal, (hit_object.ho.slider.edge_sets + j)->additional);
-                    
-                        len_buffer += len_edge_set;
-                        buffer = realloc(buffer, len_buffer * sizeof(char));
-                        strcat(buffer, buffer_edge_set);
-                        free(buffer_edge_set);
-                    }
+            if (hit_object.ho.slider.edge_sounds != NULL || hit_object.ho.slider.num_edge_sound > 0) {
+                for (int j = 0; j < hit_object.ho.slider.num_edge_set; j++) {
+                    int len_buffer_edge_set_normal = ou_comparing_size((hit_object.ho.slider.edge_sets + j)->normal);
+                    int len_buffer_edge_set_additional = ou_comparing_size((hit_object.ho.slider.edge_sets + j)->additional);
+                    int len_edge_set = 1 + len_buffer_edge_set_normal + 1 + len_buffer_edge_set_additional + 1;
+                    char *buffer_edge_set = malloc(len_edge_set * sizeof(char));
+                    snprintf(buffer_edge_set, len_edge_set, (j != 0 ? "|%d:%d" : ",%d:%d"), (hit_object.ho.slider.edge_sets + j)->normal, (hit_object.ho.slider.edge_sets + j)->additional);
+                
+                    len_buffer += len_edge_set;
+                    buffer = realloc(buffer, len_buffer * sizeof(char));
+                    strcat(buffer, buffer_edge_set);
+                    free(buffer_edge_set);
                 }
             }
 
@@ -223,7 +221,8 @@ char *ofb_hitobject_tostring(HitObject hit_object) {
             break;
         }
 
-        case spinner: {
+        case spinner:
+        case nc_spinner: {
             int size_spinner = ou_comparing_size(hit_object.ho.spinner.end_time);
             int len_buffer = 1 + size_spinner + 1;
             char *buffer = malloc(len_buffer * sizeof(char));
@@ -237,8 +236,17 @@ char *ofb_hitobject_tostring(HitObject hit_object) {
         }
     }
 
-    if (size_hitsample > 0) {
-        int len_buffer = size_hitsample;
+    if (hit_object.hit_sample.normal_set != 0 ||
+        hit_object.hit_sample.addition_set != 0 ||
+        hit_object.hit_sample.index != 0 ||
+        hit_object.hit_sample.volume != 0 ||
+        hit_object.hit_sample.filename != NULL) {
+        int size_normalset = ou_comparing_size(hit_object.hit_sample.normal_set);
+        int size_additionset = ou_comparing_size(hit_object.hit_sample.addition_set);
+        int size_index = ou_comparing_size(hit_object.hit_sample.index);
+        int size_volume = ou_comparing_size(hit_object.hit_sample.volume);
+        int size_filename = (hit_object.hit_sample.filename != NULL ? strlen(hit_object.hit_sample.filename) : 0);
+        int len_buffer = 1 + size_normalset + 1 + size_additionset + 1 + size_index + 1 + size_volume + 1 + size_filename + 1;
         char *buffer = malloc(len_buffer * sizeof(char));
         snprintf(buffer, len_buffer, ",%d:%d:%d:%d:%s",
             hit_object.hit_sample.normal_set,
