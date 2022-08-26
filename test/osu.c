@@ -24,18 +24,12 @@ typedef enum ObjectType {
     colour,
     hit_object
 } ObjectType;
-typedef union ObjectSetAdd {
-    void (*setfromstring)(ObjectData *, char *);
-    ObjectData (*addfromstring)(char *);
-} ObjectSetAdd;
 typedef struct Object {
     ObjectType type;
     ObjectData data;
+    unsigned int num_data;
     char *read_from_file;
     char *output_to_file;
-    ObjectSetAdd setadd;
-    char *(*tostring)(ObjectData);
-    void (*free)(ObjectData *);
 } Object;
 void t_object(Object);
 
@@ -43,86 +37,63 @@ void t_beatmap(char *, char *);
 
 int main(int argc, char **argv) {
     if (strcmp("object", *(argv + 1)) == 0) {
-        Object object[] = { // TODO check if `(void *)` breaks things
+        Object object[] = {
             {
                 .type = structure,
                 .data.structure = oos_structure_init(),
                 .read_from_file = "test/beatmap/object/structure.osu",
                 .output_to_file = "bin/test_structure.osu",
-                .setadd.setfromstring = (void *) ofb_structure_setfromstring,
-                .tostring = (void *) ofb_structure_tostring,
-                .free = (void *) oos_structure_free
             }, {
                 .type = general,
                 .data.general = oos_general_init(),
                 .read_from_file = "test/beatmap/object/general.osu",
                 .output_to_file = "bin/test_general.osu",
-                .setadd.setfromstring = (void *) ofb_general_setfromstring,
-                .tostring = (void *) ofb_general_tostring,
-                .free = (void *) oos_general_free
             }, {
                 .type = editor,
                 .data.editor = oos_editor_init(),
                 .read_from_file = "test/beatmap/object/editor.osu",
                 .output_to_file = "bin/test_editor.osu",
-                .setadd.setfromstring = (void *) ofb_editor_setfromstring,
-                .tostring = (void *) ofb_editor_tostring,
-                .free = (void *) oos_editor_free
             }, {
                 .type = metadata,
                 .data.metadata = oos_metadata_init(),
                 .read_from_file = "test/beatmap/object/metadata.osu",
                 .output_to_file = "bin/test_metadata.osu",
-                .setadd.setfromstring = (void *) ofb_metadata_setfromstring,
-                .tostring = (void *) ofb_metadata_tostring,
-                .free = (void *) oos_metadata_free
             }, {
                 .type = difficulty,
                 .data.difficulty = oos_difficulty_init(),
                 .read_from_file = "test/beatmap/object/difficulty.osu",
                 .output_to_file = "bin/test_difficulty.osu",
-                .setadd.setfromstring = (void *) ofb_difficulty_setfromstring,
-                .tostring = (void *) ofb_difficulty_tostring,
-                .free = (void *) oos_difficulty_free
             }, {
                 .type = event,
                 .data.event = NULL,
+                .num_data = 0,
                 .read_from_file = "test/beatmap/object/event.osu",
                 .output_to_file = "bin/event.osu",
-                .setadd.addfromstring = (void *) ofb_event_addfromstring,
-                .tostring = (void *) ofb_event_tostring,
-                .free = (void *) oos_event_free
             }, {
                 .type = timing_point,
                 .data.timing_point = NULL,
+                .num_data = 0,
                 .read_from_file = "test/beatmap/object/timing_point.osu",
                 .output_to_file = "bin/test_timing_point.osu",
-                .setadd.addfromstring = (void *) ofb_timingpoint_addfromstring,
-                .tostring = (void *) ofb_timingpoint_tostring,
-                .free = (void *) oos_timingpoint_free
             }, {
                 .type = colour,
                 .data.colour = NULL,
+                .num_data = 0,
                 .read_from_file = "test/beatmap/object/colour.osu",
                 .output_to_file = "bin/test_colour.osu",
-                .setadd.addfromstring = (void *) ofb_colour_addfromstring,
-                .tostring = (void *) ofb_colour_tostring,
-                .free = (void *) oos_colour_free
             }, {
                 .type = hit_object,
                 .data.hit_object = NULL,
+                .num_data = 0,
                 .read_from_file = "test/beatmap/object/hit_object.osu",
                 .output_to_file = "bin/test_hit_object.osu",
-                .setadd.setfromstring = (void *) ofb_hitobject_addfromstring,
-                .tostring = (void *) ofb_hitobject_tostring,
-                .free = (void *) oos_hitobject_free
             }
         };
         for (int i = 0; i < 9; i++) {
             t_object(*(object + i));
         }
     } else if (strcmp("beatmap", *(argv + 1)) == 0) {
-        t_beatmap(*(argv + 1), *(argv + 2));
+        t_beatmap("test/beatmap/object/LeaF - Aleph-0 (Enjuxx) [NULL].osu", "bin/testing.osu");
     }
     return 0;
 }
@@ -130,19 +101,27 @@ int main(int argc, char **argv) {
 void t_object(Object object) {
     {
         FILE *fp_file = fopen(object.read_from_file, "r");
+        printf("Reading from file [%s]\n", object.read_from_file);
         char *temp;
         while ((temp = ou_readingline_line(fp_file)) != NULL) {
             switch (object.type) {
-                // TODO check if `object.data` is correct. We don't want the union, we want the data inside the union
                 case structure:
+                    ofb_structure_setfromstring(&object.data.structure, temp);
+                    break;
                 case general:
+                    ofb_general_setfromstring(&object.data.general, temp);
+                    break;
                 case editor:
+                    ofb_editor_setfromstring(&object.data.editor, temp);
+                    break;
                 case metadata:
+                    ofb_metadata_setfromstring(&object.data.metadata, temp);
+                    break;
                 case difficulty:
-                    object.setadd.setfromstring(&object.data, temp);
+                    ofb_difficulty_setfromstring(&object.data.difficulty, temp);
                     break;
 
-                // TODO lol how to do this?
+                // TODO
                 // case event:
                 // case timing_point:
                 // case colour:
@@ -162,21 +141,102 @@ void t_object(Object object) {
             }
         }
         fclose(fp_file);
+        if (temp) {
+            free(temp);
+        }
     }
 
     {
         remove(object.output_to_file);
-        FILE *fp_output = fopen(object.output_to_file, "a");
+        FILE *fp_output = fopen(object.output_to_file, "w");
         if (fp_output == NULL) {
             return;
         }
-        char *temp = object.tostring(object.data);
-        fputs(temp, fp_output);
-        free(temp);
+        printf("Outputing to file [%s]\n", object.output_to_file);
+        char *temp = NULL, *name;
+        switch (object.type) {
+            case structure:
+                name = "[Structure]";
+                temp = ofb_structure_tostring(object.data.structure);
+                break;
+            case general:
+                name = "[General]";
+                temp = ofb_general_tostring(object.data.general);
+                break;
+            case editor:
+                name = "[Editor]";
+                temp = ofb_editor_tostring(object.data.editor);
+                break;
+            case metadata:
+                name = "[Metadata]";
+                temp = ofb_metadata_tostring(object.data.metadata);
+                break;
+            case difficulty:
+                name = "[Difficulty]";
+                temp = ofb_difficulty_tostring(object.data.difficulty);
+                break;
+            case event:
+                name = "[Events]";
+                for (int i = 0; i < object.num_data; i++) {
+                    temp = ofb_event_tostring(*(object.data.event + i));
+                }
+                break;
+            case timing_point:
+                name = "[TimingPoints]";
+                for (int i = 0; i < object.num_data; i++) {
+                    temp = ofb_timingpoint_tostring(*(object.data.timing_point + i));
+                }
+                break;
+            case colour:
+                name = "[Colours]";
+                for (int i = 0; i < object.num_data; i++) {
+                    temp = ofb_colour_tostring(*(object.data.colour + i), i);
+                }
+                break;
+            case hit_object:
+                name = "[HitObjects]";
+                for (int i = 0; i < object.num_data; i++) {
+                    temp = ofb_hitobject_tostring(*(object.data.hit_object + i));
+                }
+                break;
+        }
+        if (temp != NULL) {
+            fputs(temp, fp_output);
+            free(temp);
+        }
         fclose(fp_output);
     }
 
-    object.free(&object.data);
+
+    switch (object.type) {
+        case structure:
+            oos_structure_free(object.data.structure);
+            break;
+        case general:
+            oos_general_free(object.data.general);
+            break;
+        case editor:
+            oos_editor_free(object.data.editor);
+            break;
+        case metadata:
+            oos_metadata_free(object.data.metadata);
+            break;
+        case difficulty:
+            oos_difficulty_free(object.data.difficulty);
+            break;
+        case event:
+            oos_event_free(object.data.event, object.num_data);
+            break;
+        case timing_point:
+            oos_timingpoint_free(object.data.timing_point);
+            break;
+        case colour:
+            oos_colour_free(object.data.colour);
+            break;
+        case hit_object:
+            oos_hitobject_free(object.data.hit_object, object.num_data);
+            break;
+    }
 }
 
 void t_beatmap(char *file, char *output) {
@@ -188,7 +248,7 @@ void t_beatmap(char *file, char *output) {
     if (fp == NULL) {
         return;
     }
-    of_beatmap_tofile(&beatmap, fp);
+    of_beatmap_tofile(beatmap, fp);
 
     of_beatmap_free(&beatmap);
     fclose(fp);

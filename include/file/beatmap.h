@@ -17,6 +17,8 @@
 #include "beatmap/colour.h"
 #include "beatmap/hit_object.h"
 
+#include "unrelated/reading_line.h"
+
 typedef struct Beatmap {
     Structure structure;
     General general;
@@ -40,6 +42,6 @@ typedef struct Beatmap {
 Beatmap of_beatmap_init(void);
 void of_beatmap_free(Beatmap *);
 void of_beatmap_set(Beatmap *, char *);
-void of_beatmap_tofile(Beatmap *, FILE *);
+void of_beatmap_tofile(Beatmap, FILE *);
 
 #endif

@@ -173,6 +173,6 @@ char *ofb_general_tostring(General general) {
         },
     };
     char *output = ou_comparing_general(data, 19);
-    oos_general_free(&original);
+    oos_general_free(original);
     return output;
 }

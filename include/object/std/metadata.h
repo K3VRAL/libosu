@@ -19,6 +19,6 @@ typedef struct Metadata {
 } Metadata;
 
 Metadata oos_metadata_init(void);
-void oos_metadata_free(Metadata *);
+void oos_metadata_free(Metadata);
 
 #endif

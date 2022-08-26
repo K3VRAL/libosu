@@ -16,9 +16,9 @@ Beatmap of_beatmap_init(void) {
 }
 
 void of_beatmap_free(Beatmap *beatmap) {
-    oos_general_free(&beatmap->general);
-    oos_editor_free(&beatmap->editor);
-    oos_metadata_free(&beatmap->metadata);
+    oos_general_free(beatmap->general);
+    oos_editor_free(beatmap->editor);
+    oos_metadata_free(beatmap->metadata);
     oos_event_free(beatmap->events, beatmap->num_event);
     oos_timingpoint_free(beatmap->timing_points);
     oos_colour_free(beatmap->colours);
@@ -31,9 +31,6 @@ void of_beatmap_set(Beatmap *beatmap, char *file_path) {
         return;
     }
 
-    char *line;
-    size_t len = 0;
-    int read;
     enum current_item {
         structure,
         general,
@@ -45,16 +42,9 @@ void of_beatmap_set(Beatmap *beatmap, char *file_path) {
         colours,
         hit_objects
     } curr_item = structure;
-    while ((read = getline(&line, &len, fp)) != -1) { // TODO put this into unrelated
-        if (*(line + read - 2) == '\r') {
-            *(line + read - 2) = '\0';
-        } else if (*(line + read - 1) == '\n') {
-            *(line + read - 1) = '\0';
-        }
-        if (*(line + 0) == '/' && *(line + 1) == '/') {
-            continue;
-        }
-        if (*(line + 0) == '[') {
+    char *line;
+    while ((line = ou_readingline_line(fp)) != NULL) {
+        if (*(line + 0) == '[' && *(line + strlen(line) - 1) == ']') {
             if (strcmp("[General]", line) == 0) {
                 curr_item = general;
                 continue;
@@ -153,14 +143,11 @@ void of_beatmap_set(Beatmap *beatmap, char *file_path) {
         }
     }
     fclose(fp);
-    if (line) {
-        free(line);
-    }
 }
 
-void of_beatmap_tofile(Beatmap *beatmap, FILE *fp) {
+void of_beatmap_tofile(Beatmap beatmap, FILE *fp) {
     {
-        char *temp = ofb_structure_tostring(beatmap->structure);
+        char *temp = ofb_structure_tostring(beatmap.structure);
         fputs(temp, fp);
         free(temp);
         fputs("\n", fp);
@@ -168,7 +155,7 @@ void of_beatmap_tofile(Beatmap *beatmap, FILE *fp) {
 
     {
         fputs("[General]\n", fp);
-        char *temp = ofb_general_tostring(beatmap->general);
+        char *temp = ofb_general_tostring(beatmap.general);
         fputs(temp, fp);
         free(temp);
         fputs("\n", fp);
@@ -176,7 +163,7 @@ void of_beatmap_tofile(Beatmap *beatmap, FILE *fp) {
 
     {
         fputs("[Editor]\n", fp);
-        char *temp = ofb_editor_tostring(beatmap->editor);
+        char *temp = ofb_editor_tostring(beatmap.editor);
         fputs(temp, fp);
         free(temp);
         fputs("\n", fp);
@@ -184,7 +171,7 @@ void of_beatmap_tofile(Beatmap *beatmap, FILE *fp) {
 
     {   
         fputs("[Metadata]\n", fp);
-        char *temp = ofb_metadata_tostring(beatmap->metadata);
+        char *temp = ofb_metadata_tostring(beatmap.metadata);
         fputs(temp, fp);
         free(temp);
         fputs("\n", fp);
@@ -192,7 +179,7 @@ void of_beatmap_tofile(Beatmap *beatmap, FILE *fp) {
 
     {
         fputs("[Difficulty]\n", fp);
-        char *temp = ofb_difficulty_tostring(beatmap->difficulty);
+        char *temp = ofb_difficulty_tostring(beatmap.difficulty);
         fputs(temp, fp);
         free(temp);
         fputs("\n", fp);
@@ -200,8 +187,8 @@ void of_beatmap_tofile(Beatmap *beatmap, FILE *fp) {
 
     {
         fputs("[Events]\n", fp);
-        for (int i = 0; i < beatmap->num_event; i++) {
-            char *temp = ofb_event_tostring(*(beatmap->events + i));
+        for (int i = 0; i < beatmap.num_event; i++) {
+            char *temp = ofb_event_tostring(*(beatmap.events + i));
             fputs(temp, fp);
             free(temp);
         }
@@ -210,8 +197,8 @@ void of_beatmap_tofile(Beatmap *beatmap, FILE *fp) {
 
     {
         fputs("[TimingPoints]\n", fp);
-        for (int i = 0; i < beatmap->num_tp; i++) {
-            char *temp = ofb_timingpoint_tostring(*(beatmap->timing_points + i));
+        for (int i = 0; i < beatmap.num_tp; i++) {
+            char *temp = ofb_timingpoint_tostring(*(beatmap.timing_points + i));
             fputs(temp, fp);
             free(temp);
         }
@@ -220,8 +207,8 @@ void of_beatmap_tofile(Beatmap *beatmap, FILE *fp) {
 
     {
         fputs("[Colours]\n", fp);
-        for (int i = 0; i < beatmap->num_colour; i++) {
-            char *temp = ofb_colour_tostring(*(beatmap->colours + i), i + 1);
+        for (int i = 0; i < beatmap.num_colour; i++) {
+            char *temp = ofb_colour_tostring(*(beatmap.colours + i), i + 1);
             fputs(temp, fp);
             free(temp);
         }
@@ -230,8 +217,8 @@ void of_beatmap_tofile(Beatmap *beatmap, FILE *fp) {
 
     {   
         fputs("[HitObjects]\n", fp);
-        for (int i = 0; i < beatmap->num_ho; i++) {
-            char *temp = ofb_hitobject_tostring(*(beatmap->hit_objects + i));
+        for (int i = 0; i < beatmap.num_ho; i++) {
+            char *temp = ofb_hitobject_tostring(*(beatmap.hit_objects + i));
             fputs(temp, fp);
             free(temp);
         }

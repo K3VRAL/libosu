@@ -14,6 +14,6 @@ typedef struct Editor {
 } Editor;
 
 Editor oos_editor_init(void);
-void oos_editor_free(Editor *);
+void oos_editor_free(Editor);
 
 #endif

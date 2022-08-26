@@ -25,20 +25,20 @@ General oos_general_init(void) {
     return general;
 }
 
-void oos_general_free(General *general) {
-    if (general->audio_filename != NULL) {
-        free(general->audio_filename);
+void oos_general_free(General general) {
+    if (general.audio_filename != NULL) {
+        free(general.audio_filename);
     }
-    if (general->audio_hash != NULL) {
-        free(general->audio_hash);
+    if (general.audio_hash != NULL) {
+        free(general.audio_hash);
     }
-    if (general->sample_set != NULL) {
-        free(general->sample_set);
+    if (general.sample_set != NULL) {
+        free(general.sample_set);
     }
-    if (general->overlay_position != NULL) {
-        free(general->overlay_position);
+    if (general.overlay_position != NULL) {
+        free(general.overlay_position);
     }
-    if (general->skin_preference != NULL) {
-        free(general->skin_preference);
+    if (general.skin_preference != NULL) {
+        free(general.skin_preference);
     }
 }

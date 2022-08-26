@@ -15,26 +15,29 @@ static bool ou_readingline_iscomment(char *line) {
 
 char *ou_readingline_line(FILE *fp) {
     static int state = 0;
+    static char *line;
+    static size_t len;
+    static int read;
     switch (state) {
-        case 0: {
+        case 0:
             state = 1;
-            char *line;
-            size_t len = 0;
-            int read;
+            line = NULL;
+            len = 0;
+            read = 0;
             while ((read = getline(&line, &len, fp)) != -1) {
                 ou_readingline_removecrlf(line, read);
-                if (ou_readingline_iscomment(line)
+                if (strlen(line) == 0
+                    || ou_readingline_iscomment(line)
                     || (*(line + 0) == '[' && *(line + read - 2) == ']')) {
                     continue;
                 }
                 return line;
         case 1:;
             }
-            state = 0;
             if (line != NULL) {
                 free(line);
             }
-        }
     }
+    state = 0;
     return NULL;
 }

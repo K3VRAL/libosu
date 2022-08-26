@@ -29,6 +29,6 @@ typedef struct General {
 } General;
 
 General oos_general_init(void);
-void oos_general_free(General *);
+void oos_general_free(General);
 
 #endif

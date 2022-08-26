@@ -12,8 +12,8 @@ Editor oos_editor_init() {
     return editor;
 }
 
-void oos_editor_free(Editor *editor) {
-    if (editor->bookmarks != NULL) {
-        free(editor->bookmarks);
+void oos_editor_free(Editor editor) {
+    if (editor.bookmarks != NULL) {
+        free(editor.bookmarks);
     }
 }
