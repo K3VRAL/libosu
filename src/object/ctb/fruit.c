@@ -1,20 +1,29 @@
 #include "object/ctb.h"
-#include "object/ctb/hit_object.h" // Forward Declaration
 
 const float ooc_fruit_OBJECTRADIUS = 64;
 
-void ooc_fruit_applyhardrockoffset(CatchHitObject *object, float *last_position, double *last_start_time, LegacyRandom *rng) {
+CatchHitObject *ooc_fruit_init(HitObject hit_object) {
+    if (!(hit_object.type == circle || hit_object.type == nc_circle)) {
+        return NULL;
+    }
+    CatchHitObject *object = ooc_hitobject_init(hit_object.time, hit_object.x, 0);
+    object->type = fruit;
+    return object;
+}
+
+void ooc_fruit_applyhardrockoffset(CatchHitObject *object, float **last_position, double *last_start_time, LegacyRandom *rng) {
     float offset_position = object->x;
     double start_time = object->start_time;
-    if (last_position == NULL) {
-        *last_position = offset_position;
+    if (*last_position == NULL) {
+        *last_position = malloc(sizeof(float));
+        **last_position = offset_position;
         *last_start_time = start_time;
         return;
     }
-    float position_diff = offset_position - *last_position;
+    float position_diff = offset_position - **last_position;
     int time_diff = (int) (start_time - *last_start_time);
     if (time_diff > 1000) {
-        *last_position = offset_position;
+        **last_position = offset_position;
         *last_start_time = start_time;
     }
     if (position_diff == 0) {
@@ -26,7 +35,7 @@ void ooc_fruit_applyhardrockoffset(CatchHitObject *object, float *last_position,
         ooc_fruit_applyoffset(&offset_position, position_diff);
     }
     object->x_offset = offset_position - object->x;
-    *last_position = offset_position;
+    **last_position = offset_position;
     *last_start_time = start_time;
 }
 

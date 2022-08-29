@@ -6,19 +6,19 @@
 
 #include "banana.h"
 
+typedef struct CatchHitObject CatchHitObject; // Forward Declaration
 typedef struct BananaShower {
-    int start;
-    int end;
+    int end_time;
     int duration;
-    Banana *bananas;
+    CatchHitObject *bananas;
     unsigned int num_banana;
 } BananaShower;
 
-BananaShower ooc_bananashower_init(HitObject);
-// TODO replace all args with `CatchHitObject`
-void ooc_bananashower_getnestedbananas(BananaShower *);
+// TODO maybe remove `HitObject` and replace with `Spinner`
+CatchHitObject *ooc_bananashower_init(HitObject);
+void ooc_bananashower_createnestedbananas(CatchHitObject *);
 void ooc_bananashower_free(BananaShower *);
-LegacyRandom ooc_bananashower_xoffset(BananaShower *, LegacyRandom);
-LegacyRandom ooc_bananashower_xoffsetuntilindex(BananaShower *, LegacyRandom, int);
+void ooc_bananashower_xoffset(CatchHitObject *, LegacyRandom *);
+void ooc_bananashower_xoffsetuntilindex(CatchHitObject *, LegacyRandom *, int);
 
 #endif

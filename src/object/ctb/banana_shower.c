@@ -1,56 +1,52 @@
 #include "object/ctb.h"
 
-BananaShower ooc_bananashower_init(HitObject hit_object) {
-    BananaShower banana_shower = {
-        .start = hit_object.time,
-        .end = hit_object.ho.spinner.end_time,
-        .duration = hit_object.ho.spinner.end_time - hit_object.time,
-        .bananas = NULL,
-        .num_banana = 0
-    };
-    return banana_shower;
+CatchHitObject *ooc_bananashower_init(HitObject hit_object) {
+    if (hit_object.type != spinner || hit_object.type != nc_spinner) {
+        return NULL;
+    }
+    CatchHitObject *object = ooc_hitobject_init(hit_object.time, hit_object.x, 0);
+    object->type = banana_shower;
+    object->cho.bs.end_time = hit_object.ho.spinner.end_time;
+    object->cho.bs.duration = hit_object.ho.spinner.end_time - hit_object.time;
+    object->cho.bs.bananas = NULL;
+    object->cho.bs.num_banana = 0;
+    return object;
 }
 
-void ooc_bananashower_getnestedbananas(BananaShower *banana_shower) {
-    double spacing = banana_shower->duration;
+void ooc_bananashower_createnestedbananas(CatchHitObject *object) {
+    double spacing = object->cho.bs.duration;
     while (spacing > 100) {
         spacing /= 2;
     }
-
     if (spacing <= 0) {
         return;
     }
-
-    double time = banana_shower->start;
-    while (time <= banana_shower->end) {
-        if (banana_shower->bananas == NULL) {
-            banana_shower->bananas = calloc(1, sizeof(Banana));
-        } else {
-            banana_shower->bananas = realloc(banana_shower->bananas, (banana_shower->num_banana + 1) * sizeof(Banana));
-        }
-        (banana_shower->bananas + banana_shower->num_banana)->time = time;
+    double time = object->start_time;
+    while (time <= object->cho.bs.end_time) {
+        object->cho.bs.bananas = realloc(object->cho.bs.bananas, (object->cho.bs.num_banana + 1) * sizeof(CatchHitObject));
+        (object->cho.bs.bananas + object->cho.bs.num_banana)->start_time = time;
         time += spacing;
-        banana_shower->num_banana++;
+        object->cho.bs.num_banana++;
     }
 }
 
-void ooc_bananashower_free(BananaShower *bs) {
-    if (bs->bananas) {
-        free(bs->bananas);
-        bs->bananas = NULL;
+// TODO make every other object be able to free; and making `hit_object.c` allow to free all at once with one function
+void ooc_bananashower_free(BananaShower *banana_shower) {
+    if (banana_shower->bananas != NULL) {
+        free(banana_shower->bananas);
     }
+    free(banana_shower);
 }
 
-LegacyRandom ooc_bananashower_xoffset(BananaShower *bs, LegacyRandom lr) {
-    return ooc_bananashower_xoffsetuntilindex(bs, lr, bs->num_banana);
+void ooc_bananashower_xoffset(CatchHitObject *object, LegacyRandom *lr) {
+    ooc_bananashower_xoffsetuntilindex(object, lr, object->cho.bs.num_banana);
 }
 
-LegacyRandom ooc_bananashower_xoffsetuntilindex(BananaShower *bs, LegacyRandom lr, int index) {
+void ooc_bananashower_xoffsetuntilindex(CatchHitObject *object, LegacyRandom *lr, int index) {
     for (int i = 0; i < index; i++) {
-        (bs->bananas + i)->x = (float) (ou_legacyrandom_nextdouble(&lr) * ooc_playfield_WIDTH);
-        ou_legacyrandom_next(&lr);
-        ou_legacyrandom_next(&lr);
-        ou_legacyrandom_next(&lr);
+        (object->cho.bs.bananas + i)->x_offset = (float) (ou_legacyrandom_nextdouble(lr) * ooc_playfield_WIDTH);
+        ou_legacyrandom_next(lr);
+        ou_legacyrandom_next(lr);
+        ou_legacyrandom_next(lr);
     }
-    return lr;
 }

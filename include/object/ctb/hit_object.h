@@ -1,8 +1,9 @@
 #ifndef OOC_HITOBJECT_H
 #define OOC_HITOBJECT_H
 
+#include <stdlib.h>
+
 #include "banana_shower.h"
-#include "banana.h"
 #include "fruit.h"
 #include "juice_stream.h"
 
@@ -28,6 +29,7 @@ typedef struct CatchHitObject {
     CHO cho;
 } CatchHitObject;
 
+CatchHitObject *ooc_hitobject_init(float, float, float);
 extern const float ooc_hitobject_OBJECTRADIUS;
 
 #endif

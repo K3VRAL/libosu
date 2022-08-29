@@ -214,29 +214,28 @@ void t_beatmap(char *file, char *output) {
     fclose(fp);
 }
 
-void t_object_slider(char *read, char *output) {
-    remove(output);
-    FILE *fp_file = fopen(read, "r");
-    if (fp_file == NULL) {
-        return;
+void t_object_slider() {
+    unsigned int num = 13;
+    CatchHitObject **objects = malloc(num * sizeof(CatchHitObject));
+    for (int i = 0; i < num; i++) {
+        HitObject hit_object = {
+            .x = 256,
+            .y = 192,
+            .time = (i * 157) + 99,
+            .type = circle,
+            .hit_sound = 0,
+            .hit_sample = {0}
+        };
+        printf("x: %d | y: %d time: %d\n", hit_object.x, hit_object.y, hit_object.time);
+        *(objects + i) = ooc_fruit_init(hit_object);
     }
-    printf("Reading from file [%s]\n", read);
-    HitObject ho_slider;
-    for (char *temp_read; (temp_read = ou_readingline_line(fp_file)) != NULL;) {
-        HitObject *ho = ofb_hitobject_addfromstring(temp_read);
-        if (ho != NULL) {
-            ho_slider = *ho;
-            free(ho);
-            break;
-        }
+
+    ooc_processor_applypositionoffset(objects, num, true);
+    for (int i = 0; i < num; i++) {
+        printf("%f\n", (*(objects + i))->x + (*(objects + i))->x_offset);
+        free(*(objects + i));
     }
-    fclose(fp_file);
-
-    Slider slider = oos_slider_init(ho_slider);
-    oos_slider_createnestedhitobjects(slider);
-
-    // TODO output;
-    oos_hitobject_free(&ho_slider, 1);
+    free(objects);
 }
 
 int main(int argc, char **argv) {
@@ -301,7 +300,7 @@ int main(int argc, char **argv) {
     } else if (strcmp("beatmap2", *(argv + 1)) == 0) {
         t_beatmap("test/beatmap/object/LeaF - Aleph-0 (Enjuxx) [NULL].osu", "bin/test_beatmap2.osu");
     } else if (strcmp("slider", *(argv + 1)) == 0) {
-        t_object_slider("test/beatmap/object/slider.osu", "bin/test_object_slider.osu");
+        t_object_slider();
     }
     return 0;
 }
