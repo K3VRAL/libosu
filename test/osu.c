@@ -214,7 +214,7 @@ void t_beatmap(char *file, char *output) {
     fclose(fp);
 }
 
-void t_object_slider() {
+void t_object_fruithardrock() {
     unsigned int num = 13;
     CatchHitObject **objects = malloc(num * sizeof(CatchHitObject));
     for (int i = 0; i < num; i++) {
@@ -236,6 +236,32 @@ void t_object_slider() {
         free(*(objects + i));
     }
     free(objects);
+}
+
+void t_object_bananashower() {
+    HitObject hit_object = {
+        .x = 256,
+        .y = 192,
+        .time = 0,
+        .type = spinner,
+        .hit_sound = 0,
+        .ho.spinner.end_time = 1000,
+        .hit_sample = {0}
+    };
+    CatchHitObject *object = ooc_bananashower_init(hit_object);
+    ooc_bananashower_createnestedbananas(object);
+
+    ooc_processor_applypositionoffset(&object, 1, false);
+    printf("NUM: %u\n", object->cho.bs.num_banana);
+    for (int i = 0; i < object->cho.bs.num_banana; i++) {
+        float start_time = (object->cho.bs.bananas + i)->start_time;
+        float x = (object->cho.bs.bananas + i)->x;
+        float x_offset = (object->cho.bs.bananas + i)->x_offset;
+        printf("%d | %.0f %.0f\n", i, x + x_offset, start_time);
+    }
+
+    ooc_bananashower_free(&object->cho.bs);
+    free(object);
 }
 
 int main(int argc, char **argv) {
@@ -295,12 +321,14 @@ int main(int argc, char **argv) {
         for (int i = 0; i < 9; i++) {
             t_object(*(object + i));
         }
-    } else if (strcmp("beatmap1", *(argv + 1)) == 0) {
+    } else if (strcmp("beatmap_1", *(argv + 1)) == 0) {
         t_beatmap("test/beatmap/object/nekodex - new beginnings (pishifat) [osu testing].osu", "bin/test_beatmap1.osu");
-    } else if (strcmp("beatmap2", *(argv + 1)) == 0) {
+    } else if (strcmp("beatmap_2", *(argv + 1)) == 0) {
         t_beatmap("test/beatmap/object/LeaF - Aleph-0 (Enjuxx) [NULL].osu", "bin/test_beatmap2.osu");
-    } else if (strcmp("slider", *(argv + 1)) == 0) {
-        t_object_slider();
+    } else if (strcmp("fruit_hr", *(argv + 1)) == 0) {
+        t_object_fruithardrock();
+    } else if (strcmp("banana_shower", *(argv + 1)) == 0) {
+        t_object_bananashower();
     }
     return 0;
 }

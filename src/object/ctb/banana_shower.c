@@ -1,7 +1,7 @@
 #include "object/ctb.h"
 
 CatchHitObject *ooc_bananashower_init(HitObject hit_object) {
-    if (hit_object.type != spinner || hit_object.type != nc_spinner) {
+    if (!(hit_object.type == spinner || hit_object.type == nc_spinner)) {
         return NULL;
     }
     CatchHitObject *object = ooc_hitobject_init(hit_object.time, hit_object.x, 0);
@@ -35,7 +35,6 @@ void ooc_bananashower_free(BananaShower *banana_shower) {
     if (banana_shower->bananas != NULL) {
         free(banana_shower->bananas);
     }
-    free(banana_shower);
 }
 
 void ooc_bananashower_xoffset(CatchHitObject *object, LegacyRandom *lr) {

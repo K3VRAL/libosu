@@ -1,7 +1,7 @@
 #include "object/ctb.h"
 
 CatchHitObject *ooc_juicestream_init(HitObject hit_object) {
-    if (hit_object.type != slider || hit_object.type != nc_slider) {
+    if (!(hit_object.type == slider || hit_object.type == nc_slider)) {
         return NULL;
     }
     CatchHitObject *object = ooc_hitobject_init(hit_object.time, hit_object.x, 0);
