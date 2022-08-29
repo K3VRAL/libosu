@@ -1,4 +1,4 @@
-#include "file/beatmap/metadata.h"
+#include "file/beatmap.h"
 
 void ofb_metadata_setfromstring(Metadata *metadata, char *key_value_pair) {
     char *token = strtok(key_value_pair, ":");

@@ -1,4 +1,4 @@
-#include "object/std/timing_point.h"
+#include "object/std.h"
 
 void oos_timingpoint_free(TimingPoint *tp) {
     if (tp != NULL) {
@@ -17,3 +17,26 @@ void oos_timingpoint_sort(TimingPoint *tp, unsigned int num) {
         }
     }
 }
+
+// TimingPoint oos_timingpoint_attime(int time, TimingPoint *tp, unsigned int num) {
+//     if (tp == NULL || num == 0 || time < (tp + 0)->time) {
+//         return num > 0 ? (tp + 0) : /* TODO figure out what `TimingControlPoint.DEFAULT` is */;
+//     }
+//     if (time >= (tp + num - 1)->time) {
+//         return *(tp + num - 1);
+//     }
+
+//     int l = 0;
+//     int r = num - 2;
+//     while (l <= r) {
+//         int pivot = l + ((r - l) >> 1);
+//         if ((tp + pivot)->time < time) {
+//             l = pivot + 1;
+//         } else if ((tp + pivot)->time > time) {
+//             r = pivot - 1;
+//         } else {
+//             return *(tp + pivot);
+//         }
+//     }
+//     return *(tp + l - 1);
+// }

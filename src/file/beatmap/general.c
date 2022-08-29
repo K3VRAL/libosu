@@ -1,4 +1,4 @@
-#include "file/beatmap/general.h"
+#include "file/beatmap.h"
 
 void ofb_general_setfromstring(General *general, char *key_value_pair) {
     char *token = strtok(key_value_pair, ":");

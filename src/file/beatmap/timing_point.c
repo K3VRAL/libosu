@@ -1,4 +1,4 @@
-#include "file/beatmap/timing_point.h"
+#include "file/beatmap.h"
 
 TimingPoint *ofb_timingpoint_addfromstring(char *string) {
     char *token = strtok(string, ",");

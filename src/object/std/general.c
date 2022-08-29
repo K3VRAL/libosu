@@ -1,4 +1,4 @@
-#include "object/std/general.h"
+#include "object/std.h"
 
 General oos_general_init(void) {
     General general = {

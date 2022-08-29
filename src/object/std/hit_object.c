@@ -1,4 +1,6 @@
-#include "object/std/hit_object.h"
+#include "object/std.h"
+
+const float oos_hitobject_BASESCORINGDISTANCE = 100;
 
 void oos_hitobject_free(HitObject *ho, unsigned int num) {
     if (ho != NULL) {

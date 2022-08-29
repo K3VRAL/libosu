@@ -1,4 +1,4 @@
-#include "file/beatmap/structure.h"
+#include "file/beatmap.h"
 
 void ofb_structure_setfromstring(Structure *structure, char *string) {
     char *version = strrchr(string, 'v');

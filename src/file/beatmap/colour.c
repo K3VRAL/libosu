@@ -1,4 +1,4 @@
-#include "file/beatmap/colour.h"
+#include "file/beatmap.h"
 
 Colour *ofb_colour_addfromstring(char *key_value_pair) {
     char *token = strtok(key_value_pair, ":");

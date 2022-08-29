@@ -1,4 +1,4 @@
-#include "file/beatmap/difficulty.h"
+#include "file/beatmap.h"
 
 void ofb_difficulty_setfromstring(Difficulty *difficulty, char *key_value_pair) {
     char *token = strtok(key_value_pair, ":");

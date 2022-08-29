@@ -31,181 +31,141 @@ typedef struct Object {
     char *read_from_file;
     char *output_to_file;
 } Object;
-void t_object(Object);
-
-void t_beatmap(char *, char *);
-
-int main(int argc, char **argv) {
-    if (strcmp("object", *(argv + 1)) == 0) {
-        Object object[] = {
-            {
-                .type = structure,
-                .data.structure = oos_structure_init(),
-                .read_from_file = "test/beatmap/object/structure.osu",
-                .output_to_file = "bin/test_structure.osu",
-            }, {
-                .type = general,
-                .data.general = oos_general_init(),
-                .read_from_file = "test/beatmap/object/general.osu",
-                .output_to_file = "bin/test_general.osu",
-            }, {
-                .type = editor,
-                .data.editor = oos_editor_init(),
-                .read_from_file = "test/beatmap/object/editor.osu",
-                .output_to_file = "bin/test_editor.osu",
-            }, {
-                .type = metadata,
-                .data.metadata = oos_metadata_init(),
-                .read_from_file = "test/beatmap/object/metadata.osu",
-                .output_to_file = "bin/test_metadata.osu",
-            }, {
-                .type = difficulty,
-                .data.difficulty = oos_difficulty_init(),
-                .read_from_file = "test/beatmap/object/difficulty.osu",
-                .output_to_file = "bin/test_difficulty.osu",
-            }, {
-                .type = event,
-                .data.event = NULL,
-                .num_data = 0,
-                .read_from_file = "test/beatmap/object/event.osu",
-                .output_to_file = "bin/event.osu",
-            }, {
-                .type = timing_point,
-                .data.timing_point = NULL,
-                .num_data = 0,
-                .read_from_file = "test/beatmap/object/timing_point.osu",
-                .output_to_file = "bin/test_timing_point.osu",
-            }, {
-                .type = colour,
-                .data.colour = NULL,
-                .num_data = 0,
-                .read_from_file = "test/beatmap/object/colour.osu",
-                .output_to_file = "bin/test_colour.osu",
-            }, {
-                .type = hit_object,
-                .data.hit_object = NULL,
-                .num_data = 0,
-                .read_from_file = "test/beatmap/object/hit_object.osu",
-                .output_to_file = "bin/test_hit_object.osu",
-            }
-        };
-        for (int i = 0; i < 9; i++) {
-            t_object(*(object + i));
-        }
-    } else if (strcmp("beatmap", *(argv + 1)) == 0) {
-        t_beatmap("test/beatmap/object/LeaF - Aleph-0 (Enjuxx) [NULL].osu", "bin/testing.osu");
-    }
-    return 0;
-}
 
 void t_object(Object object) {
-    {
-        FILE *fp_file = fopen(object.read_from_file, "r");
-        printf("Reading from file [%s]\n", object.read_from_file);
-        char *temp;
-        while ((temp = ou_readingline_line(fp_file)) != NULL) {
-            switch (object.type) {
-                case structure:
-                    ofb_structure_setfromstring(&object.data.structure, temp);
-                    break;
-                case general:
-                    ofb_general_setfromstring(&object.data.general, temp);
-                    break;
-                case editor:
-                    ofb_editor_setfromstring(&object.data.editor, temp);
-                    break;
-                case metadata:
-                    ofb_metadata_setfromstring(&object.data.metadata, temp);
-                    break;
-                case difficulty:
-                    ofb_difficulty_setfromstring(&object.data.difficulty, temp);
-                    break;
-
-                // TODO
-                // case event:
-                // case timing_point:
-                // case colour:
-                // case hit_object: {
-                //     ObjectData *temp;
-                //     if ((temp = object.setadd.addfromstring(temp)) == NULL) {
-                //         break;
-                //     }
-                //     object.data = realloc(object.data, (beatmap->num_event + 1) * sizeof(Event));
-                //     *(beatmap->events + beatmap->num_event) = *temp;
-                //     beatmap->num_event++;
-                //     free(temp);
-                //     break;
-                // }
-                default:
-                    return;
-            }
-        }
-        fclose(fp_file);
-        if (temp) {
-            free(temp);
-        }
-    }
-
-    {
-        remove(object.output_to_file);
-        FILE *fp_output = fopen(object.output_to_file, "w");
-        if (fp_output == NULL) {
-            return;
-        }
-        printf("Outputing to file [%s]\n", object.output_to_file);
-        char *temp = NULL, *name;
+    FILE *fp_file = fopen(object.read_from_file, "r");
+    printf("Reading from file [%s]\n", object.read_from_file);
+    char *temp_read;
+    while ((temp_read = ou_readingline_line(fp_file)) != NULL) {
         switch (object.type) {
             case structure:
-                name = "[Structure]";
-                temp = ofb_structure_tostring(object.data.structure);
+                ofb_structure_setfromstring(&object.data.structure, temp_read);
                 break;
             case general:
-                name = "[General]";
-                temp = ofb_general_tostring(object.data.general);
+                ofb_general_setfromstring(&object.data.general, temp_read);
                 break;
             case editor:
-                name = "[Editor]";
-                temp = ofb_editor_tostring(object.data.editor);
+                ofb_editor_setfromstring(&object.data.editor, temp_read);
                 break;
             case metadata:
-                name = "[Metadata]";
-                temp = ofb_metadata_tostring(object.data.metadata);
+                ofb_metadata_setfromstring(&object.data.metadata, temp_read);
                 break;
             case difficulty:
-                name = "[Difficulty]";
-                temp = ofb_difficulty_tostring(object.data.difficulty);
+                ofb_difficulty_setfromstring(&object.data.difficulty, temp_read);
                 break;
-            case event:
-                name = "[Events]";
-                for (int i = 0; i < object.num_data; i++) {
-                    temp = ofb_event_tostring(*(object.data.event + i));
+
+            case event: {
+                Event *data;
+                if ((data = ofb_event_addfromstring(temp_read)) == NULL) {
+                    break;
                 }
+                object.data.event = realloc(object.data.event, (object.num_data + 1) * sizeof(Event));
+                *(object.data.event + object.num_data) = *data;
+                object.num_data++;
+                free(data);
                 break;
-            case timing_point:
-                name = "[TimingPoints]";
-                for (int i = 0; i < object.num_data; i++) {
-                    temp = ofb_timingpoint_tostring(*(object.data.timing_point + i));
+            }
+
+            case timing_point: {
+                TimingPoint *data;
+                if ((data = ofb_timingpoint_addfromstring(temp_read)) == NULL) {
+                    break;
                 }
+                object.data.timing_point = realloc(object.data.timing_point, (object.num_data + 1) * sizeof(TimingPoint));
+                *(object.data.timing_point + object.num_data) = *data;
+                object.num_data++;
+                free(data);
                 break;
-            case colour:
-                name = "[Colours]";
-                for (int i = 0; i < object.num_data; i++) {
-                    temp = ofb_colour_tostring(*(object.data.colour + i), i);
+
+            }
+
+            case colour: {
+                Colour *data;
+                if ((data = ofb_colour_addfromstring(temp_read)) == NULL) {
+                    break;
                 }
+                object.data.colour = realloc(object.data.colour, (object.num_data + 1) * sizeof(Colour));
+                *(object.data.colour + object.num_data) = *data;
+                object.num_data++;
+                free(data);
                 break;
-            case hit_object:
-                name = "[HitObjects]";
-                for (int i = 0; i < object.num_data; i++) {
-                    temp = ofb_hitobject_tostring(*(object.data.hit_object + i));
+
+            }
+
+            case hit_object: {
+                HitObject *data;
+                if ((data = ofb_hitobject_addfromstring(temp_read)) == NULL) {
+                    break;
                 }
+                object.data.hit_object = realloc(object.data.hit_object, (object.num_data + 1) * sizeof(HitObject));
+                *(object.data.hit_object + object.num_data) = *data;
+                object.num_data++;
+                free(data);
                 break;
+            }
         }
-        if (temp != NULL) {
-            fputs(temp, fp_output);
-            free(temp);
-        }
-        fclose(fp_output);
     }
+    fclose(fp_file);
+
+    remove(object.output_to_file);
+    FILE *fp_output = fopen(object.output_to_file, "w");
+    if (fp_output == NULL) {
+        return;
+    }
+    printf("Outputing to file [%s]\n", object.output_to_file);
+    char *temp_output = NULL;
+    char *name;
+    switch (object.type) {
+        case structure:
+            name = "[Structure]";
+            temp_output = ofb_structure_tostring(object.data.structure);
+            break;
+        case general:
+            name = "[General]";
+            temp_output = ofb_general_tostring(object.data.general);
+            break;
+        case editor:
+            name = "[Editor]";
+            temp_output = ofb_editor_tostring(object.data.editor);
+            break;
+        case metadata:
+            name = "[Metadata]";
+            temp_output = ofb_metadata_tostring(object.data.metadata);
+            break;
+        case difficulty:
+            name = "[Difficulty]";
+            temp_output = ofb_difficulty_tostring(object.data.difficulty);
+            break;
+        case event:
+            name = "[Events]";
+            for (int i = 0; i < object.num_data; i++) {
+                temp_output = ofb_event_tostring(*(object.data.event + i));
+            }
+            break;
+        case timing_point:
+            name = "[TimingPoints]";
+            for (int i = 0; i < object.num_data; i++) {
+                temp_output = ofb_timingpoint_tostring(*(object.data.timing_point + i));
+            }
+            break;
+        case colour:
+            name = "[Colours]";
+            for (int i = 0; i < object.num_data; i++) {
+                temp_output = ofb_colour_tostring(*(object.data.colour + i), i);
+            }
+            break;
+        case hit_object:
+            name = "[HitObjects]";
+            for (int i = 0; i < object.num_data; i++) {
+                temp_output = ofb_hitobject_tostring(*(object.data.hit_object + i));
+            }
+            break;
+    }
+    if (temp_output != NULL) {
+        fputs(temp_output, fp_output);
+        free(temp_output);
+    }
+    fclose(fp_output);
 
 
     switch (object.type) {
@@ -252,4 +212,96 @@ void t_beatmap(char *file, char *output) {
 
     of_beatmap_free(&beatmap);
     fclose(fp);
+}
+
+void t_object_slider(char *read, char *output) {
+    remove(output);
+    FILE *fp_file = fopen(read, "r");
+    if (fp_file == NULL) {
+        return;
+    }
+    printf("Reading from file [%s]\n", read);
+    HitObject ho_slider;
+    for (char *temp_read; (temp_read = ou_readingline_line(fp_file)) != NULL;) {
+        HitObject *ho = ofb_hitobject_addfromstring(temp_read);
+        if (ho != NULL) {
+            ho_slider = *ho;
+            free(ho);
+            break;
+        }
+    }
+    fclose(fp_file);
+
+    Slider slider = oos_slider_init(ho_slider);
+    oos_slider_createnestedhitobjects(slider);
+
+    // TODO output;
+    oos_hitobject_free(&ho_slider, 1);
+}
+
+int main(int argc, char **argv) {
+    if (strcmp("object", *(argv + 1)) == 0) {
+        Object object[] = {
+            {
+                .type = structure,
+                .data.structure = oos_structure_init(),
+                .read_from_file = "test/beatmap/object/structure.osu",
+                .output_to_file = "bin/test_object_structure.osu",
+            }, {
+                .type = general,
+                .data.general = oos_general_init(),
+                .read_from_file = "test/beatmap/object/general.osu",
+                .output_to_file = "bin/test_object_general.osu",
+            }, {
+                .type = editor,
+                .data.editor = oos_editor_init(),
+                .read_from_file = "test/beatmap/object/editor.osu",
+                .output_to_file = "bin/test_object_editor.osu",
+            }, {
+                .type = metadata,
+                .data.metadata = oos_metadata_init(),
+                .read_from_file = "test/beatmap/object/metadata.osu",
+                .output_to_file = "bin/test_object_metadata.osu",
+            }, {
+                .type = difficulty,
+                .data.difficulty = oos_difficulty_init(),
+                .read_from_file = "test/beatmap/object/difficulty.osu",
+                .output_to_file = "bin/test_object_difficulty.osu",
+            }, {
+                .type = event,
+                .data.event = NULL,
+                .num_data = 0,
+                .read_from_file = "test/beatmap/object/event.osu",
+                .output_to_file = "bin/test_object_event.osu",
+            }, {
+                .type = timing_point,
+                .data.timing_point = NULL,
+                .num_data = 0,
+                .read_from_file = "test/beatmap/object/timing_point.osu",
+                .output_to_file = "bin/test_object_timingpoint.osu",
+            }, {
+                .type = colour,
+                .data.colour = NULL,
+                .num_data = 0,
+                .read_from_file = "test/beatmap/object/colour.osu",
+                .output_to_file = "bin/test_object_colour.osu",
+            }, {
+                .type = hit_object,
+                .data.hit_object = NULL,
+                .num_data = 0,
+                .read_from_file = "test/beatmap/object/hit_object.osu",
+                .output_to_file = "bin/test_object_hitobject.osu",
+            }
+        };
+        for (int i = 0; i < 9; i++) {
+            t_object(*(object + i));
+        }
+    } else if (strcmp("beatmap1", *(argv + 1)) == 0) {
+        t_beatmap("test/beatmap/object/nekodex - new beginnings (pishifat) [osu testing].osu", "bin/test_beatmap1.osu");
+    } else if (strcmp("beatmap2", *(argv + 1)) == 0) {
+        t_beatmap("test/beatmap/object/LeaF - Aleph-0 (Enjuxx) [NULL].osu", "bin/test_beatmap2.osu");
+    } else if (strcmp("slider", *(argv + 1)) == 0) {
+        t_object_slider("test/beatmap/object/slider.osu", "bin/test_object_slider.osu");
+    }
+    return 0;
 }

@@ -1,4 +1,4 @@
-#include "file/beatmap/hit_object.h"
+#include "file/beatmap.h"
 
 HitObject *ofb_hitobject_addfromstring(char *string) {
     char *copy = strdup(string);

@@ -1,4 +1,4 @@
-#include "object/std/structure.h"
+#include "object/std.h"
 
 Structure oos_structure_init(void) {
     Structure structure = {

@@ -1,4 +1,4 @@
-#include "object/ctb/juice_stream.h"
+#include "object/ctb.h"
 
 // https://github.com/ppy/osu/blob/master/osu.Game.Rulesets.Catch/Beatmaps/CatchBeatmapProcessor.cs
 // https://github.com/ppy/osu/blob/master/osu.Game.Rulesets.Catch/Objects/JuiceStream.cs
@@ -7,7 +7,7 @@
 //     // int droplet_samples = // TODO
 //     int node_index = 0;
 //     SliderEventDescriptor *last_event = NULL;
-//     for (SliderEventDescriptor *i = oms_slider_generate(ho->time, , , , , , ); ; ) {
+//     for (SliderEventDescriptor *i = oos_slider_generate(ho->time, , , , , , ); ; ) {
 
 //     }
 // }

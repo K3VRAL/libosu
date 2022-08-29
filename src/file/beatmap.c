@@ -1,4 +1,4 @@
-#include "file/beatmap.h"
+#include "osu.h"
 
 Beatmap of_beatmap_init(void) {
     Beatmap beatmap = {

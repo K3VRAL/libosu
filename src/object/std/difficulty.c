@@ -1,4 +1,4 @@
-#include "object/std/difficulty.h"
+#include "object/std.h"
 
 Difficulty oos_difficulty_init(void) {
     Difficulty difficulty = {

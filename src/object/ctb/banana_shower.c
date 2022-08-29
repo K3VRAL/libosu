@@ -1,36 +1,37 @@
-#include "object/ctb/banana_shower.h"
+#include "object/ctb.h"
 
-BananaShower ooc_bananashower_add(HitObject *hit_object) {
+BananaShower ooc_bananashower_init(HitObject hit_object) {
     BananaShower banana_shower = {
-        .start = hit_object->time,
-        .end = hit_object->ho.spinner.end_time,
-        .duration = hit_object->ho.spinner.end_time - hit_object->time,
+        .start = hit_object.time,
+        .end = hit_object.ho.spinner.end_time,
+        .duration = hit_object.ho.spinner.end_time - hit_object.time,
         .bananas = NULL,
         .num_banana = 0
     };
+    return banana_shower;
+}
 
-    double spacing = banana_shower.duration;
+void ooc_bananashower_getnestedbananas(BananaShower *banana_shower) {
+    double spacing = banana_shower->duration;
     while (spacing > 100) {
         spacing /= 2;
     }
 
     if (spacing <= 0) {
-        return banana_shower;
+        return;
     }
 
-    double time = banana_shower.start;
-    while (time <= banana_shower.end) {
-        if (banana_shower.bananas == NULL) {
-            banana_shower.bananas = calloc(1, sizeof(Banana));
+    double time = banana_shower->start;
+    while (time <= banana_shower->end) {
+        if (banana_shower->bananas == NULL) {
+            banana_shower->bananas = calloc(1, sizeof(Banana));
         } else {
-            banana_shower.bananas = realloc(banana_shower.bananas, (banana_shower.num_banana + 1) * sizeof(Banana));
+            banana_shower->bananas = realloc(banana_shower->bananas, (banana_shower->num_banana + 1) * sizeof(Banana));
         }
-        (banana_shower.bananas + banana_shower.num_banana)->time = time;
+        (banana_shower->bananas + banana_shower->num_banana)->time = time;
         time += spacing;
-        banana_shower.num_banana++;
+        banana_shower->num_banana++;
     }
-
-    return banana_shower;
 }
 
 void ooc_bananashower_free(BananaShower *bs) {

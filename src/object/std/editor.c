@@ -1,4 +1,4 @@
-#include "object/std/editor.h"
+#include "object/std.h"
 
 Editor oos_editor_init() {
     Editor editor = {

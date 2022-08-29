@@ -3,6 +3,7 @@
 
 typedef struct Banana {
     float x;
+    float x_offset;
     int time;
 } Banana;
 

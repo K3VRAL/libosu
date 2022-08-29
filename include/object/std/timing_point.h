@@ -18,5 +18,6 @@ typedef struct TimingPoint {
 
 void oos_timingpoint_free(TimingPoint *);
 void oos_timingpoint_sort(TimingPoint *, unsigned int);
+TimingPoint oos_timingpoint_attime(int, TimingPoint *, unsigned int);
 
 #endif

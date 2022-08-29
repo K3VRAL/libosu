@@ -1,4 +1,4 @@
-#include "object/std/metadata.h"
+#include "object/std.h"
 
 Metadata oos_metadata_init(void) {
     Metadata metadata = {

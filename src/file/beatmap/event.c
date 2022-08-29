@@ -1,4 +1,4 @@
-#include "file/beatmap/event.h"
+#include "file/beatmap.h"
 
 Event *ofb_event_addfromstring(char *string) {
     char *token = strtok(string, ",");

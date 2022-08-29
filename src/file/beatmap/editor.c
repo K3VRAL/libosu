@@ -1,4 +1,4 @@
-#include "file/beatmap/editor.h"
+#include "file/beatmap.h"
 
 void ofb_editor_setfromstring(Editor *editor, char *key_value_pair) {
     char *token = strtok(key_value_pair, ":");

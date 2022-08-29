@@ -15,15 +15,12 @@ static bool ou_readingline_iscomment(char *line) {
 
 char *ou_readingline_line(FILE *fp) {
     static int state = 0;
-    static char *line;
+    static char *line = NULL;
     static size_t len;
     static int read;
     switch (state) {
         case 0:
             state = 1;
-            line = NULL;
-            len = 0;
-            read = 0;
             while ((read = getline(&line, &len, fp)) != -1) {
                 ou_readingline_removecrlf(line, read);
                 if (strlen(line) == 0
@@ -34,10 +31,11 @@ char *ou_readingline_line(FILE *fp) {
                 return line;
         case 1:;
             }
-            if (line != NULL) {
-                free(line);
-            }
     }
     state = 0;
+    if (line != NULL) {
+        free(line);
+        line = NULL;
+    }
     return NULL;
 }

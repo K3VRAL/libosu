@@ -32,6 +32,7 @@ $(TARGET): $(shell find include/ -type f -name "*.h" | perl -pe "s/^include\//sr
 #																	^We prepend the bin folder variable to the echo. Eg: opt_file.o => bin/opt_file.o
 
 # Test Executable
+# $(shell pkg-config --libs osu)
 LFLAGS_TEST=-g -Iinclude/ -losu
 TARGET_TEST=$(shell find test/*.c -type f | perl -pe "s/\..*//g")
 
@@ -41,7 +42,7 @@ test: $(TARGET_TEST)
 .c:
 	$(CC) -o $(BINFLR)$(shell echo "$@" | perl -pe "s/.+\//test_/g") $^ $(LFLAGS_TEST)
 
-# TODO Change ./include
+# TODO Change ./include and add to pkg-config
 # Install
 install:
 	$(shell rm -rf /usr/local/lib/$(TARGET))
