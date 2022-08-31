@@ -25,6 +25,7 @@ void ooc_bananashower_createnestedbananas(CatchHitObject *object) {
     while (time <= object->cho.bs.end_time) {
         object->cho.bs.bananas = realloc(object->cho.bs.bananas, (object->cho.bs.num_banana + 1) * sizeof(CatchHitObject));
         (object->cho.bs.bananas + object->cho.bs.num_banana)->start_time = time;
+        (object->cho.bs.bananas + object->cho.bs.num_banana)->type = banana;
         time += spacing;
         object->cho.bs.num_banana++;
     }

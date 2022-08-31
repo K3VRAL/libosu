@@ -60,30 +60,31 @@ char *ou_comparing_editor(ComparingEditor *data, unsigned int num) {
                 break;
             }
 
-            case e_s: {
-                int len_buffer = strlen((data + i)->name) + 1 + 1 + (1 + 1);
-                char *buffer = malloc(len_buffer * sizeof(char));
-                snprintf(buffer, len_buffer, "%s: ", (data + i)->name);
-                if (*(data + i)->info.s.p != NULL || *(data + i)->info.s.n != 0) {
-                    for (int j = 0; j < *(data + i)->info.s.n; j++) {
-                        int len_buffer2 = 1 + (j != (*(data + i)->info.s.n - 1) ? 1 : 0) + ou_comparing_size(*(*(data + i)->info.s.p + j));
-                        char *buffer2 = malloc(len_buffer2 * sizeof(char));
-                        snprintf(buffer2, len_buffer2, (j != (*(data + i)->info.s.n - 1) ? "%d," : "%d"), *(*(data + i)->info.s.p + j));
-                        
-                        len_buffer += len_buffer2;
-                        buffer = realloc(buffer, len_buffer * sizeof(char));
-                        strcat(buffer, buffer2);
-                        free(buffer2);
+            case e_s:
+                if (*(data + i)->info.s.p != NULL || *(data + i)->info.s.n > 0) {
+                    int len_buffer = strlen((data + i)->name) + 1 + 1 + (1 + 1);
+                    char *buffer = malloc(len_buffer * sizeof(char));
+                    snprintf(buffer, len_buffer, "%s: ", (data + i)->name);
+                    if (*(data + i)->info.s.p != NULL || *(data + i)->info.s.n != 0) {
+                        for (int j = 0; j < *(data + i)->info.s.n; j++) {
+                            int len_buffer2 = 1 + (j != (*(data + i)->info.s.n - 1) ? 1 : 0) + ou_comparing_size(*(*(data + i)->info.s.p + j));
+                            char *buffer2 = malloc(len_buffer2 * sizeof(char));
+                            snprintf(buffer2, len_buffer2, (j != (*(data + i)->info.s.n - 1) ? "%d," : "%d"), *(*(data + i)->info.s.p + j));
+                            
+                            len_buffer += len_buffer2;
+                            buffer = realloc(buffer, len_buffer * sizeof(char));
+                            strcat(buffer, buffer2);
+                            free(buffer2);
+                        }
                     }
-                }
-                strcat(buffer, "\n");
+                    strcat(buffer, "\n");
 
-                len += len_buffer;
-                output = realloc(output, len * sizeof(char));
-                strcat(output, buffer);
-                free(buffer);
+                    len += len_buffer;
+                    output = realloc(output, len * sizeof(char));
+                    strcat(output, buffer);
+                    free(buffer);
+                }
                 break;
-            }
         }
     }
     return output;

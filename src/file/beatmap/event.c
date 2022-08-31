@@ -40,6 +40,7 @@ Event *ofb_event_addfromstring(char *string) {
     return event;
 }
 
+// TODO fix this
 char *ofb_event_tostring(Event event) {
     int size_type = ou_comparing_size(event.type);
     int size_start_time = ou_comparing_size(event.start_time);

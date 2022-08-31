@@ -1,31 +1,55 @@
 // https://www.geeksforgeeks.org/coroutines-in-c-cpp/
 #include "object/std.h"
 
-// TODO is all functions completed and memory-safe?
-// Slider oos_slider_init(Difficulty difficulty, TimingPoint *timing_point, unsigned int num, HitObject hit_object) {
-//     TimingPoint tp = oos_timingpoint_attime(hit_object.time, timing_point, num);
-//     double scoring_distance = oos_hitobject_BASESCORINGDISTANCE * difficulty.slider_multiplier * /* TODO find out `DifficultyControlPoint.SliderVelocity` */;
-//     Slider slider = {
-//         .start_time = hit_object.time,
-//         .end_time = slider.start_time + /* TODO find out `SpanCount()` */ * slider.path.distance,
-//         .duration = slider.end_time - slider.start_time,
-//         .path = ,
-//         .distance = ,
-//         .legacy_last_tick_offset = ,
-//         .span_duration = ,
-//         .tick_distance_multiplier = 1,
-//         .velocity = scoring_distance / tp.beat_length,
-//         .tick_distance = scoring_distance / difficulty.slider_tick_rate * slider.tick_distance_multiplier,
-//     };
-//     return slider;
-// }
+Slider *oos_slider_init(Difficulty difficulty, InheritedTimingPoint *inherited, UninheritedTimingPoint *uninherited, HitObject hit_object) {
+    TimingPoint tp_inherited = oos_timingpoint_attime(hit_object.time, inherited->tp, inherited->num);
+    TimingPoint tp_uninherited = oos_timingpoint_attime(hit_object.time, uninherited->tp, uninherited->num);
+    double scoring_distance = oos_hitobject_BASESCORINGDISTANCE * difficulty.slider_multiplier * (-100 / tp_inherited.beat_length);
+    Slider *slider = malloc(sizeof(Slider));
+    slider->tick_distance_multiplier = 1;
+    slider->velocity = scoring_distance / tp_uninherited.beat_length;
+    slider->tick_distance = scoring_distance / difficulty.slider_tick_rate * slider->tick_distance_multiplier;
+    slider->path.distance = hit_object.ho.slider.length;
+    slider->start_time = hit_object.time;
+    slider->span_count = hit_object.ho.slider.slides;
+    slider->end_time = slider->start_time + slider->span_count * slider->path.distance / slider->velocity;
+    slider->duration = slider->end_time - slider->start_time;
+    slider->span_duration = slider->duration / slider->span_count;
+    slider->legacy_last_tick_offset = malloc(sizeof(double));
+    *slider->legacy_last_tick_offset = 36;
+    slider->nested = NULL; // TODO figure out a way to free all of this
+    slider->num_nested = 0;
+    return slider;
+}
 
-void oos_slider_createnestedhitobjects(Slider slider) {
+Slider *oos_slider_initwouninandinherited(Difficulty difficulty, TimingPoint *timing_point, unsigned int num, HitObject hit_object) {
+    InheritedTimingPoint *inherited = oos_inheritedpoint_init(timing_point, num);
+    UninheritedTimingPoint *uninherited = oos_uninheritedpoint_init(timing_point, num);
+    Slider *slider = oos_slider_init(difficulty, inherited, uninherited, hit_object);
+    oos_inheritedpoint_free(inherited);
+    oos_uninheritedpoint_free(uninherited);
+    return slider;
+}
+
+// TODO do it in this format for every other freeable object
+void oos_slider_free(Slider *slider) {
+    if (slider == NULL) {
+        return;
+    }
+    if (slider->legacy_last_tick_offset != NULL) {
+        free(slider->legacy_last_tick_offset);
+    }
+    free(slider);
+}
+
+void oos_slider_createnestedhitobjects(Slider *slider) {
     SliderEventDescriptor *slider_event;
-    while ((slider_event = oos_slider_generate(slider.start_time, slider.span_duration, slider.velocity, slider.tick_distance, slider.path.distance, slider.span_count, slider.legacy_last_tick_offset)) != NULL) {
+    while ((slider_event = oos_slider_generate(slider->start_time, slider->span_duration, slider->velocity, slider->tick_distance, slider->path.distance, slider->span_count, slider->legacy_last_tick_offset)) != NULL) {
+        // TODO
         switch (slider_event->type) {
             case tick:
-                printf("Tick, ");
+                slider->nested = realloc(slider->nested, (slider->num_nested + 1) * sizeof(HitObject));
+                slider->num_nested++;
                 break;
 
             case head:
@@ -41,7 +65,7 @@ void oos_slider_createnestedhitobjects(Slider slider) {
                 break;
 
             case tail:
-                printf("Tail (nope), ");
+                printf("Tail, ");
                 break;
         }
     }
@@ -53,6 +77,7 @@ SliderEventDescriptor *oos_slider_generate(double start_time, double span_durati
     static SliderEventDescriptor *object = NULL;
     if (object != NULL) {
         free(object);
+        object = NULL;
     }
     switch (state) {
         case 0:;
@@ -141,16 +166,12 @@ SliderEventDescriptor *oos_slider_generate(double start_time, double span_durati
     }
     
     state = 0;
-    object = NULL;
     return NULL;
 }
 
 SliderEventDescriptor *oos_slider_generateticks(int span_index, double span_start_time, double span_duration, bool reversed, double length, double tick_distance, double min_distance_from_end) {
     static int state = 0;
     static SliderEventDescriptor *object = NULL;
-    if (object != NULL) {
-        free(object);
-    }
     switch (state) {
         case 0:;
             static double d;
@@ -193,6 +214,5 @@ SliderEventDescriptor *oos_slider_generateticks(int span_index, double span_star
             }
     }
     state = 0;
-    object = NULL;
     return NULL;
 }

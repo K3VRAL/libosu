@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include <osu.h>
 #include <osu/unrelated/reading_line.h>
 
@@ -214,6 +213,49 @@ void t_beatmap(char *file, char *output) {
     fclose(fp);
 }
 
+void t_object_slider() {
+    HitObject *hit_object;
+    {
+        char *str = strdup("156,157,5130,6,0,P|178:96|236:68,1,132.999995941162,2|0,0:0|0:0,0:0:0:0:");
+        hit_object = ofb_hitobject_addfromstring(str);
+        free(str);
+    }
+
+    InheritedTimingPoint *inherited;
+    {
+        char *str = strdup("99,-142.857142857143,4,2,1,30,0,0");
+        TimingPoint *temp = ofb_timingpoint_addfromstring(str);
+        inherited = oos_inheritedpoint_init(temp, 1);
+        free(temp);
+        free(str);
+    }
+
+    UninheritedTimingPoint *uninherited;
+    {
+        char *str = strdup("99,314.465408805031,4,1,1,100,1,0");
+        TimingPoint *temp = ofb_timingpoint_addfromstring(str);
+        uninherited = oos_uninheritedpoint_init(temp, 1);
+        free(temp);
+        free(str);
+    }
+
+    Difficulty difficulty = {
+        .slider_multiplier = 1.9,
+        .slider_tick_rate = 2
+    };
+    Slider *slider = oos_slider_init(difficulty, inherited, uninherited, *hit_object);
+    if (slider == NULL) {
+        return;
+    }
+    oos_slider_createnestedhitobjects(slider);
+    // TODO output to file
+
+    oos_slider_free(slider);
+    oos_hitobject_free(hit_object, 1);
+    oos_inheritedpoint_free(inherited);
+    oos_uninheritedpoint_free(uninherited);
+}
+
 void t_object_fruithardrock() {
     unsigned int num = 13;
     CatchHitObject **objects = malloc(num * sizeof(CatchHitObject));
@@ -231,41 +273,35 @@ void t_object_fruithardrock() {
     }
 
     ooc_processor_applypositionoffset(objects, num, true);
-    for (int i = 0; i < num; i++) {
-        printf("%f\n", (*(objects + i))->x + (*(objects + i))->x_offset);
-        free(*(objects + i));
-    }
+    // TODO output to file
+
     free(objects);
 }
 
 void t_object_bananashower() {
-    HitObject hit_object = {
-        .x = 256,
-        .y = 192,
-        .time = 0,
-        .type = spinner,
-        .hit_sound = 0,
-        .ho.spinner.end_time = 1000,
-        .hit_sample = {0}
-    };
-    CatchHitObject *object = ooc_bananashower_init(hit_object);
+    char *str = strdup("256,192,0,12,0,1000");
+    HitObject *hit_object = ofb_hitobject_addfromstring(str);
+    free(str);
+    if (hit_object == NULL) {
+        return;
+    }
+    CatchHitObject *object = ooc_bananashower_init(*hit_object);
+    oos_hitobject_free(hit_object, 1);
     ooc_bananashower_createnestedbananas(object);
 
     ooc_processor_applypositionoffset(&object, 1, false);
-    printf("NUM: %u\n", object->cho.bs.num_banana);
-    for (int i = 0; i < object->cho.bs.num_banana; i++) {
-        float start_time = (object->cho.bs.bananas + i)->start_time;
-        float x = (object->cho.bs.bananas + i)->x;
-        float x_offset = (object->cho.bs.bananas + i)->x_offset;
-        printf("%d | %.0f %.0f\n", i, x + x_offset, start_time);
-    }
+    // TODO output to file
 
     ooc_bananashower_free(&object->cho.bs);
     free(object);
 }
 
 int main(int argc, char **argv) {
+    if (argc != 2) {
+        return 1;
+    }
     if (strcmp("object", *(argv + 1)) == 0) {
+        // TODO populate files
         Object object[] = {
             {
                 .type = structure,
@@ -322,12 +358,14 @@ int main(int argc, char **argv) {
             t_object(*(object + i));
         }
     } else if (strcmp("beatmap_1", *(argv + 1)) == 0) {
-        t_beatmap("test/beatmap/object/nekodex - new beginnings (pishifat) [osu testing].osu", "bin/test_beatmap1.osu");
+        t_beatmap("test/beatmap/nekodex - new beginnings (pishifat) [osu testing].osu", "bin/test_beatmap1.osu");
     } else if (strcmp("beatmap_2", *(argv + 1)) == 0) {
-        t_beatmap("test/beatmap/object/LeaF - Aleph-0 (Enjuxx) [NULL].osu", "bin/test_beatmap2.osu");
+        t_beatmap("test/beatmap/LeaF - Aleph-0 (Enjuxx) [NULL].osu", "bin/test_beatmap2.osu");
+    } else if (strcmp("slider", *(argv + 1)) == 0) {
+        t_object_slider();
     } else if (strcmp("fruit_hr", *(argv + 1)) == 0) {
         t_object_fruithardrock();
-    } else if (strcmp("banana_shower", *(argv + 1)) == 0) {
+    } else if (strcmp("banana_shower", *(argv + 1)) == 0) { // TODO fix errors
         t_object_bananashower();
     }
     return 0;

@@ -23,24 +23,22 @@ HitObject *ofb_hitobject_addfromstring(char *string) {
         case slider:
         case nc_slider:
             hit_object->ho.slider.curve_type = strtok(NULL, "|")[0];
-            hit_object->ho.slider.curves = calloc(1, sizeof(HOSliderCurve));
+            hit_object->ho.slider.curves = NULL;
             hit_object->ho.slider.num_curve = 0;
             token = strtok(NULL, ":|,");
             bool in_loop = true;
             while (token != NULL && in_loop) {
                 char used_delim = *(copy + (token - string + strlen(token)));
                 switch (used_delim) {
+                    case ':':
+                        hit_object->ho.slider.curves = realloc(hit_object->ho.slider.curves, (hit_object->ho.slider.num_curve + 1) * sizeof(HOSliderCurve));
+                        (hit_object->ho.slider.curves + hit_object->ho.slider.num_curve)->x = (int) strtol(token, NULL, 10);
+                        break;
+
                     case ',':
                         in_loop = false;
                     case '|':
-                        if (hit_object->ho.slider.curves != NULL) {
-                            hit_object->ho.slider.curves = realloc(hit_object->ho.slider.curves, (hit_object->ho.slider.num_curve + 1) * sizeof(HOSliderCurve));
-                            (hit_object->ho.slider.curves + hit_object->ho.slider.num_curve - 1)->y = (int) strtol(token, NULL, 10);
-                        }
-                        break;
-                    
-                    case ':':
-                        (hit_object->ho.slider.curves + hit_object->ho.slider.num_curve)->x = (int) strtol(token, NULL, 10);
+                        (hit_object->ho.slider.curves + hit_object->ho.slider.num_curve)->y = (int) strtol(token, NULL, 10);
                         hit_object->ho.slider.num_curve++;
                         break;
                 }
@@ -54,7 +52,7 @@ HitObject *ofb_hitobject_addfromstring(char *string) {
                 hit_object->ho.slider.length = strtod(token, NULL);
 
                 if ((token = strtok(NULL, "|,")) != NULL) {
-                    hit_object->ho.slider.edge_sounds = calloc(1, sizeof(int));
+                    hit_object->ho.slider.edge_sounds = NULL;
                     hit_object->ho.slider.num_edge_sound = 0;
                     in_loop = true;
                     while (token != NULL && in_loop) {
@@ -63,11 +61,9 @@ HitObject *ofb_hitobject_addfromstring(char *string) {
                             case ',':
                                 in_loop = false;
                             case '|':
-                                if (hit_object->ho.slider.edge_sounds != NULL) {
-                                    hit_object->ho.slider.edge_sounds = realloc(hit_object->ho.slider.edge_sounds, (hit_object->ho.slider.num_edge_sound + 1) * sizeof(int));
-                                    *(hit_object->ho.slider.edge_sounds + hit_object->ho.slider.num_edge_sound) = (int) strtol(token, NULL, 10);
-                                    hit_object->ho.slider.num_edge_sound++;
-                                }
+                                hit_object->ho.slider.edge_sounds = realloc(hit_object->ho.slider.edge_sounds, (hit_object->ho.slider.num_edge_sound + 1) * sizeof(int));
+                                *(hit_object->ho.slider.edge_sounds + hit_object->ho.slider.num_edge_sound) = (int) strtol(token, NULL, 10);
+                                hit_object->ho.slider.num_edge_sound++;
                                 break;
                         }
                         if (in_loop) {
@@ -77,25 +73,23 @@ HitObject *ofb_hitobject_addfromstring(char *string) {
 
                     // TODO simplify code
                     if ((token = strtok(NULL, ":|,")) != NULL && *(copy + (token - string + strlen(token))) == ':') {
-                        hit_object->ho.slider.edge_sets = calloc(1, sizeof(HOSliderEdge));
+                        hit_object->ho.slider.edge_sets = NULL;
                         hit_object->ho.slider.num_edge_set = 0;
                         in_loop = true;
                         while (token != NULL && in_loop) {
                             char used_delim = *(copy + (token - string + strlen(token)));
                             switch (used_delim) {
+                                case ':':
+                                    hit_object->ho.slider.edge_sets = realloc(hit_object->ho.slider.edge_sets, (hit_object->ho.slider.num_edge_set + 1) * sizeof(HOSliderEdge));
+                                    (hit_object->ho.slider.edge_sets + hit_object->ho.slider.num_edge_set)->normal = (int) strtol(token, NULL, 10);
+                                    break;
+
                                 case '\0':
                                 case ',':
                                     in_loop = false;
                                 case '|':
                                     (hit_object->ho.slider.edge_sets + hit_object->ho.slider.num_edge_set)->additional = (int) strtol(token, NULL, 10);
                                     hit_object->ho.slider.num_edge_set++;
-                                    break;
-                                
-                                case ':':
-                                    if (hit_object->ho.slider.edge_sets != NULL) {
-                                        hit_object->ho.slider.edge_sets = realloc(hit_object->ho.slider.edge_sets, (hit_object->ho.slider.num_edge_set + 1) * sizeof(HOSliderEdge));
-                                        (hit_object->ho.slider.edge_sets + hit_object->ho.slider.num_edge_set)->normal = (int) strtol(token, NULL, 10);
-                                    }
                                     break;
                             }
                             if (in_loop) {

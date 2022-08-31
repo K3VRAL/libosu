@@ -20,16 +20,16 @@ perlModify=perl -pe "s/^src\//osu\//g" | perl -pe "s/((\/.|^.)\K).*?(?=\/)//g" |
 %.o: %.c | $(BINFLR)
 	$(CC) $(CFLAGS) -o $(BINFLR)$(shell echo "$@" | $(perlModify)) $(shell echo "$<")
 
-#																					\/Changes the file extension from anything (should be .h) to .o . Eg: src/file/to/path.h => src/file/to/path.o
+#																						\/Changes the file extension from anything (should be .h) to .o . Eg: src/file/to/path.h => src/file/to/path.o
 #													   \/The file path removes include/ and changes it to src/. Eg: include/file/to/path.h => src/file/to/path.h
 #				   \/Before we can start doing anything; we first need to find every single file in the directory that can be compiled. It would make send to find every .c file since they are the ones being compiled; but I believe for the sake of transparency (since the header files are the ones being used in order to use the library), the project structure is made such that for every .h header file that exists; there is a dedicated compiled file associated with it
-#				   \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/    \/\/\/\/\/\/\/\/\/\/\/\/\/   \/\/\/\/\/\/\/\/\/\/\/   \/\/\/\/\/\/\/\/\/\/\/
+#				   \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/    \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/   \/\/\/\/\/\/\/\/\/\/\/
 $(TARGET): $(shell find include/ -type f -name "*.h" | perl -pe "s/^include\//src\//g" | perl -pe "s/\..*/.o/g")
 	$(CC) -o $(BINFLR)$@ $(foreach file, $^, $(shell echo "$(file)" | $(perlModify) | (echo -n $(BINFLR) && cat))) $(LFLAGS)
 #						 ^^^^^^^^^^^^^^^^^^			 ^^^^^^^^^^^^^^   ^^^^^^^^^^^^^   ^^^^^^^^^^^^^^^^^^^^^^^^^^
 #						 ^We need to go through each file which we use linux's shell commands as they make the process of modifying the strings more specific than GNUmake's core commands
 #													 ^We need to echo the file's path since piping requires the data to be put to stdout
-#																	^We prepend the bin folder variable to the echo. Eg: opt_file.o => bin/opt_file.o
+#																					  ^We prepend the bin folder variable to the echo. Eg: opt_file.o => bin/opt_file.o
 
 # Test Executable
 # $(shell pkg-config --libs osu)

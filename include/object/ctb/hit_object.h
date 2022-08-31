@@ -7,6 +7,7 @@
 #include "fruit.h"
 #include "juice_stream.h"
 
+// TODO make TinyDroplet and Droplet
 typedef union CHO {
     Fruit f;
     JuiceStream js;

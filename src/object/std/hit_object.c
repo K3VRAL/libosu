@@ -5,7 +5,7 @@ const float oos_hitobject_BASESCORINGDISTANCE = 100;
 void oos_hitobject_free(HitObject *ho, unsigned int num) {
     if (ho != NULL) {
         for (int i = 0; i < num; i++) {
-            if ((ho + i)->type == slider) {
+            if ((ho + i)->type == slider || (ho + i)->type == nc_slider) {
                 if ((ho + i)->ho.slider.curves != NULL) {
                     free((ho + i)->ho.slider.curves);
                 }
