@@ -17,10 +17,10 @@ void ofb_editor_setfromstring(Editor *editor, char *key_value_pair) {
         value++;
     }
     if (strcmp("Bookmarks", key) == 0) {
-        editor->bookmarks = calloc(1, sizeof(int));
+        editor->bookmarks = calloc(1, sizeof(*editor->bookmarks));
         token = strtok(value, ",");
         while (token != NULL) {
-            editor->bookmarks = realloc(editor->bookmarks, (editor->num_bookmark + 1) * sizeof(int));
+            editor->bookmarks = realloc(editor->bookmarks, (editor->num_bookmark + 1) * sizeof(*editor->bookmarks));
             *(editor->bookmarks + editor->num_bookmark) = (int) strtol(token, NULL, 10);
             token = strtok(NULL, ",");
             editor->num_bookmark++;
@@ -37,32 +37,32 @@ void ofb_editor_setfromstring(Editor *editor, char *key_value_pair) {
     free(key);
 }
 
-char *ofb_editor_tostring(Editor editor) {
+void ofb_editor_tostring(char *output, Editor *editor) {
     ComparingEditor data[] = {
         {
             .name = "Bookmarks",
             .info.s = {
-                .p = &editor.bookmarks,
-                .n = &editor.num_bookmark,
+                .p = &editor->bookmarks,
+                .n = &editor->num_bookmark,
             },
             .type = e_s,
         }, {
             .name = "DistanceSpacing",
-            .info.d = &editor.distance_spacing,
+            .info.d = &editor->distance_spacing,
             .type = e_d,
         }, {
             .name = "BeatDivisor",
-            .info.d = &editor.beat_divisor,
+            .info.d = &editor->beat_divisor,
             .type = e_d,
         }, {
             .name = "GridSize",
-            .info.n = &editor.grid_size,
+            .info.n = &editor->grid_size,
             .type = e_n,
         }, {
             .name = "TimelineZoom",
-            .info.d = &editor.timeline_zoom,
+            .info.d = &editor->timeline_zoom,
             .type = e_d,
         },
     };
-    return ou_comparing_editor(data, 5);
+    output = ou_comparing_editor(data, 5);
 }

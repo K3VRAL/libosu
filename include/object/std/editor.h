@@ -13,7 +13,7 @@ typedef struct Editor {
     double timeline_zoom;
 } Editor;
 
-Editor oos_editor_init(void);
-void oos_editor_free(Editor);
+void oos_editor_init(Editor *);
+void oos_editor_free(Editor *);
 
 #endif

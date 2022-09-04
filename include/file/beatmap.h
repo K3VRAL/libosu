@@ -20,11 +20,11 @@
 #include "unrelated/reading_line.h"
 
 typedef struct Beatmap {
-    Structure structure;
-    General general;
-    Editor editor;
-    Metadata metadata;
-    Difficulty difficulty;
+    Structure *structure;
+    General *general;
+    Editor *editor;
+    Metadata *metadata;
+    Difficulty *difficulty;
     
     Event *events;
     unsigned int num_event;
@@ -39,9 +39,9 @@ typedef struct Beatmap {
     unsigned int num_ho;
 } Beatmap;
 
-Beatmap of_beatmap_init(void);
+void of_beatmap_init(Beatmap *);
 void of_beatmap_free(Beatmap *);
 void of_beatmap_set(Beatmap *, char *);
-void of_beatmap_tofile(Beatmap, FILE *);
+void of_beatmap_tofile(Beatmap *, FILE *);
 
 #endif

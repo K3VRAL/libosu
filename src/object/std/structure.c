@@ -1,12 +1,13 @@
 #include "object/std.h"
 
-Structure oos_structure_init(void) {
-    Structure structure = {
-        .version = 14
-    };
-    return structure;
+void oos_structure_init(Structure *structure) {
+    structure = malloc(sizeof(*structure));
+    structure->version = 14;
 }
 
-void oos_structure_free(Structure structure) {
-    // Why not
+void oos_structure_free(Structure *structure) {
+    if (structure != NULL) {
+        return;
+    }
+    free(structure);
 }

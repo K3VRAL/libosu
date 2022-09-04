@@ -11,6 +11,6 @@
 #include "unrelated/comparing.h"
 
 void ofb_difficulty_setfromstring(Difficulty *, char *);
-char *ofb_difficulty_tostring(Difficulty);
+void ofb_difficulty_tostring(char *, Difficulty *);
 
 #endif

@@ -4,6 +4,8 @@
 #include <stdarg.h>
 #include <stdlib.h>
 
+#include "slider.h"
+
 // TODO split every object up to their own files
 
 // https://osu.ppy.sh/wiki/en/Client/File_formats/Osu_%28file_format%29#hit-circles
@@ -21,7 +23,7 @@ typedef struct HOSliderCurve {
 } HOSliderCurve;
 
 typedef struct HOSlider {
-    char curve_type;
+    SliderType curve_type;
     HOSliderCurve *curves;
     unsigned int num_curve;
     int slides;
@@ -62,6 +64,10 @@ typedef enum HOType {
     nc_spinner = 12
 } HOType;
 
+typedef union HONested {
+    Slider s;
+} HONested;
+
 // https://osu.ppy.sh/wiki/en/Client/File_formats/Osu_%28file_format%29#hit-objects
 typedef struct HitObject {
     int x;
@@ -71,6 +77,9 @@ typedef struct HitObject {
     int hit_sound;
     HO ho;
     HOSample hit_sample;
+
+    // For nesting
+    HONested nested;
 } HitObject;
 
 extern const float oos_hitobject_BASESCORINGDISTANCE;

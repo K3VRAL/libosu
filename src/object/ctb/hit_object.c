@@ -2,10 +2,13 @@
 
 const float ooc_hitobject_OBJECTRADIUS = 64;
 
-CatchHitObject *ooc_hitobject_init(float start_time, float x, float x_offset) {
-    CatchHitObject *object = calloc(1, sizeof(CatchHitObject));
+void ooc_hitobject_init(CatchHitObject *object, float start_time, float x, float x_offset) {
+    object = calloc(1, sizeof(*object));
     object->start_time = start_time;
     object->x = x;
     object->x_offset = x_offset;
-    return object;
+}
+
+void ooc_hitobject_free(CatchHitObject *object) {
+    free(object);
 }

@@ -31,10 +31,10 @@ void ofb_metadata_setfromstring(Metadata *metadata, char *key_value_pair) {
     } else if (strcmp("Source", key) == 0) {
         metadata->source = strdup(value);
     } else if (strcmp("Tags", key) == 0) {
-        metadata->tags = calloc(1, sizeof(char *));
+        metadata->tags = calloc(1, sizeof(*metadata->tags));
         token = strtok(value, " ");
         while (token != NULL) {
-            metadata->tags = realloc(metadata->tags, (metadata->num_tag + 1) * sizeof(char *));
+            metadata->tags = realloc(metadata->tags, (metadata->num_tag + 1) * sizeof(*metadata->tags));
             *(metadata->tags + metadata->num_tag) = strdup(token);
             token = strtok(NULL, " ");
             metadata->num_tag++;
@@ -47,59 +47,59 @@ void ofb_metadata_setfromstring(Metadata *metadata, char *key_value_pair) {
     free(key);
 }
 
-char *ofb_metadata_tostring(Metadata metadata) {
+void ofb_metadata_tostring(char *output, Metadata *metadata) {
     ComparingMetadata data[] = {
         {
             .name = "Title",
-            .info.cp = &metadata.title,
+            .info.cp = &metadata->title,
             .type = m_cp,
         },
         {
             .name = "TitleUnicode",
-            .info.cp = &metadata.title_unicode,
+            .info.cp = &metadata->title_unicode,
             .type = m_cp,
         },
         {
             .name = "Artist",
-            .info.cp = &metadata.artist,
+            .info.cp = &metadata->artist,
             .type = m_cp,
         },
         {
             .name = "ArtistUnicode",
-            .info.cp = &metadata.artist_unicode,
+            .info.cp = &metadata->artist_unicode,
             .type = m_cp,
         },
         {
             .name = "Creator",
-            .info.cp = &metadata.creator,
+            .info.cp = &metadata->creator,
             .type = m_cp,
         },
         {
             .name = "Version",
-            .info.cp = &metadata.version,
+            .info.cp = &metadata->version,
             .type = m_cp,
         },
         {
             .name = "Source",
-            .info.cp = &metadata.source,
+            .info.cp = &metadata->source,
             .type = m_cp,
         },
         {
             .name = "Tags",
-            .info.s.cpp = &metadata.tags,
-            .info.s.ui = &metadata.num_tag,
+            .info.s.cpp = &metadata->tags,
+            .info.s.ui = &metadata->num_tag,
             .type = m_s,
         },
         {
             .name = "BeatmapID",
-            .info.n = &metadata.beatmap_id,
+            .info.n = &metadata->beatmap_id,
             .type = m_n,
         },
         {
             .name = "BeatmapSetID",
-            .info.n = &metadata.beatmap_set_id,
+            .info.n = &metadata->beatmap_set_id,
             .type = m_n,
         },
     };
-    return ou_comparing_metadata(data, 10);
+    output = ou_comparing_metadata(data, 10);
 }

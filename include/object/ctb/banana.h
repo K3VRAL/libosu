@@ -9,6 +9,6 @@ typedef struct Banana {
 } Banana;
 
 typedef struct CatchHitObject CatchHitObject; // Forward Declaration
-CatchHitObject *ooc_banana_init(float);
+void ooc_banana_init(CatchHitObject *, float);
 
 #endif

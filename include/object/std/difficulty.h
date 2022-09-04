@@ -11,7 +11,7 @@ typedef struct Difficulty {
     double slider_tick_rate;
 } Difficulty;
 
-Difficulty oos_difficulty_init(void);
-void oos_difficulty_free(Difficulty);
+void oos_difficulty_init(Difficulty *);
+void oos_difficulty_free(Difficulty *);
 
 #endif

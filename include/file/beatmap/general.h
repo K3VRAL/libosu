@@ -11,6 +11,6 @@
 #include "unrelated/comparing.h"
 
 void ofb_general_setfromstring(General *, char *);
-char *ofb_general_tostring(General);
+void ofb_general_tostring(char *, General *);
 
 #endif

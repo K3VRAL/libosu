@@ -10,7 +10,7 @@
 #include "object/std/timing_point.h"
 #include "unrelated/comparing.h"
 
-TimingPoint *ofb_timingpoint_addfromstring(char *);
-char *ofb_timingpoint_tostring(TimingPoint);
+void ofb_timingpoint_addfromstring(TimingPoint *, char *);
+void ofb_timingpoint_tostring(char *, TimingPoint *);
 
 #endif

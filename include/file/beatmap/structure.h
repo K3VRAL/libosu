@@ -10,6 +10,6 @@
 #include "unrelated/comparing.h"
 
 void ofb_structure_setfromstring(Structure *, char *);
-char *ofb_structure_tostring(Structure);
+void ofb_structure_tostring(char *, Structure *);
 
 #endif

@@ -6,7 +6,7 @@ typedef struct Structure {
     int version;
 } Structure;
 
-Structure oos_structure_init(void);
-void oos_structure_free(Structure);
+void oos_structure_init(Structure *);
+void oos_structure_free(Structure *);
 
 #endif

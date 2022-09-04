@@ -1,16 +1,16 @@
 #include "object/ctb.h"
 
-CatchHitObject *ooc_bananashower_init(HitObject hit_object) {
+void ooc_bananashower_init(CatchHitObject *object, HitObject hit_object) {
     if (!(hit_object.type == spinner || hit_object.type == nc_spinner)) {
-        return NULL;
+        return;
     }
-    CatchHitObject *object = ooc_hitobject_init(hit_object.time, hit_object.x, 0);
+
+    ooc_hitobject_init(object, hit_object.time, hit_object.x, 0);
     object->type = banana_shower;
     object->cho.bs.end_time = hit_object.ho.spinner.end_time;
     object->cho.bs.duration = hit_object.ho.spinner.end_time - hit_object.time;
     object->cho.bs.bananas = NULL;
     object->cho.bs.num_banana = 0;
-    return object;
 }
 
 void ooc_bananashower_createnestedbananas(CatchHitObject *object) {
@@ -23,7 +23,7 @@ void ooc_bananashower_createnestedbananas(CatchHitObject *object) {
     }
     double time = object->start_time;
     while (time <= object->cho.bs.end_time) {
-        object->cho.bs.bananas = realloc(object->cho.bs.bananas, (object->cho.bs.num_banana + 1) * sizeof(CatchHitObject));
+        object->cho.bs.bananas = realloc(object->cho.bs.bananas, (object->cho.bs.num_banana + 1) * sizeof(*object->cho.bs.bananas));
         (object->cho.bs.bananas + object->cho.bs.num_banana)->start_time = time;
         (object->cho.bs.bananas + object->cho.bs.num_banana)->type = banana;
         time += spacing;
@@ -31,7 +31,6 @@ void ooc_bananashower_createnestedbananas(CatchHitObject *object) {
     }
 }
 
-// TODO make every other object be able to free; and making `hit_object.c` allow to free all at once with one function
 void ooc_bananashower_free(BananaShower *banana_shower) {
     if (banana_shower->bananas != NULL) {
         free(banana_shower->bananas);

@@ -1,6 +1,7 @@
 #ifndef OU_LEGACY_RANDOM_H
 #define OU_LEGACY_RANDOM_H
 
+#include <stdlib.h>
 #include <stdbool.h>
 #include <limits.h>
 
@@ -14,7 +15,7 @@ typedef struct LegacyRandom {
     int bitIndex;
 } LegacyRandom;
 
-LegacyRandom ou_legacyrandom_init(int);
+void ou_legacyrandom_init(LegacyRandom *, int);
 unsigned int ou_legacyrandom_nextuint(LegacyRandom *);
 int ou_legacyrandom_next(LegacyRandom *);
 double ou_legacyrandom_nextdouble(LegacyRandom *);

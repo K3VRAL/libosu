@@ -32,27 +32,27 @@ void ofb_difficulty_setfromstring(Difficulty *difficulty, char *key_value_pair) 
     free(key);
 }
 
-char *ofb_difficulty_tostring(Difficulty difficulty) {
+void ofb_difficulty_tostring(char *output, Difficulty *difficulty) {
     ComparingDifficulty data[] = {
         {
             .name = "HPDrainRate",
-            .info = &difficulty.hp_drain_rate,
+            .info = &difficulty->hp_drain_rate,
         }, {
             .name = "CircleSize",
-            .info = &difficulty.circle_size,
+            .info = &difficulty->circle_size,
         }, {
             .name = "OverallDifficulty",
-            .info = &difficulty.overall_difficulty,
+            .info = &difficulty->overall_difficulty,
         }, {
             .name = "ApproachRate",
-            .info = &difficulty.approach_rate,
+            .info = &difficulty->approach_rate,
         }, {
             .name = "SliderMultiplier",
-            .info = &difficulty.slider_multiplier,
+            .info = &difficulty->slider_multiplier,
         }, {
             .name = "SliderTickRate",
-            .info = &difficulty.slider_tick_rate,
+            .info = &difficulty->slider_tick_rate,
         },
     };
-    return ou_comparing_difficulty(data, 6);
+    output = ou_comparing_difficulty(data, 6);
 }

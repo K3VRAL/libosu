@@ -2,20 +2,20 @@
 
 const float ooc_fruit_OBJECTRADIUS = 64;
 
-CatchHitObject *ooc_fruit_init(HitObject hit_object) {
+void ooc_fruit_init(CatchHitObject *object, HitObject hit_object) {
     if (!(hit_object.type == circle || hit_object.type == nc_circle)) {
-        return NULL;
+        return;
     }
-    CatchHitObject *object = ooc_hitobject_init(hit_object.time, hit_object.x, 0);
+
+    ooc_hitobject_init(object, hit_object.time, hit_object.x, 0);
     object->type = fruit;
-    return object;
 }
 
 void ooc_fruit_applyhardrockoffset(CatchHitObject *object, float **last_position, double *last_start_time, LegacyRandom *rng) {
     float offset_position = object->x;
     double start_time = object->start_time;
     if (*last_position == NULL) {
-        *last_position = malloc(sizeof(float));
+        *last_position = malloc(sizeof(**last_position));
         **last_position = offset_position;
         *last_start_time = start_time;
         return;

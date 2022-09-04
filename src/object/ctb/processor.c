@@ -2,9 +2,10 @@
 
 const int ooc_processor_RNGSEED = 1337;
 
-void ooc_processor_applypositionoffset(CatchHitObject **objects, unsigned int num, bool enabled_hardrock) {
-    LegacyRandom rng = ou_legacyrandom_init(ooc_processor_RNGSEED);
-    ooc_processor_applypositionoffsetrng(objects, num, &rng, enabled_hardrock);
+void ooc_processor_applypositionoffset(CatchHitObject **objects, unsigned int num, bool enabled_hardrock) { // TODO fix this
+    LegacyRandom *rng = NULL;
+    ou_legacyrandom_init(rng, ooc_processor_RNGSEED);
+    ooc_processor_applypositionoffsetrng(objects, num, rng, enabled_hardrock);
 }
 
 void ooc_processor_applypositionoffsetrng(CatchHitObject **objects, unsigned int num, LegacyRandom *rng, bool enabled_hardrock) {

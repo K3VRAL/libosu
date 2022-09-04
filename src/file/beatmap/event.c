@@ -1,12 +1,12 @@
 #include "file/beatmap.h"
 
-Event *ofb_event_addfromstring(char *string) {
+void ofb_event_addfromstring(Event *event, char *string) {
     char *token = strtok(string, ",");
     if (token == NULL) {
-        return NULL;
+        return;
     }
     
-    Event *event = malloc(sizeof(Event));
+    event = malloc(sizeof(*event));
     if (strcmp("Video", token) == 0) {
         event->type = 1;
     } else if (strcmp("Break", token) == 0) {
@@ -37,56 +37,54 @@ Event *ofb_event_addfromstring(char *string) {
             // TODO
             break;
     }
-    return event;
 }
 
-// TODO fix this
-char *ofb_event_tostring(Event event) {
-    int size_type = ou_comparing_size(event.type);
-    int size_start_time = ou_comparing_size(event.start_time);
+void ofb_event_tostring(char *output, Event *event) {
+    int size_type = ou_comparing_size(event->type);
+    int size_start_time = ou_comparing_size(event->start_time);
     int size_total = size_type + 1 + size_start_time;
     int len = size_total + (1 + 1);
-    char *output = malloc(len * sizeof(char));
-    snprintf(output, len, "%d,%d", event.type, event.start_time);
-    switch (event.type) {
+    output = malloc(len * sizeof(*output));
+    snprintf(output, len, "%d,%d", event->type, event->start_time);
+    switch (event->type) {
         case background: {
-            int size_filename = strlen(event.param.bg.filename);
-            int size_x_offset = ou_comparing_size(event.param.bg.x_offset);
-            int size_y_offset = ou_comparing_size(event.param.bg.y_offset);
+            int size_filename = strlen(event->param.bg.filename);
+            int size_x_offset = ou_comparing_size(event->param.bg.x_offset);
+            int size_y_offset = ou_comparing_size(event->param.bg.y_offset);
             int len_buffer = 1 + 1 + size_filename + 1 + 1 + size_x_offset + 1 + size_y_offset + 1;
-            char *buffer = malloc(len_buffer * sizeof(char));
-            snprintf(buffer, len_buffer, ",\"%s\",%d,%d", event.param.bg.filename, event.param.bg.x_offset, event.param.bg.y_offset);
+            char *buffer = malloc(len_buffer * sizeof(*buffer));
+            snprintf(buffer, len_buffer, ",\"%s\",%d,%d", event->param.bg.filename, event->param.bg.x_offset, event->param.bg.y_offset);
 
             len += len_buffer;
-            output = realloc(output, len * sizeof(char));
+            output = realloc(output, len * sizeof(*output));
             strcat(output, buffer);
             free(buffer);
             break;
         }
 
         case video: {
-            int size_filename = strlen(event.param.vid.filename);
-            int size_x_offset = ou_comparing_size(event.param.vid.x_offset);
-            int size_y_offset = ou_comparing_size(event.param.vid.y_offset);
+            int size_filename = strlen(event->param.vid.filename);
+            int size_x_offset = ou_comparing_size(event->param.vid.x_offset);
+            int size_y_offset = ou_comparing_size(event->param.vid.y_offset);
             int len_buffer = 1 + 1 + size_filename + 1 + 1 + size_x_offset + 1 + size_y_offset + 1;
-            char *buffer = malloc(len_buffer * sizeof(char));
-            snprintf(buffer, len_buffer, ",\"%s\",%d,%d", event.param.vid.filename, event.param.vid.x_offset, event.param.vid.y_offset);
+            char *buffer = malloc(len_buffer * sizeof(*buffer));
+            snprintf(buffer, len_buffer, ",\"%s\",%d,%d", event->param.vid.filename, event->param.vid.x_offset, event->param.vid.y_offset);
 
             len += len_buffer;
-            output = realloc(output, len * sizeof(char));
+            output = realloc(output, len * sizeof(*output));
             strcat(output, buffer);
             free(buffer);
             break;
         }
             
         case breaks: {
-            int size_end_time = ou_comparing_size(event.param.brk.end_time);
+            int size_end_time = ou_comparing_size(event->param.brk.end_time);
             int len_buffer = 1 + size_end_time;
-            char *buffer = malloc(len_buffer * sizeof(char));
-            snprintf(buffer, len_buffer, ",%d", event.param.brk.end_time);
+            char *buffer = malloc(len_buffer * sizeof(*buffer));
+            snprintf(buffer, len_buffer, ",%d", event->param.brk.end_time);
 
             len += len_buffer;
-            output = realloc(output, len * sizeof(char));
+            output = realloc(output, len * sizeof(*output));
             strcat(output, buffer);
             free(buffer);
             break;
@@ -97,5 +95,4 @@ char *ofb_event_tostring(Event event) {
             break;
     }
     strcat(output, "\n");
-    return output;
 }

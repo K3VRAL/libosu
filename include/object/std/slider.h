@@ -11,14 +11,25 @@
 #include "inherited_point.h"
 #include "uninherited_point.h"
 #include "difficulty.h"
-#include "hit_object.h"
+
+typedef enum SliderType {
+    slidertype_catmull = 'C',
+    slidertype_bezier = 'B',
+    slidertype_linear = 'L',
+    slidertype_perfectcurve = 'P'
+} SliderType;
+typedef struct SliderVector2 {
+    SliderType *type;
+    int x;
+    int y;
+} SliderVector2;
 
 typedef enum SliderEventType {
-    tick,
-    legacy_last_tick,
-    head,
-    tail,
-    repeat
+    sliderevent_tick,
+    sliderevent_legacylasttick,
+    sliderevent_head,
+    sliderevent_tail,
+    sliderevent_repeat
 } SliderEventType;
 typedef struct SliderEventDescriptor {
     SliderEventType type;
@@ -30,10 +41,7 @@ typedef struct SliderEventDescriptor {
 SliderEventDescriptor *oos_slider_generate(double, double, double, double, double, int, double *);
 SliderEventDescriptor *oos_slider_generateticks(int, double, double, bool, double, double, double);
 
-typedef struct SliderNested {
-    HitObject *object; // TODO should I make it a `HitObject` or make a dedicated `OsuHitObject` and mimick what I did with `ctb`?
-    SliderEventType type;
-} SliderNested;
+typedef struct HitObject HitObject;
 typedef struct SliderPath {
     double distance;
 } SliderPath;
@@ -48,11 +56,12 @@ typedef struct Slider {
     double velocity;
     double tick_distance;
     double span_count;
-    SliderNested *nested;
+    HitObject *based_on;
+    HitObject *nested;
     unsigned int num_nested;
 } Slider;
-Slider *oos_slider_init(Difficulty, InheritedTimingPoint *, UninheritedTimingPoint *, HitObject);
-Slider *oos_slider_initwouninandinherited(Difficulty, TimingPoint *, unsigned int, HitObject);
+void oos_slider_init(Slider *, Difficulty, InheritedTimingPoint *, UninheritedTimingPoint *, HitObject *);
+void oos_slider_initwouninandinherited(Slider *, Difficulty, TimingPoint *, unsigned int, HitObject *);
 void oos_slider_free(Slider *);
 void oos_slider_createnestedhitobjects(Slider *);
 

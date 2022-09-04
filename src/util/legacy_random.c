@@ -6,14 +6,13 @@ const unsigned int y_initial = 842502087;
 const unsigned int z_initial = 3579807591;
 const unsigned int w_initial = 273326509;
 
-LegacyRandom ou_legacyrandom_init(int seed) {
-    LegacyRandom lr_struct;
-    lr_struct.x = (unsigned int)seed;
-    lr_struct.y = y_initial;
-    lr_struct.z = z_initial;
-    lr_struct.w = w_initial;
-    lr_struct.bitIndex = 32;
-    return lr_struct;
+void ou_legacyrandom_init(LegacyRandom *lr, int seed) {
+    lr = malloc(sizeof(*lr));
+    lr->x = (unsigned int)seed;
+    lr->y = y_initial;
+    lr->z = z_initial;
+    lr->w = w_initial;
+    lr->bitIndex = 32;
 }
 
 unsigned int ou_legacyrandom_nextuint(LegacyRandom *lr_struct) {

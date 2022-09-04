@@ -1,19 +1,19 @@
 #include "file/beatmap.h"
 
-Colour *ofb_colour_addfromstring(char *key_value_pair) {
+void ofb_colour_addfromstring(Colour *colour, char *key_value_pair) {
     char *token = strtok(key_value_pair, ":");
     if (token == NULL) {
-        return NULL;
+        return;
     }
     
     char *key = strdup(token);
     char *value = strtok(NULL, "\0");
     if (value == NULL) {
         free(key);
-        return NULL;
+        return;
     }
 
-    Colour *colour = malloc(sizeof(Colour));
+    colour = malloc(sizeof(*colour));
     if (*(value + 0) == ' ') {
         value++;
     }
@@ -26,11 +26,10 @@ Colour *ofb_colour_addfromstring(char *key_value_pair) {
         } rgb = red;
         while (token != NULL) {
             switch (rgb) {
-                case red: {
+                case red:
                     colour->red = (unsigned char) strtol(token, NULL, 10);
                     rgb = green;
                     break;
-                }
 
                 case green:
                     colour->green = (unsigned char) strtol(token, NULL, 10);
@@ -46,16 +45,14 @@ Colour *ofb_colour_addfromstring(char *key_value_pair) {
         }
     }
     free(key);
-    return colour;
 }
 
-char *ofb_colour_tostring(Colour colour, int i) {
+void ofb_colour_tostring(char *output, Colour *colour, int i) {
     int i_size = ou_comparing_size(i);
-    int blue_size = ou_comparing_size(colour.blue);
-    int green_size = ou_comparing_size(colour.green);
-    int red_size = ou_comparing_size(colour.red);
+    int blue_size = ou_comparing_size(colour->blue);
+    int green_size = ou_comparing_size(colour->green);
+    int red_size = ou_comparing_size(colour->red);
     int len = strlen("Combo") + i_size + 1 + 1 + 1 + blue_size + 1 + green_size + 1 + red_size + (1 + 1);
-    char *output = malloc(len * sizeof(char));
-    snprintf(output, len, "Combo%d : %d,%d,%d\n", i, colour.red, colour.green, colour.blue);
-    return output;
+    output = malloc(len * sizeof(*output));
+    snprintf(output, len, "Combo%d : %d,%d,%d\n", i, colour->red, colour->green, colour->blue);
 }

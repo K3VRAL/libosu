@@ -1,48 +1,50 @@
 #include "object/std.h"
 
-Metadata oos_metadata_init(void) {
-    Metadata metadata = {
-        .title = NULL,
-        .title_unicode = NULL,
-        .artist = NULL,
-        .artist_unicode = NULL,
-        .creator = NULL,
-        .version = NULL,
-        .source = NULL,
-        .tags = NULL,
-        .num_tag = 0,
-        .beatmap_id = -1,
-        .beatmap_set_id = -1
-    };
-    return metadata;
+void oos_metadata_init(Metadata *metadata) {
+    metadata = malloc(sizeof(*metadata));
+    metadata->title = NULL;
+    metadata->title_unicode = NULL;
+    metadata->artist = NULL;
+    metadata->artist_unicode = NULL;
+    metadata->creator = NULL;
+    metadata->version = NULL;
+    metadata->source = NULL;
+    metadata->tags = NULL;
+    metadata->num_tag = 0;
+    metadata->beatmap_id = -1;
+    metadata->beatmap_set_id = -1;
 }
 
-void oos_metadata_free(Metadata metadata) {
-    if (metadata.title != NULL) {
-        free(metadata.title);
+void oos_metadata_free(Metadata *metadata) {
+    if (metadata != NULL) {
+        return;
     }
-    if (metadata.title_unicode != NULL) {
-        free(metadata.title_unicode);
+    if (metadata->title != NULL) {
+        free(metadata->title);
     }
-    if (metadata.artist != NULL) {
-        free(metadata.artist);
+    if (metadata->title_unicode != NULL) {
+        free(metadata->title_unicode);
     }
-    if (metadata.artist_unicode != NULL) {
-        free(metadata.artist_unicode);
+    if (metadata->artist != NULL) {
+        free(metadata->artist);
     }
-    if (metadata.creator != NULL) {
-        free(metadata.creator);
+    if (metadata->artist_unicode != NULL) {
+        free(metadata->artist_unicode);
     }
-    if (metadata.version != NULL) {
-        free(metadata.version);
+    if (metadata->creator != NULL) {
+        free(metadata->creator);
     }
-    if (metadata.source != NULL) {
-        free(metadata.source);
+    if (metadata->version != NULL) {
+        free(metadata->version);
     }
-    if (metadata.tags != NULL) {
-        for (int i = 0; i < metadata.num_tag; i++) {
-            free(*(metadata.tags + i));
+    if (metadata->source != NULL) {
+        free(metadata->source);
+    }
+    if (metadata->tags != NULL) {
+        for (int i = 0; i < metadata->num_tag; i++) {
+            free(*(metadata->tags + i));
         }
-        free(metadata.tags);
+        free(metadata->tags);
     }
+    free(metadata);
 }
