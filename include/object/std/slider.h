@@ -18,7 +18,7 @@ typedef enum SliderType {
     slidertype_linear = 'L',
     slidertype_perfectcurve = 'P'
 } SliderType;
-typedef struct SliderVector2 {
+typedef struct SliderVector2 { // TODO make free
     SliderType *type;
     int x;
     int y;
@@ -42,6 +42,7 @@ SliderEventDescriptor *oos_slider_generate(double, double, double, double, doubl
 SliderEventDescriptor *oos_slider_generateticks(int, double, double, bool, double, double, double);
 
 typedef struct HitObject HitObject;
+typedef struct HOSlider HOSlider;
 typedef struct SliderPath {
     double distance;
 } SliderPath;
@@ -56,7 +57,8 @@ typedef struct Slider {
     double velocity;
     double tick_distance;
     double span_count;
-    HitObject *based_on;
+    SliderVector2 start_position;
+    HOSlider *ho_data;
     HitObject *nested;
     unsigned int num_nested;
 } Slider;
