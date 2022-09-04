@@ -34,7 +34,7 @@ typedef enum EVTYPE {
     background = 0,
     video = 1,
     breaks = 2,
-    storyboard/* TODO = */
+    storyboard
 } EVType;
 
 typedef struct Event {

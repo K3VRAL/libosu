@@ -39,5 +39,4 @@ void ooc_processor_applypositionoffsetrng(CatchHitObject **objects, unsigned int
 }
 
 void ooc_processor_inithyperdash(Difficulty difficulty, CatchHitObject *hit_object, unsigned int num) {
-    // TODO
 }

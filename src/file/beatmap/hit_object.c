@@ -76,7 +76,6 @@ void ofb_hitobject_addfromstring(HitObject *hit_object, char *string) {
                 }
             }
 
-            // TODO simplify code
             if ((token = strtok(NULL, ":|,")) != NULL && *(copy + (token - string + strlen(token))) == ':') {
                 hit_object->ho.slider.edge_sets = NULL;
                 hit_object->ho.slider.num_edge_set = 0;

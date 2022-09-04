@@ -11,7 +11,7 @@ void ofb_event_addfromstring(Event *event, char *string) {
         event->type = 1;
     } else if (strcmp("Break", token) == 0) {
         event->type = 2;
-    } else /* TODO if (strcmp("Storyboard", token) == 0)*/ {
+    } else {
         event->type = (int) strtol(token, NULL, 10);
     }
     event->start_time = (int) strtol(strtok(NULL, ","), NULL, 10);
@@ -34,7 +34,6 @@ void ofb_event_addfromstring(Event *event, char *string) {
             break;
 
         case storyboard:
-            // TODO
             break;
     }
 }
@@ -91,7 +90,6 @@ void ofb_event_tostring(char *output, Event *event) {
         }
             
         case storyboard:
-            // TODO
             break;
     }
     strcat(output, "\n");

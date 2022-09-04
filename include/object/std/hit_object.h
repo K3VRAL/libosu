@@ -6,8 +6,6 @@
 
 #include "slider.h"
 
-// TODO split every object up to their own files
-
 // https://osu.ppy.sh/wiki/en/Client/File_formats/Osu_%28file_format%29#hit-circles
 typedef struct HOCircle {} HOCircle;
 

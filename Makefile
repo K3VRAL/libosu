@@ -42,7 +42,6 @@ test: $(TARGET_TEST)
 .c:
 	$(CC) -o $(BINFLR)$(shell echo "$@" | perl -pe "s/.+\//test_/g") $^ $(LFLAGS_TEST)
 
-# TODO Change ./include and add to pkg-config
 # Install
 install:
 	$(shell rm -rf /usr/local/lib/$(TARGET))

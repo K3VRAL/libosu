@@ -19,7 +19,6 @@ void oos_event_free(Event *event, unsigned int num) {
                 break;
 
             case storyboard:
-                // TODO
                 break;
         }
     }
