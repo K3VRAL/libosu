@@ -1,20 +1,20 @@
 #include "file/beatmap.h"
 
-void ofb_timingpoint_addfromstring(TimingPoint *timing_point, char *string) {
+void ofb_timingpoint_addfromstring(TimingPoint **timing_point, char *string) {
     char *token = strtok(string, ",");
     if (token == NULL) {
         return;
     }
     
-    timing_point = malloc(sizeof(*timing_point));
-    timing_point->time = (int) strtol(token, NULL, 10);
-    timing_point->beat_length = strtod(strtok(NULL, ","), NULL);
-    timing_point->meter = (int) strtol(strtok(NULL, ","), NULL, 10);
-    timing_point->sample_set = (int) strtol(strtok(NULL, ","), NULL, 10);
-    timing_point->sample_index = (int) strtol(strtok(NULL, ","), NULL, 10);
-    timing_point->volume = (int) strtol(strtok(NULL, ","), NULL, 10);
-    timing_point->uninherited = (bool) strtol(strtok(NULL, ","), NULL, 10);
-    timing_point->effects = (int) strtol(strtok(NULL, ","), NULL, 10);
+    *timing_point = malloc(sizeof(**timing_point));
+    (*timing_point)->time = (int) strtol(token, NULL, 10);
+    (*timing_point)->beat_length = strtod(strtok(NULL, ","), NULL);
+    (*timing_point)->meter = (int) strtol(strtok(NULL, ","), NULL, 10);
+    (*timing_point)->sample_set = (int) strtol(strtok(NULL, ","), NULL, 10);
+    (*timing_point)->sample_index = (int) strtol(strtok(NULL, ","), NULL, 10);
+    (*timing_point)->volume = (int) strtol(strtok(NULL, ","), NULL, 10);
+    (*timing_point)->uninherited = (bool) strtol(strtok(NULL, ","), NULL, 10);
+    (*timing_point)->effects = (int) strtol(strtok(NULL, ","), NULL, 10);
 }
 
 void ofb_timingpoint_tostring(char *output, TimingPoint *timing_point) {

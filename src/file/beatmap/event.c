@@ -1,36 +1,36 @@
 #include "file/beatmap.h"
 
-void ofb_event_addfromstring(Event *event, char *string) {
+void ofb_event_addfromstring(Event **event, char *string) {
     char *token = strtok(string, ",");
     if (token == NULL) {
         return;
     }
     
-    event = malloc(sizeof(*event));
+    *event = malloc(sizeof(**event));
     if (strcmp("Video", token) == 0) {
-        event->type = 1;
+        (*event)->type = 1;
     } else if (strcmp("Break", token) == 0) {
-        event->type = 2;
+        (*event)->type = 2;
     } else {
-        event->type = (int) strtol(token, NULL, 10);
+        (*event)->type = (int) strtol(token, NULL, 10);
     }
-    event->start_time = (int) strtol(strtok(NULL, ","), NULL, 10);
-    switch (event->type) {
+    (*event)->start_time = (int) strtol(strtok(NULL, ","), NULL, 10);
+    switch ((*event)->type) {
         case background:
-            event->param.bg.filename = strdup(strtok(NULL, "\""));
-            event->param.bg.x_offset = (int) strtol(strtok(NULL, ","), NULL, 10);
-            event->param.bg.y_offset = (int) strtol(strtok(NULL, ","), NULL, 10);
+            (*event)->param.bg.filename = strdup(strtok(NULL, "\""));
+            (*event)->param.bg.x_offset = (int) strtol(strtok(NULL, ","), NULL, 10);
+            (*event)->param.bg.y_offset = (int) strtol(strtok(NULL, ","), NULL, 10);
             break;
 
         case video: // In case there are some minor changes
-            event->param.vid.filename = strdup(strtok(NULL, "\""));
+            (*event)->param.vid.filename = strdup(strtok(NULL, "\""));
             strtok(NULL, ",");
-            event->param.vid.x_offset = (int) strtol(strtok(NULL, ","), NULL, 10);
-            event->param.vid.y_offset = (int) strtol(strtok(NULL, ","), NULL, 10);
+            (*event)->param.vid.x_offset = (int) strtol(strtok(NULL, ","), NULL, 10);
+            (*event)->param.vid.y_offset = (int) strtol(strtok(NULL, ","), NULL, 10);
             break;
 
         case breaks:
-            event->param.brk.end_time = (int) strtol(strtok(NULL, ","), NULL, 10);
+            (*event)->param.brk.end_time = (int) strtol(strtok(NULL, ","), NULL, 10);
             break;
 
         case storyboard:

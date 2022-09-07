@@ -10,7 +10,7 @@ typedef struct InheritedTimingPoint {
     unsigned int num;
 } InheritedTimingPoint;
 
-void oos_inheritedpoint_init(InheritedTimingPoint *, TimingPoint *, unsigned int);
+void oos_inheritedpoint_init(InheritedTimingPoint **, TimingPoint *, unsigned int);
 void oos_inheritedpoint_free(InheritedTimingPoint *);
 
 #endif

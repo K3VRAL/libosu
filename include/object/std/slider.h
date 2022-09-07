@@ -20,8 +20,8 @@ typedef enum SliderType {
 } SliderType;
 typedef struct SliderVector2 { // TODO make free
     SliderType *type;
-    int x;
-    int y;
+    float x;
+    float y;
 } SliderVector2;
 
 typedef enum SliderEventType {
@@ -46,7 +46,7 @@ typedef struct HOSlider HOSlider;
 typedef struct SliderPath {
     double distance;
 } SliderPath;
-typedef struct Slider {
+typedef struct Slider { // Some duplicated/relational variables exists here; maybe I should refactor, and for each variable called the original operation can be done
     double start_time;
     double end_time;
     double duration;
@@ -62,9 +62,15 @@ typedef struct Slider {
     HitObject *nested;
     unsigned int num_nested;
 } Slider;
-void oos_slider_init(Slider *, Difficulty, InheritedTimingPoint *, UninheritedTimingPoint *, HitObject *);
-void oos_slider_initwouninandinherited(Slider *, Difficulty, TimingPoint *, unsigned int, HitObject *);
+void oos_slider_init(Slider **, Difficulty, InheritedTimingPoint *, UninheritedTimingPoint *, HitObject *);
+void oos_slider_initwouninandinherited(Slider **, Difficulty, TimingPoint *, unsigned int, HitObject *);
 void oos_slider_free(Slider *);
+void oos_slider_catmullfindpoint(SliderVector2 **, SliderVector2 *, SliderVector2 *, SliderVector2 *, SliderVector2 *, float);
+void oos_slider_catmullapproximate(SliderVector2 **, unsigned int *, SliderVector2 *, unsigned int *);
+void oos_slider_approximatecirculararc(SliderVector2 **, unsigned int *, SliderVector2 *, unsigned int *);
+void oos_slider_approximatebezier(SliderVector2 **, unsigned int *, SliderVector2 *, unsigned int *);
+void oos_slider_calculatesubpath(SliderVector2 **, unsigned int *, SliderVector2 *, unsigned int *, SliderType);
+void oos_slider_positionat(SliderVector2 *, double, Slider *);
 void oos_slider_createnestedhitobjects(Slider *);
 
 #endif

@@ -1,11 +1,11 @@
 #include "object/ctb.h"
 
-void ooc_juicestream_init(CatchHitObject *object, HitObject hit_object) {
+void ooc_juicestream_init(CatchHitObject **object, HitObject hit_object) {
     if (!(hit_object.type == slider || hit_object.type == nc_slider)) {
         return;
     }
     ooc_hitobject_init(object, hit_object.time, hit_object.x, 0);
-    object->type = juice_stream;
+    (*object)->type = juice_stream;
 }
 
 // https://github.com/ppy/osu/blob/master/osu.Game.Rulesets.Catch/Beatmaps/CatchBeatmapProcessor.cs

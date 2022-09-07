@@ -1,6 +1,6 @@
 #include "file/beatmap.h"
 
-void ofb_colour_addfromstring(Colour *colour, char *key_value_pair) {
+void ofb_colour_addfromstring(Colour **colour, char *key_value_pair) {
     char *token = strtok(key_value_pair, ":");
     if (token == NULL) {
         return;
@@ -13,7 +13,7 @@ void ofb_colour_addfromstring(Colour *colour, char *key_value_pair) {
         return;
     }
 
-    colour = malloc(sizeof(*colour));
+    *colour = malloc(sizeof(**colour));
     if (*(value + 0) == ' ') {
         value++;
     }
@@ -27,17 +27,17 @@ void ofb_colour_addfromstring(Colour *colour, char *key_value_pair) {
         while (token != NULL) {
             switch (rgb) {
                 case red:
-                    colour->red = (unsigned char) strtol(token, NULL, 10);
+                    (*colour)->red = (unsigned char) strtol(token, NULL, 10);
                     rgb = green;
                     break;
 
                 case green:
-                    colour->green = (unsigned char) strtol(token, NULL, 10);
+                    (*colour)->green = (unsigned char) strtol(token, NULL, 10);
                     rgb = blue;
                     break;
 
                 case blue:
-                    colour->blue = (unsigned char) strtol(token, NULL, 10);
+                    (*colour)->blue = (unsigned char) strtol(token, NULL, 10);
                     rgb = red; // Because why not
                     break;
             }

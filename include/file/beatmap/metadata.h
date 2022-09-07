@@ -10,7 +10,7 @@
 #include "object/std/metadata.h"
 #include "unrelated/comparing.h"
 
-void ofb_metadata_setfromstring(Metadata *, char *);
+void ofb_metadata_setfromstring(Metadata **, char *);
 void ofb_metadata_tostring(char *, Metadata *);
 
 #endif

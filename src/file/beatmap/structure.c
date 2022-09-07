@@ -1,13 +1,13 @@
 #include "file/beatmap.h"
 
-void ofb_structure_setfromstring(Structure *structure, char *string) {
+void ofb_structure_setfromstring(Structure **structure, char *string) {
     char *version = strrchr(string, 'v');
     if (version == NULL) {
         return;
     }
     
     memmove(&version[0], &version[1], strlen(version));
-    structure->version = (int) strtol(version, NULL, 10);
+    (*structure)->version = (int) strtol(version, NULL, 10);
 }
 
 void ofb_structure_tostring(char *output, Structure *structure) {

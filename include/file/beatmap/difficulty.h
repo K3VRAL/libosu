@@ -10,7 +10,7 @@
 #include "object/std/difficulty.h"
 #include "unrelated/comparing.h"
 
-void ofb_difficulty_setfromstring(Difficulty *, char *);
+void ofb_difficulty_setfromstring(Difficulty **, char *);
 void ofb_difficulty_tostring(char *, Difficulty *);
 
 #endif

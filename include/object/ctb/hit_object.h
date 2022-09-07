@@ -30,8 +30,7 @@ typedef struct CatchHitObject {
     CHO cho;
 } CatchHitObject;
 
-void ooc_hitobject_init(CatchHitObject *, float, float, float);
-void ooc_hitobject_free(CatchHitObject *);
+void ooc_hitobject_init(CatchHitObject **, float, float, float);
 extern const float ooc_hitobject_OBJECTRADIUS;
 
 #endif

@@ -9,7 +9,7 @@
 #include "object/std/structure.h"
 #include "unrelated/comparing.h"
 
-void ofb_structure_setfromstring(Structure *, char *);
+void ofb_structure_setfromstring(Structure **, char *);
 void ofb_structure_tostring(char *, Structure *);
 
 #endif

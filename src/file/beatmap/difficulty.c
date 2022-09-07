@@ -1,6 +1,6 @@
 #include "file/beatmap.h"
 
-void ofb_difficulty_setfromstring(Difficulty *difficulty, char *key_value_pair) {
+void ofb_difficulty_setfromstring(Difficulty **difficulty, char *key_value_pair) {
     char *token = strtok(key_value_pair, ":");
     if (token == NULL) {
         return;
@@ -17,17 +17,17 @@ void ofb_difficulty_setfromstring(Difficulty *difficulty, char *key_value_pair) 
         value++;
     }
     if (strcmp("HPDrainRate", key) == 0) {
-        difficulty->hp_drain_rate = strtod(value, NULL);
+        (*difficulty)->hp_drain_rate = strtod(value, NULL);
     } else if (strcmp("CircleSize", key) == 0) {
-        difficulty->circle_size = strtod(value, NULL);
+        (*difficulty)->circle_size = strtod(value, NULL);
     } else if (strcmp("OverallDifficulty", key) == 0) {
-        difficulty->overall_difficulty = strtod(value, NULL);
+        (*difficulty)->overall_difficulty = strtod(value, NULL);
     } else if (strcmp("ApproachRate", key) == 0) {
-        difficulty->approach_rate = strtod(value, NULL);
+        (*difficulty)->approach_rate = strtod(value, NULL);
     } else if (strcmp("SliderMultiplier", key) == 0) {
-        difficulty->slider_multiplier = strtod(value, NULL);
+        (*difficulty)->slider_multiplier = strtod(value, NULL);
     } else if (strcmp("SliderTickRate", key) == 0) {
-        difficulty->slider_tick_rate = strtod(value, NULL);
+        (*difficulty)->slider_tick_rate = strtod(value, NULL);
     }
     free(key);
 }

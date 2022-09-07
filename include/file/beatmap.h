@@ -39,7 +39,7 @@ typedef struct Beatmap {
     unsigned int num_ho;
 } Beatmap;
 
-void of_beatmap_init(Beatmap *);
+void of_beatmap_init(Beatmap **);
 void of_beatmap_free(Beatmap *);
 void of_beatmap_set(Beatmap *, char *);
 void of_beatmap_tofile(Beatmap *, FILE *);

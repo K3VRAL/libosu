@@ -1,6 +1,6 @@
 #include "file/beatmap.h"
 
-void ofb_editor_setfromstring(Editor *editor, char *key_value_pair) {
+void ofb_editor_setfromstring(Editor **editor, char *key_value_pair) {
     char *token = strtok(key_value_pair, ":");
     if (token == NULL) {
         return;
@@ -17,22 +17,22 @@ void ofb_editor_setfromstring(Editor *editor, char *key_value_pair) {
         value++;
     }
     if (strcmp("Bookmarks", key) == 0) {
-        editor->bookmarks = calloc(1, sizeof(*editor->bookmarks));
+        (*editor)->bookmarks = calloc(1, sizeof(*(*editor)->bookmarks));
         token = strtok(value, ",");
         while (token != NULL) {
-            editor->bookmarks = realloc(editor->bookmarks, (editor->num_bookmark + 1) * sizeof(*editor->bookmarks));
-            *(editor->bookmarks + editor->num_bookmark) = (int) strtol(token, NULL, 10);
+            (*editor)->bookmarks = realloc((*editor)->bookmarks, ((*editor)->num_bookmark + 1) * sizeof(*(*editor)->bookmarks));
+            *((*editor)->bookmarks + (*editor)->num_bookmark) = (int) strtol(token, NULL, 10);
             token = strtok(NULL, ",");
-            editor->num_bookmark++;
+            (*editor)->num_bookmark++;
         }
     } else if (strcmp("DistanceSpacing", key) == 0) {
-        editor->distance_spacing = strtod(value, NULL);
+        (*editor)->distance_spacing = strtod(value, NULL);
     } else if (strcmp("BeatDivisor", key) == 0) {
-        editor->beat_divisor = strtod(value, NULL);
+        (*editor)->beat_divisor = strtod(value, NULL);
     } else if (strcmp("GridSize", key) == 0) {
-        editor->grid_size = (int) strtol(value, NULL, 10);
+        (*editor)->grid_size = (int) strtol(value, NULL, 10);
     } else if (strcmp("TimelineZoom", key) == 0) {
-        editor->timeline_zoom = strtod(value, NULL);
+        (*editor)->timeline_zoom = strtod(value, NULL);
     }
     free(key);
 }

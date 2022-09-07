@@ -1,18 +1,18 @@
 #include "object/std.h"
 
-void oos_metadata_init(Metadata *metadata) {
-    metadata = malloc(sizeof(*metadata));
-    metadata->title = NULL;
-    metadata->title_unicode = NULL;
-    metadata->artist = NULL;
-    metadata->artist_unicode = NULL;
-    metadata->creator = NULL;
-    metadata->version = NULL;
-    metadata->source = NULL;
-    metadata->tags = NULL;
-    metadata->num_tag = 0;
-    metadata->beatmap_id = -1;
-    metadata->beatmap_set_id = -1;
+void oos_metadata_init(Metadata **metadata) {
+    *metadata = malloc(sizeof(**metadata));
+    (*metadata)->title = NULL;
+    (*metadata)->title_unicode = NULL;
+    (*metadata)->artist = NULL;
+    (*metadata)->artist_unicode = NULL;
+    (*metadata)->creator = NULL;
+    (*metadata)->version = NULL;
+    (*metadata)->source = NULL;
+    (*metadata)->tags = NULL;
+    (*metadata)->num_tag = 0;
+    (*metadata)->beatmap_id = -1;
+    (*metadata)->beatmap_set_id = -1;
 }
 
 void oos_metadata_free(Metadata *metadata) {

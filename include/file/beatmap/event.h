@@ -3,7 +3,7 @@
 
 #include "object/std/event.h"
 
-void ofb_event_addfromstring(Event *, char *);
+void ofb_event_addfromstring(Event **, char *);
 void ofb_event_tostring(char *, Event *);
 
 #endif

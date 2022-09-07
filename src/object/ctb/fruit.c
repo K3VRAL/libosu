@@ -2,13 +2,13 @@
 
 const float ooc_fruit_OBJECTRADIUS = 64;
 
-void ooc_fruit_init(CatchHitObject *object, HitObject hit_object) {
-    if (!(hit_object.type == circle || hit_object.type == nc_circle)) {
+void ooc_fruit_init(CatchHitObject **object, HitObject *hit_object) {
+    if (!(hit_object->type == circle || hit_object->type == nc_circle)) {
         return;
     }
 
-    ooc_hitobject_init(object, hit_object.time, hit_object.x, 0);
-    object->type = fruit;
+    ooc_hitobject_init(object, hit_object->time, hit_object->x, 0);
+    (*object)->type = fruit;
 }
 
 void ooc_fruit_applyhardrockoffset(CatchHitObject *object, float **last_position, double *last_start_time, LegacyRandom *rng) {

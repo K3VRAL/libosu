@@ -11,7 +11,7 @@
 #include "object/std/hit_object.h"
 #include "unrelated/comparing.h"
 
-void ofb_hitobject_addfromstring(HitObject *, char *);
+void ofb_hitobject_addfromstring(HitObject **, char *);
 void ofb_hitobject_tostring(char *, HitObject *);
 
 #endif
