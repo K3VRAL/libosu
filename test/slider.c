@@ -43,6 +43,22 @@ int main(void) {
     oos_slider_init(&slider, diff, intp, unintp, hit_object);
     oos_slider_createnestedhitobjects(slider);
 
+    // TODO make this into it's own function so testing can be easier and more readable
+    printf("%s - ", ((int) (slider->nested + 0)->x == 156 && (int) (slider->nested + 0)->y == 157
+                    && (int) (slider->nested + 0)->time == 5130) ? "Success" : "Failed");
+    printf("%s - ", ((int) (slider->nested + 1)->x == 213 && (int) (slider->nested + 1)->y == 123
+                    && (int) (slider->nested + 1)->time == 5287) ? "Success" : "Failed");
+    printf("%s - ", ((int) (slider->nested + 2)->x == 270 && (int) (slider->nested + 2)->y == 89
+                    && (int) (slider->nested + 2)->time == 5444) ? "Success" : "Failed");
+    printf("%s - ", ((int) (slider->nested + 3)->x == 213 && (int) (slider->nested + 3)->y == 123
+                    && (int) (slider->nested + 3)->time == 5601) ? "Success" : "Failed");
+    printf("%s - ", ((int) (slider->nested + 4)->x == 156 && (int) (slider->nested + 4)->y == 157
+                    && (int) (slider->nested + 4)->time == 5758) ? "Success" : "Failed");
+    printf("%s - ", ((int) (slider->nested + 5)->x == 213 && (int) (slider->nested + 5)->y == 123
+                    && (int) (slider->nested + 5)->time == 5916) ? "Success" : "Failed");
+    printf("%s\n", ((int) (slider->nested + 6)->x == 270 && (int) (slider->nested + 6)->y == 89
+                    && (int) (slider->nested + 6)->time == 6037) ? "Success" : "Failed");
+
     oos_slider_free(slider);
     oos_hitobject_free(hit_object, 1);
     oos_uninheritedpoint_free(unintp);

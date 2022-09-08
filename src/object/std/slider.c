@@ -286,12 +286,9 @@ void oos_slider_positionat(SliderVector2 *vector, double progress, Slider *slide
             break;
         }
     }
-    if (i == 0) { // wtf is C#'s implementation or idea of `.BinarySearch(d)`? I don't really understand what it does when it can't find it. Check if this implementation works
+    if (i == 0) {
         i = pivot;
     }
-    // if (i < 0) {
-    //     i = ~i;
-    // }
 
     // interpolateVertices(indexOfDisatnce(d), d)
     if (calculatepath_len == 0) {
@@ -334,7 +331,6 @@ void oos_slider_positionat(SliderVector2 *vector, double progress, Slider *slide
     free(cumulative_length);
 }
 
-// TODO something is going wrong in the `x` and `y` coordinates after `positionat` is evaluated
 void oos_slider_createnestedhitobjects(Slider *slider) {
     SliderEventDescriptor *slider_event;
     while ((slider_event = oos_slider_generate(slider->start_time, slider->span_duration, slider->velocity, slider->tick_distance, slider->path.distance, slider->span_count, slider->legacy_last_tick_offset)) != NULL) {
@@ -345,8 +341,8 @@ void oos_slider_createnestedhitobjects(Slider *slider) {
                 (slider->nested + slider->num_nested)->time = slider_event->time;
                 SliderVector2 position;
                 oos_slider_positionat(&position, slider_event->path_progress, slider);
-                (slider->nested + slider->num_nested)->x = position.x;
-                (slider->nested + slider->num_nested)->y = position.y;
+                (slider->nested + slider->num_nested)->x = slider->start_position.x + position.x;
+                (slider->nested + slider->num_nested)->y = slider->start_position.y + position.y;
                 slider->num_nested++;
                 break;
             }
@@ -380,11 +376,11 @@ void oos_slider_createnestedhitobjects(Slider *slider) {
             case sliderevent_repeat: {
                 slider->nested = realloc(slider->nested, (slider->num_nested + 1) * sizeof(*slider->nested));
                 // (slider->nested + slider->num_nested)->type = repeat;
-                (slider->nested + slider->num_nested)->time = slider_event->time + (slider_event->span_index + 1) * slider->span_duration;
+                (slider->nested + slider->num_nested)->time = slider_event->time;
                 SliderVector2 position;
                 oos_slider_positionat(&position, slider_event->path_progress, slider);
-                (slider->nested + slider->num_nested)->x = position.x;
-                (slider->nested + slider->num_nested)->y = position.x;
+                (slider->nested + slider->num_nested)->x = slider->start_position.x + position.x;
+                (slider->nested + slider->num_nested)->y = slider->start_position.y + position.y;
                 slider->num_nested++;
                 break;
             }
@@ -493,48 +489,29 @@ SliderEventDescriptor *oos_slider_generate(double start_time, double span_durati
     return NULL;
 }
 
+// TODO look into how to `.Reverse()` an enumerable in C
 SliderEventDescriptor *oos_slider_generateticks(int span_index, double span_start_time, double span_duration, bool reversed, double length, double tick_distance, double min_distance_from_end) {
     static int state = 0;
     static SliderEventDescriptor *object = NULL;
     switch (state) {
         case 0:;
+            state = 1;
             static double d;
-            if (!reversed) {
-                state = 1;
-                for (d = tick_distance; d <= length; d += tick_distance) {
-                    if (d >= length - min_distance_from_end) {
-                        break;
-                    }
-                    double path_progress = d / length;
-                    double time_progress = reversed ? 1 - path_progress : path_progress;
+            for (d = tick_distance; d <= length; d += tick_distance) {
+                if (d >= length - min_distance_from_end) {
+                    break;
+                }
+                double path_progress = d / length;
+                double time_progress = reversed ? 1 - path_progress : path_progress;
 
-                    object = malloc(sizeof(*object));
-                    object->type = sliderevent_tick;
-                    object->span_index = span_index;
-                    object->span_start_time = span_start_time;
-                    object->time = span_start_time + time_progress * span_duration;
-                    object->path_progress = path_progress;
-                    return object;
+                object = malloc(sizeof(*object));
+                object->type = sliderevent_tick;
+                object->span_index = span_index;
+                object->span_start_time = span_start_time;
+                object->time = span_start_time + time_progress * span_duration;
+                object->path_progress = path_progress;
+                return object;
         case 1:;
-                }
-            } else {
-                state = 2;
-                for (d = length; d >= tick_distance; d -= tick_distance) {
-                    if (d >= length - min_distance_from_end) {
-                        break;
-                    }
-                    double path_progress = d / length;
-                    double time_progress = reversed ? 1 - path_progress : path_progress;
-
-                    object = malloc(sizeof(*object));
-                    object->type = sliderevent_tick;
-                    object->span_index = span_index;
-                    object->span_start_time = span_start_time;
-                    object->time = span_start_time + time_progress * span_duration;
-                    object->path_progress = path_progress;
-                    return object;
-        case 2:;
-                }
             }
     }
     state = 0;
