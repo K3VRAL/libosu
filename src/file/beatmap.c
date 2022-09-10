@@ -31,7 +31,9 @@ void of_beatmap_free(Beatmap *beatmap) {
     oos_event_free(beatmap->events, beatmap->num_event);
     oos_timingpoint_free(beatmap->timing_points);
     oos_colour_free(beatmap->colours);
-    oos_hitobject_free(beatmap->hit_objects, beatmap->num_ho);
+    for (int i = 0; i < beatmap->num_ho; i++) {
+        oos_hitobject_free((beatmap->hit_objects + i));
+    }
     free(beatmap);
 }
 

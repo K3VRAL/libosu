@@ -6,7 +6,7 @@ void ooc_bananashower_init(CatchHitObject **object, HitObject *hit_object) {
     }
 
     ooc_hitobject_init(object, hit_object->time, hit_object->x, 0);
-    (*object)->type = banana_shower;
+    (*object)->type = catchhitobject_bananashower;
     (*object)->cho.bs.end_time = hit_object->ho.spinner.end_time;
     (*object)->cho.bs.duration = hit_object->ho.spinner.end_time - hit_object->time;
     (*object)->cho.bs.bananas = NULL;
@@ -25,7 +25,7 @@ void ooc_bananashower_createnestedbananas(CatchHitObject *object) {
     while (time <= object->cho.bs.end_time) {
         object->cho.bs.bananas = realloc(object->cho.bs.bananas, (object->cho.bs.num_banana + 1) * sizeof(*object->cho.bs.bananas));
         (object->cho.bs.bananas + object->cho.bs.num_banana)->start_time = time;
-        (object->cho.bs.bananas + object->cho.bs.num_banana)->type = banana;
+        (object->cho.bs.bananas + object->cho.bs.num_banana)->type = catchhitobject_banana;
         time += spacing;
         object->cho.bs.num_banana++;
     }

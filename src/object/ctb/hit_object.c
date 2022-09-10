@@ -8,3 +8,10 @@ void ooc_hitobject_init(CatchHitObject **object, float start_time, float x, floa
     (*object)->x = x;
     (*object)->x_offset = x_offset;
 }
+
+void ooc_hitobject_free(CatchHitObject *object) {
+    if (object == NULL) {
+        return;
+    }
+    free(object);
+}

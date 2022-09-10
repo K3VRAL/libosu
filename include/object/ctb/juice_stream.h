@@ -2,21 +2,21 @@
 #define OOC_JUICESTREAM_H
 
 #include "object/std.h"
+#include "util/legacy_random.h"
+
+typedef struct Droplet {} Droplet;
+typedef struct TinyDroplet {} TinyDroplet;
 
 typedef struct CatchHitObject CatchHitObject;
-
-typedef struct JuiceStreamNested {
-    CatchHitObject *object;
-    SliderEventType type;
-} JuiceStreamNested;
-
 typedef struct JuiceStream {
-    JuiceStreamNested *nested;
+    CatchHitObject *nested;
     unsigned int num_nested;
+    Slider *slider_data;
 } JuiceStream;
 
-// TODO maybe remove `HitObject` and replace with `Slider`
-JuiceStream *ooc_juicestream_nestedhitobjects(HitObject *, Difficulty, TimingPoint);
+void ooc_juicestream_init(CatchHitObject **, Slider *);
 void ooc_juicestream_free(JuiceStream *);
+void ooc_juicestream_createnestedjuice(CatchHitObject *);
+void ooc_juicestream_xoffset(CatchHitObject *, float **, double *, LegacyRandom *);
 
 #endif

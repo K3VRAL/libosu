@@ -6,51 +6,55 @@ const unsigned int y_initial = 842502087;
 const unsigned int z_initial = 3579807591;
 const unsigned int w_initial = 273326509;
 
-void ou_legacyrandom_init(LegacyRandom *lr, int seed) {
-    lr = malloc(sizeof(*lr));
-    lr->x = (unsigned int)seed;
-    lr->y = y_initial;
-    lr->z = z_initial;
-    lr->w = w_initial;
-    lr->bitIndex = 32;
+void ou_legacyrandom_init(LegacyRandom **legacy_random, int seed) {
+    *legacy_random = malloc(sizeof(**legacy_random));
+    (*legacy_random)->x = (unsigned int) seed;
+    (*legacy_random)->y = y_initial;
+    (*legacy_random)->z = z_initial;
+    (*legacy_random)->w = w_initial;
+    (*legacy_random)->bitIndex = 32;
 }
 
-unsigned int ou_legacyrandom_nextuint(LegacyRandom *lr_struct) {
-    unsigned int t = lr_struct->x ^ (lr_struct->x << 11);
-    lr_struct->x = lr_struct->y;
-    lr_struct->y = lr_struct->z;
-    lr_struct->z = lr_struct->w;
-    lr_struct->w = lr_struct->w ^ (lr_struct->w >> 19) ^ t ^ (t >> 8);
-    return lr_struct->w;
+void ou_legacyrandom_free(LegacyRandom *legacy_random) {
+    free(legacy_random);
 }
 
-int ou_legacyrandom_next(LegacyRandom *lr_struct) {
-    return (int)(int_mask & ou_legacyrandom_nextuint(lr_struct));
+unsigned int ou_legacyrandom_nextuint(LegacyRandom *legacy_random) {
+    unsigned int t = legacy_random->x ^ (legacy_random->x << 11);
+    legacy_random->x = legacy_random->y;
+    legacy_random->y = legacy_random->z;
+    legacy_random->z = legacy_random->w;
+    legacy_random->w = legacy_random->w ^ (legacy_random->w >> 19) ^ t ^ (t >> 8);
+    return legacy_random->w;
 }
 
-double ou_legacyrandom_nextdouble(LegacyRandom *lr_struct) {
-    return int_to_real * ou_legacyrandom_next(lr_struct);
+int ou_legacyrandom_next(LegacyRandom *legacy_random) {
+    return (int)(int_mask & ou_legacyrandom_nextuint(legacy_random));
 }
 
-int ou_legacyrandom_nextupper(LegacyRandom *lr_struct, int upperBound) {
-    return (int)(ou_legacyrandom_nextdouble(lr_struct) * upperBound);
+double ou_legacyrandom_nextdouble(LegacyRandom *legacy_random) {
+    return int_to_real * ou_legacyrandom_next(legacy_random);
 }
 
-int ou_legacyrandom_nextlowerupper(LegacyRandom *lr_struct, int lowerBound, int upperBound) {
-    return (int)(lowerBound + ou_legacyrandom_nextdouble(lr_struct) * (upperBound - lowerBound));
+int ou_legacyrandom_nextupper(LegacyRandom *legacy_random, int upperBound) {
+    return (int)(ou_legacyrandom_nextdouble(legacy_random) * upperBound);
 }
 
-int ou_legacyrandom_nextdoublelowerupper(LegacyRandom *lr_struct, double lowerBound, double upperBound) {
-    return (int)(lowerBound + ou_legacyrandom_nextdouble(lr_struct) * (upperBound - lowerBound));
+int ou_legacyrandom_nextlowerupper(LegacyRandom *legacy_random, int lowerBound, int upperBound) {
+    return (int)(lowerBound + ou_legacyrandom_nextdouble(legacy_random) * (upperBound - lowerBound));
 }
 
-bool ou_legacyrandom_nextbool(LegacyRandom *lr_struct) {
-    if (lr_struct->bitIndex == 32) {
-        lr_struct->bitBuffer = ou_legacyrandom_nextuint(lr_struct);
-        lr_struct->bitIndex = 1;
-        return (lr_struct->bitBuffer & 1) == 1;
+int ou_legacyrandom_nextdoublelowerupper(LegacyRandom *legacy_random, double lowerBound, double upperBound) {
+    return (int)(lowerBound + ou_legacyrandom_nextdouble(legacy_random) * (upperBound - lowerBound));
+}
+
+bool ou_legacyrandom_nextbool(LegacyRandom *legacy_random) {
+    if (legacy_random->bitIndex == 32) {
+        legacy_random->bitBuffer = ou_legacyrandom_nextuint(legacy_random);
+        legacy_random->bitIndex = 1;
+        return (legacy_random->bitBuffer & 1) == 1;
     }
-    lr_struct->bitIndex++;
-    lr_struct->bitBuffer >>= 1;
-    return (lr_struct->bitBuffer & 1) == 1;
+    legacy_random->bitIndex++;
+    legacy_random->bitBuffer >>= 1;
+    return (legacy_random->bitBuffer & 1) == 1;
 }

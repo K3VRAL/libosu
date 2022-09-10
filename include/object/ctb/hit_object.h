@@ -13,13 +13,17 @@ typedef union CHO {
     JuiceStream js;
     BananaShower bs;
     Banana b;
+    Droplet d;
+    TinyDroplet td;
 } CHO;
 
 typedef enum CHOType {
-    fruit,
-    juice_stream,
-    banana_shower,
-    banana
+    catchhitobject_fruit,
+    catchhitobject_juicestream,
+    catchhitobject_bananashower,
+    catchhitobject_banana,
+    catchhitobject_droplet,
+    catchhitobject_tinydroplet
 } CHOType;
 
 typedef struct CatchHitObject {
@@ -30,7 +34,10 @@ typedef struct CatchHitObject {
     CHO cho;
 } CatchHitObject;
 
-void ooc_hitobject_init(CatchHitObject **, float, float, float);
 extern const float ooc_hitobject_OBJECTRADIUS;
+
+void ooc_hitobject_init(CatchHitObject **, float, float, float);
+void ooc_hitobject_free(CatchHitObject *);
+
 
 #endif

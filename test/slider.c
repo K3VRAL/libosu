@@ -44,24 +44,60 @@ int main(void) {
     oos_slider_createnestedhitobjects(slider);
 
     // TODO make this into it's own function so testing can be easier and more readable
-    printf("%s - ", ((int) (slider->nested + 0)->x == 156 && (int) (slider->nested + 0)->y == 157
-                    && (int) (slider->nested + 0)->time == 5130) ? "Success" : "Failed");
-    printf("%s - ", ((int) (slider->nested + 1)->x == 213 && (int) (slider->nested + 1)->y == 123
-                    && (int) (slider->nested + 1)->time == 5287) ? "Success" : "Failed");
-    printf("%s - ", ((int) (slider->nested + 2)->x == 270 && (int) (slider->nested + 2)->y == 89
-                    && (int) (slider->nested + 2)->time == 5444) ? "Success" : "Failed");
-    printf("%s - ", ((int) (slider->nested + 3)->x == 213 && (int) (slider->nested + 3)->y == 123
-                    && (int) (slider->nested + 3)->time == 5601) ? "Success" : "Failed");
-    printf("%s - ", ((int) (slider->nested + 4)->x == 156 && (int) (slider->nested + 4)->y == 157
-                    && (int) (slider->nested + 4)->time == 5758) ? "Success" : "Failed");
-    printf("%s - ", ((int) (slider->nested + 5)->x == 213 && (int) (slider->nested + 5)->y == 123
-                    && (int) (slider->nested + 5)->time == 5916) ? "Success" : "Failed");
-    printf("%s\n", ((int) (slider->nested + 6)->x == 270 && (int) (slider->nested + 6)->y == 89
-                    && (int) (slider->nested + 6)->time == 6037) ? "Success" : "Failed");
+    struct {
+        int x;
+        int y;
+        int t;
+    } slider_result[7] = {
+        {
+            .x = 156,
+            .y = 157,
+            .t = 5130,
+        }, {
+            .x = 213,
+            .y = 123,
+            .t = 5287,
+        }, {
+            .x = 270,
+            .y = 89,
+            .t = 5444,
+        }, {
+            .x = 213,
+            .y = 123,
+            .t = 5601,
+        }, {
+            .x = 156,
+            .y = 157,
+            .t = 5758,
+        }, {
+            .x = 213,
+            .y = 123,
+            .t = 5916,
+        }, {
+            .x = 270,
+            .y = 89,
+            .t = 6073,
+        }
+    };
+    for (int i = 0; i < slider->num_nested; i++) {
+        printf("[%d:%d | %d:%d | %d:%d] - %s\n"
+            , slider_result[i].x, (slider->nested + i)->x
+            , slider_result[i].y, (slider->nested + i)->y
+            , slider_result[i].t, (slider->nested + i)->time
+            , slider_result[i].x == (slider->nested + i)->x
+                && slider_result[i].y == (slider->nested + i)->y
+                && slider_result[i].t == (slider->nested + i)->time
+                ? "Success" : "Failed");
+    }
+    for (int i = 0; i < slider->num_nested; i++) {
+        printf("%d,%d,%d,1,0\n", (slider->nested + i)->x, (slider->nested + i)->y, (slider->nested + i)->time);
+    }
 
     oos_slider_free(slider);
-    oos_hitobject_free(hit_object, 1);
+    oos_hitobject_free(hit_object);
     oos_uninheritedpoint_free(unintp);
     oos_inheritedpoint_free(intp);
     oos_timingpoint_free(tp);
+
+    return 0;
 }

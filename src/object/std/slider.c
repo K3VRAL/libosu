@@ -29,6 +29,13 @@ void oos_slider_init(Slider **slider, Difficulty difficulty, InheritedTimingPoin
     (*slider)->ho_data->curves = hit_object->ho.slider.curves;
     (*slider)->ho_data->num_curve = hit_object->ho.slider.num_curve;
 
+    (*slider)->calculate_path = NULL;
+    (*slider)->calculatepath_len = 0;
+    (*slider)->cumulative_length = NULL;
+    (*slider)->cumulativelength_len = 0;
+    (*slider)->control_point = NULL;
+    (*slider)->controlpoint_len = 0;
+
     (*slider)->nested = NULL;
     (*slider)->num_nested = 0;
 
@@ -57,14 +64,28 @@ void oos_slider_free(Slider *slider) {
     if (slider->legacy_last_tick_offset != NULL) {
         free(slider->legacy_last_tick_offset);
     }
-    // TODO figure out a way to free all of `nested`
+    if (slider->ho_data != NULL) {
+        free(slider->ho_data);
+    }
+    if (slider->calculate_path != NULL) {
+        free(slider->calculate_path);
+    }
+    if (slider->cumulative_length != NULL) {
+        free(slider->cumulative_length);
+    }
+    if (slider->control_point != NULL) {
+        free(slider->control_point);
+    }
+    if (slider->nested != NULL) { // TODO this may be a pain in the ass in the future so keep track of this. Update; it did
+        free(slider->nested);
+    }
     free(slider);
 }
 
 void oos_slider_linearapproximate(SliderVector2 **result, unsigned int *len_result, SliderVector2 *vertices, unsigned int *len) {
     *result = malloc(*len * sizeof(**result));
     for (int i = 0; i < *len; i++) {
-        (*result + i)->type = (vertices + i)->type;
+        (*result + i)->type = NULL;
         (*result + i)->x = (vertices + i)->x;
         (*result + i)->y = (vertices + i)->y;
         *len_result = *len;
@@ -86,22 +107,22 @@ void oos_slider_catmullapproximate(SliderVector2 **result, unsigned int *len_res
     for (int i = 0; i < *len - 1; i++) {
         SliderVector2 v1;
         if (i > 0) {
-            v1 = vertices[i - 1];
+            v1 = *(vertices + i - 1);
         } else {
-            v1 = vertices[i];
+            v1 = *(vertices + i);
         }
         
-        SliderVector2 v2 = vertices[i];
+        SliderVector2 v2 = *(vertices + i);
         SliderVector2 v3;
         if (i < *len - 1) {
-            v3 = vertices[i + 1];
+            v3 = *(vertices + i + 1);
         } else {
             v3.x = v2.x + v2.x - v1.x;
             v3.y = v2.y + v2.y - v1.y;
         }
         SliderVector2 v4;
         if (i < *len - 2) {
-            v4 = vertices[i + 2];
+            v4 = *(vertices + i + 2);
         } else {
             v4.x = v3.x + v3.x - v2.x;
             v4.y = v3.y + v3.y - v2.y;
@@ -163,159 +184,167 @@ void oos_slider_calculatesubpath(SliderVector2 **sub_path, unsigned int *len_sub
     oos_slider_approximatebezier(sub_path, len_subpath, vertices, len);
 }
 
+// TODO what's going on with the X axis
 void oos_slider_positionat(SliderVector2 *vector, double progress, Slider *slider) {
-    SliderVector2 *calculate_path = NULL;
-    unsigned int calculatepath_len = 0;
-
     // calculatePath()
-    int controlpoint_len = slider->ho_data->num_curve + 1;
-    SliderVector2 control_point[controlpoint_len];
-    control_point[0].type = &slider->ho_data->curve_type;
-    control_point[0].x = 0;
-    control_point[0].y = 0;
-    for (int i = 1; i < controlpoint_len; i++) {
-        control_point[i].x = (slider->ho_data->curves + i - 1)->x - slider->start_position.x;
-        control_point[i].y = (slider->ho_data->curves + i - 1)->y - slider->start_position.y;
-    }
-    int start = 0;
-    for (int i = 0; i < controlpoint_len; i++) {
-        if (control_point[i].type == NULL && i < controlpoint_len - 1) {
-            continue;
-        }
-        unsigned int segment_len = i - start + 1;
-        SliderVector2 segment_vertices[segment_len];
-        for (int i = start; i < segment_len; i++) {
-            segment_vertices[i].x = control_point[i].x;
-            segment_vertices[i].y = control_point[i].y;
-        }
-        SliderType segment_type = control_point[start].type != NULL ? *control_point[start].type : slidertype_linear;
-        
-        SliderVector2 *result = NULL;
-        unsigned int len_result = 0;
-        oos_slider_calculatesubpath(&result, &len_result, segment_vertices, &segment_len, segment_type);
-        for (int i = 0; i < len_result; i++) {
-            if (calculatepath_len == 0
-                || ((calculate_path + calculatepath_len - 1)->x != (result + i)->x
-                    && (calculate_path + calculatepath_len - 1)->y != (result + i)->y)) {
-                calculate_path = realloc(calculate_path, (calculatepath_len + 1) * sizeof(*calculate_path));
-                (calculate_path + calculatepath_len)->x = (result + i)->x;
-                (calculate_path + calculatepath_len)->y = (result + i)->y;
-                calculatepath_len++;
+    if (slider->calculate_path == NULL && slider->calculatepath_len == 0) {
+        slider->control_point = malloc(sizeof(*slider->control_point));
+        (slider->control_point + slider->controlpoint_len)->type = &slider->ho_data->curve_type;
+        (slider->control_point + slider->controlpoint_len)->x = 0;
+        (slider->control_point + slider->controlpoint_len)->y = 0;
+        slider->controlpoint_len++;
+        for (int i = 0; i < slider->ho_data->num_curve; i++) {
+            // TODO remove if previous control point is the same
+            if ((slider->control_point + slider->controlpoint_len - 1)->x != (slider->ho_data->curves + i)->x - slider->start_position.x
+                || (slider->control_point + slider->controlpoint_len - 1)->y != (slider->ho_data->curves + i)->y - slider->start_position.y) {
+                slider->control_point = realloc(slider->control_point, (slider->controlpoint_len + 1) * sizeof(*slider->control_point));
+                (slider->control_point + slider->controlpoint_len)->type = slider->ho_data->num_curve > i + 1 ? &slider->ho_data->curve_type : NULL;
+                (slider->control_point + slider->controlpoint_len)->x = (slider->ho_data->curves + i)->x - slider->start_position.x;
+                (slider->control_point + slider->controlpoint_len)->y = (slider->ho_data->curves + i)->y - slider->start_position.y;
+                slider->controlpoint_len++;
             }
         }
-        free(result);
-        start = i;
+        int start = 0;
+        for (int i = 0; i < slider->controlpoint_len; i++) {
+            if ((slider->control_point + i)->type == NULL && i < slider->controlpoint_len - 1) {
+                continue;
+            }
+            unsigned int segment_len = i - start + 1;
+            SliderVector2 segment_vertices[segment_len];
+            for (int j = 0, k = start; k < segment_len + start; j++, k++) {
+                segment_vertices[j].x = (slider->control_point + k)->x;
+                segment_vertices[j].y = (slider->control_point + k)->y;
+            }
+            SliderType segment_type = (slider->control_point + start)->type != NULL ? *(slider->control_point + start)->type : slidertype_linear;
+            
+            SliderVector2 *result = NULL;
+            unsigned int len_result = 0;
+            oos_slider_calculatesubpath(&result, &len_result, segment_vertices, &segment_len, segment_type);
+            for (int j = 0; j < len_result; j++) {
+                if (slider->calculatepath_len == 0
+                    || !((slider->calculate_path + slider->calculatepath_len - 1)->x == (result + j)->x
+                        && (slider->calculate_path + slider->calculatepath_len - 1)->y == (result + j)->y)) {
+                    slider->calculate_path = realloc(slider->calculate_path, (slider->calculatepath_len + 1) * sizeof(*slider->calculate_path));
+                    (slider->calculate_path + slider->calculatepath_len)->x = (result + j)->x;
+                    (slider->calculate_path + slider->calculatepath_len)->y = (result + j)->y;
+                    slider->calculatepath_len++;
+                }
+            }
+            free(result);
+            start = i;
+        }
     }
     
     // caluclateLength()
-    double calculated_length = 0;
-    double *cumulative_length = malloc(sizeof(*cumulative_length));
-    unsigned int cumulativelength_len = 0;
-    *(cumulative_length + cumulativelength_len) = 0;
-    cumulativelength_len++;
-    for (int i = 0; i < calculatepath_len - 1; i++) {
-        SliderVector2 diff = {
-            .x = (calculate_path + i + 1)->x - (calculate_path + i)->x,
-            .y = (calculate_path + i + 1)->y - (calculate_path + i)->y
-        };
-        calculated_length += sqrt((diff.x * diff.x) + (diff.y * diff.y));
-        cumulative_length = realloc(cumulative_length, (cumulativelength_len + 1) * sizeof(*cumulative_length));
-        *(cumulative_length + cumulativelength_len) = calculated_length;
-        cumulativelength_len++;
-    }
-    if (calculated_length != slider->path.distance) { // Should I be worried with `ExpectedDistance.Value is double`? It seems that it is nullable
-        if (controlpoint_len >= 2
-            && ((control_point[controlpoint_len - 1].x == control_point[controlpoint_len - 2].x
-                && control_point[controlpoint_len - 1].y == control_point[controlpoint_len - 2].y))
-            && slider->path.distance > calculated_length) {
-            cumulative_length = realloc(cumulative_length, (cumulativelength_len + 1) * sizeof(*cumulative_length));
-            *(cumulative_length + cumulativelength_len) = calculated_length;
-            cumulativelength_len++;
-            goto caluclatelength_goto;
+    if (slider->cumulative_length == NULL && slider->cumulativelength_len == 0) {
+        slider->cumulative_length = malloc(sizeof(*slider->cumulative_length));
+        double calculated_length = 0;
+        *(slider->cumulative_length + slider->cumulativelength_len) = 0;
+        slider->cumulativelength_len++;
+        for (int i = 0; i < slider->calculatepath_len - 1; i++) {
+            SliderVector2 diff = {
+                .x = (slider->calculate_path + i + 1)->x - (slider->calculate_path + i)->x,
+                .y = (slider->calculate_path + i + 1)->y - (slider->calculate_path + i)->y
+            };
+            calculated_length += sqrt((diff.x * diff.x) + (diff.y * diff.y));
+            slider->cumulative_length = realloc(slider->cumulative_length, (slider->cumulativelength_len + 1) * sizeof(*slider->cumulative_length));
+            *(slider->cumulative_length + slider->cumulativelength_len) = calculated_length;
+            slider->cumulativelength_len++;
         }
-            cumulative_length = realloc(cumulative_length, (cumulativelength_len - 1) * sizeof(*cumulative_length));
-            cumulativelength_len--;
-        int path_end_index = calculatepath_len - 1;
-        if (calculated_length > slider->path.distance) {
-            while (cumulativelength_len > 0 && *(cumulative_length + cumulativelength_len - 1) >= slider->path.distance) {
-                cumulative_length = realloc(cumulative_length, (cumulativelength_len - 1) * sizeof(*cumulative_length));
-                cumulativelength_len--;
-                for (int i = path_end_index; i < calculatepath_len; i++) {
-                    *(cumulative_length + i) = *(cumulative_length + i + 1);
-                }
-                calculatepath_len--;
+        if (calculated_length != slider->path.distance) { // Should I be worried with `ExpectedDistance.Value is double`? It seems that it is nullable
+            if (slider->controlpoint_len >= 2
+                && (((slider->control_point + slider->controlpoint_len - 1)->x == (slider->control_point + slider->controlpoint_len - 2)->x
+                    && (slider->control_point + slider->controlpoint_len - 1)->y == (slider->control_point + slider->controlpoint_len - 2)->y))
+                && slider->path.distance > calculated_length) {
+                slider->cumulative_length = realloc(slider->cumulative_length, (slider->cumulativelength_len + 1) * sizeof(*slider->cumulative_length));
+                *(slider->cumulative_length + slider->cumulativelength_len) = calculated_length;
+                slider->cumulativelength_len++;
+                goto caluclatelength_goto;
             }
+                slider->cumulative_length = realloc(slider->cumulative_length, (slider->cumulativelength_len - 1) * sizeof(*slider->cumulative_length));
+                slider->cumulativelength_len--;
+            int path_end_index = slider->calculatepath_len - 1;
+            if (calculated_length > slider->path.distance) {
+                while (slider->cumulativelength_len > 0 && *(slider->cumulative_length + slider->cumulativelength_len - 1) >= slider->path.distance) {
+                    slider->cumulative_length = realloc(slider->cumulative_length, (slider->cumulativelength_len - 1) * sizeof(*slider->cumulative_length));
+                    slider->cumulativelength_len--;
+                    for (int i = path_end_index; i < slider->calculatepath_len; i++) {
+                        *(slider->cumulative_length + i) = *(slider->cumulative_length + i + 1);
+                    }
+                    slider->calculatepath_len--;
+                }
+            }
+            if (path_end_index <= 0) {
+                slider->cumulative_length = realloc(slider->cumulative_length, (slider->cumulativelength_len + 1) * sizeof(*slider->cumulative_length));
+                *(slider->cumulative_length + slider->cumulativelength_len) = 0;
+                slider->cumulativelength_len++;
+                goto caluclatelength_goto;
+            }
+            SliderVector2 dir = {
+                .x = (slider->calculate_path + path_end_index)->x - (slider->calculate_path + path_end_index - 1)->x,
+                .y = (slider->calculate_path + path_end_index)->y - (slider->calculate_path + path_end_index - 1)->y
+            };
+            float distance = sqrtf((dir.x * dir.x) + (dir.y * dir.y));
+            dir.x = dir.x / distance;
+            dir.y = dir.y / distance;
+            (slider->calculate_path + path_end_index)->x = (slider->calculate_path + path_end_index - 1)->x + dir.x * (float) (slider->path.distance - *(slider->cumulative_length + slider->cumulativelength_len - 1));
+            (slider->calculate_path + path_end_index)->y = (slider->calculate_path + path_end_index - 1)->y + dir.y * (float) (slider->path.distance - *(slider->cumulative_length + slider->cumulativelength_len - 1));
+            slider->cumulative_length = realloc(slider->cumulative_length, (slider->cumulativelength_len + 1) * sizeof(*slider->cumulative_length));
+            *(slider->cumulative_length + slider->cumulativelength_len) = slider->path.distance;
+            slider->cumulativelength_len++;
         }
-        if (path_end_index <= 0) {
-            cumulative_length = realloc(cumulative_length, (cumulativelength_len + 1) * sizeof(*cumulative_length));
-            *(cumulative_length + cumulativelength_len) = 0;
-            cumulativelength_len++;
-            goto caluclatelength_goto;
-        }
-        SliderVector2 dir = {
-            .x = (calculate_path + path_end_index)->x - (calculate_path + path_end_index - 1)->x,
-            .y = (calculate_path + path_end_index)->y - (calculate_path + path_end_index - 1)->y
-        };
-        float distance = sqrtf((dir.x * dir.x) + (dir.y * dir.y));
-        dir.x = dir.x / distance;
-        dir.y = dir.y / distance;
-        (calculate_path + path_end_index)->x = (calculate_path + path_end_index - 1)->x + dir.x * (float) (slider->path.distance - *(cumulative_length + cumulativelength_len - 1));
-        (calculate_path + path_end_index)->y = (calculate_path + path_end_index - 1)->y + dir.y * (float) (slider->path.distance - *(cumulative_length + cumulativelength_len - 1));
-        cumulative_length = realloc(cumulative_length, (cumulativelength_len + 1) * sizeof(*cumulative_length));
-        *(cumulative_length + cumulativelength_len) = slider->path.distance;
-        cumulativelength_len++;
-    }
 
-    caluclatelength_goto:;
+        caluclatelength_goto:;
+    }
 
     double d = fmax(0, fmin(progress, 1)) * slider->path.distance;
     
     // indexOfDisatnce(d)
     int i = 0;
     int l = 0;
-    int r = cumulativelength_len - 1;
+    int r = slider->cumulativelength_len - 1;
     int pivot;
     while (l <= r) {
         pivot = (r + l) / 2;
-        if (*(cumulative_length + pivot) < d) {
+        if (*(slider->cumulative_length + pivot) < d) {
             l = pivot + 1;
-        } else if (*(cumulative_length + pivot) > d) {
+        } else if (*(slider->cumulative_length + pivot) > d) {
             r = pivot - 1;
         } else {
-            i = *(cumulative_length + pivot);
+            i = *(slider->cumulative_length + pivot);
             break;
         }
     }
     if (i == 0) {
-        i = pivot;
+        i = l;
     }
 
     // interpolateVertices(indexOfDisatnce(d), d)
-    if (calculatepath_len == 0) {
+    if (slider->calculatepath_len == 0) {
         vector->x = 0;
         vector->y = 0;
         goto interpolatevertices_goto;
     }
     if (i <= 0) {
-        vector->x = (calculate_path + 0)->x;
-        vector->y = (calculate_path + 0)->y;
+        vector->x = (slider->calculate_path + 0)->x;
+        vector->y = (slider->calculate_path + 0)->y;
         goto interpolatevertices_goto;
     }
-    if (i >= calculatepath_len) {
-        vector->x = (calculate_path + calculatepath_len - 1)->x;
-        vector->y = (calculate_path + calculatepath_len - 1)->y;
+    if (i >= slider->calculatepath_len) {
+        vector->x = (slider->calculate_path + slider->calculatepath_len - 1)->x;
+        vector->y = (slider->calculate_path + slider->calculatepath_len - 1)->y;
         goto interpolatevertices_goto;
     }
     SliderVector2 p0 = {
-        .x = (calculate_path + i - 1)->x,
-        .y = (calculate_path + i - 1)->y
+        .x = (slider->calculate_path + i - 1)->x,
+        .y = (slider->calculate_path + i - 1)->y
     };
     SliderVector2 p1 = {
-        .x = (calculate_path + i)->x,
-        .y = (calculate_path + i)->y
+        .x = (slider->calculate_path + i)->x,
+        .y = (slider->calculate_path + i)->y
     };
-    double d0 = *(cumulative_length + i - 1);
-    double d1 = *(cumulative_length + i);
+    double d0 = *(slider->cumulative_length + i - 1);
+    double d1 = *(slider->cumulative_length + i);
     if (fabs(d0 - d1) <= 1e-7) {
         vector->x = p0.x;
         vector->y = p0.y;
@@ -326,9 +355,6 @@ void oos_slider_positionat(SliderVector2 *vector, double progress, Slider *slide
     vector->y = p0.y + (p1.y - p0.y) * (float) w;
 
     interpolatevertices_goto:;
-
-    free(calculate_path);
-    free(cumulative_length);
 }
 
 void oos_slider_createnestedhitobjects(Slider *slider) {
@@ -357,22 +383,6 @@ void oos_slider_createnestedhitobjects(Slider *slider) {
                 break;
             }
 
-            case sliderevent_legacylasttick: {
-                slider->nested = realloc(slider->nested, (slider->num_nested + 1) * sizeof(*slider->nested));
-                // (slider->nested + slider->num_nested)->type = tail;
-                (slider->nested + slider->num_nested)->time = slider_event->time;
-                double progress = 1 * (int) slider->span_count % 1;
-                if ((int) (1 * slider->span_count) % 2 == 1) {
-                    progress = 1 - progress;
-                }
-                SliderVector2 position;
-                oos_slider_positionat(&position, progress, slider);
-                (slider->nested + slider->num_nested)->x = slider->start_position.x + position.x;
-                (slider->nested + slider->num_nested)->y = slider->start_position.y + position.y;
-                slider->num_nested++;
-                break;
-            }
-
             case sliderevent_repeat: {
                 slider->nested = realloc(slider->nested, (slider->num_nested + 1) * sizeof(*slider->nested));
                 // (slider->nested + slider->num_nested)->type = repeat;
@@ -385,9 +395,37 @@ void oos_slider_createnestedhitobjects(Slider *slider) {
                 break;
             }
 
-            case sliderevent_tail:
-                // Source code just ignores this
+            // This seems to cause more trouble than it does help so I'm commenting this out for the time being
+            case sliderevent_legacylasttick:
                 break;
+            // case sliderevent_legacylasttick: {
+            //     slider->nested = realloc(slider->nested, (slider->num_nested + 1) * sizeof(*slider->nested));
+            //     // (slider->nested + slider->num_nested)->type = tail;
+            //     (slider->nested + slider->num_nested)->time = slider_event->time;
+            //     double progress = 1 * (int) slider->span_count % 1;
+            //     if ((int) (1 * slider->span_count) % 2 == 1) {
+            //         progress = 1 - progress;
+            //     }
+            //     SliderVector2 position;
+            //     oos_slider_positionat(&position, progress, slider);
+            //     (slider->nested + slider->num_nested)->x = slider->start_position.x + position.x;
+            //     (slider->nested + slider->num_nested)->y = slider->start_position.y + position.y;
+            //     slider->num_nested++;
+            //     break;
+            // }
+
+            // Source code just ignores this but idc
+            case sliderevent_tail: {
+                slider->nested = realloc(slider->nested, (slider->num_nested + 1) * sizeof(*slider->nested));
+                // (slider->nested + slider->num_nested)->type = tail;
+                (slider->nested + slider->num_nested)->time = slider_event->time;
+                SliderVector2 position;
+                oos_slider_positionat(&position, slider_event->path_progress, slider);
+                (slider->nested + slider->num_nested)->x = slider->start_position.x + position.x;
+                (slider->nested + slider->num_nested)->y = slider->start_position.y + position.y;
+                slider->num_nested++;
+                break;
+            }
         }
     }
 }
@@ -457,7 +495,8 @@ SliderEventDescriptor *oos_slider_generate(double start_time, double span_durati
             final_span_index = span_count - 1;
             double final_span_start_time = start_time + final_span_index * span_duration;
             double final_span_end_time = fmax(start_time + total_duration / 2, (final_span_start_time + span_duration) - (legacy_last_tick_offset != NULL ? *legacy_last_tick_offset : 0));
-            double final_progress = (final_span_end_time - final_span_start_time) / span_duration;
+            static double final_progress;
+            final_progress = (final_span_end_time - final_span_start_time) / span_duration;
             if (span_count % 2 == 0) {
                 final_progress = 1 - final_progress;
             }
@@ -473,14 +512,17 @@ SliderEventDescriptor *oos_slider_generate(double start_time, double span_durati
             }
             
         case 4:
-            state = 5;
-            object = malloc(sizeof(*object));
-            object->type = sliderevent_tail;
-            object->span_index = final_span_index;
-            object->span_start_time = start_time + (span_count - 1) * span_duration;
-            object->time = start_time + total_duration;
-            object->path_progress = (int) span_duration % 2;
-            return object;
+            {
+                state = 5;
+                object = malloc(sizeof(*object));
+                // Ssource code seems to break so I'm just copying pasting parts of legacylasttick
+                object->type = sliderevent_tail;
+                object->span_index = final_span_index;
+                object->span_start_time = start_time + (span_count - 1) * span_duration;
+                object->time = start_time + total_duration;
+                object->path_progress = (int) span_duration;
+                return object;
+            }
 
         case 5:;
     }

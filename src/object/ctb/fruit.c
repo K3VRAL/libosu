@@ -8,7 +8,7 @@ void ooc_fruit_init(CatchHitObject **object, HitObject *hit_object) {
     }
 
     ooc_hitobject_init(object, hit_object->time, hit_object->x, 0);
-    (*object)->type = fruit;
+    (*object)->type = catchhitobject_fruit;
 }
 
 void ooc_fruit_applyhardrockoffset(CatchHitObject *object, float **last_position, double *last_start_time, LegacyRandom *rng) {

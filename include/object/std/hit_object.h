@@ -82,7 +82,7 @@ typedef struct HitObject {
 
 extern const float oos_hitobject_BASESCORINGDISTANCE;
 
-void oos_hitobject_free(HitObject *, unsigned int);
+void oos_hitobject_free(HitObject *);
 void oos_hitobject_sort(HitObject *, unsigned int);
 
 #endif

@@ -2,35 +2,34 @@
 
 const float oos_hitobject_BASESCORINGDISTANCE = 100;
 
-void oos_hitobject_free(HitObject *ho, unsigned int num) {
-    if (ho != NULL) {
-        for (int i = 0; i < num; i++) {
-            if ((ho + i)->type == slider || (ho + i)->type == nc_slider) {
-                if ((ho + i)->ho.slider.curves != NULL) {
-                    free((ho + i)->ho.slider.curves);
-                }
-                if ((ho + i)->ho.slider.edge_sounds != NULL) {
-                    free((ho + i)->ho.slider.edge_sounds);
-                }
-                if ((ho + i)->ho.slider.edge_sets != NULL) {
-                    free((ho + i)->ho.slider.edge_sets);
-                }
-            }
-            if ((ho + i)->hit_sample.filename != NULL) {
-                free((ho + i)->hit_sample.filename);
-            }
-        }
-        free(ho);
+void oos_hitobject_free(HitObject *hit_object) {
+    if (hit_object == NULL) {
+        return;
     }
+    if (hit_object->type == slider || hit_object->type == nc_slider) {
+        if (hit_object->ho.slider.curves != NULL) {
+            free(hit_object->ho.slider.curves);
+        }
+        if (hit_object->ho.slider.edge_sounds != NULL) {
+            free(hit_object->ho.slider.edge_sounds);
+        }
+        if (hit_object->ho.slider.edge_sets != NULL) {
+            free(hit_object->ho.slider.edge_sets);
+        }
+    }
+    if (hit_object->hit_sample.filename != NULL) {
+        free(hit_object->hit_sample.filename);
+    }
+    free(hit_object);
 }
 
-void oos_hitobject_sort(HitObject *ho, unsigned int num) {
+void oos_hitobject_sort(HitObject *hit_object, unsigned int num) {
     for (int i = 0; i < num - 1; i++) {
         for (int j = i + 1; j < num; j++) {
-            if ((ho + i)->time > (ho + j)->time) {
-                HitObject temp = *(ho + i);
-                *(ho + i) = *(ho + j);
-                *(ho + j) = temp;
+            if ((hit_object + i)->time > (hit_object + j)->time) {
+                HitObject temp = *(hit_object + i);
+                *(hit_object + i) = *(hit_object + j);
+                *(hit_object + j) = temp;
             }
         }
     }

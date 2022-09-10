@@ -15,7 +15,8 @@ typedef struct LegacyRandom {
     int bitIndex;
 } LegacyRandom;
 
-void ou_legacyrandom_init(LegacyRandom *, int);
+void ou_legacyrandom_init(LegacyRandom **, int);
+void ou_legacyrandom_free(LegacyRandom *);
 unsigned int ou_legacyrandom_nextuint(LegacyRandom *);
 int ou_legacyrandom_next(LegacyRandom *);
 double ou_legacyrandom_nextdouble(LegacyRandom *);

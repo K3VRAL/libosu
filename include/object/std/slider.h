@@ -59,6 +59,14 @@ typedef struct Slider { // Some duplicated/relational variables exists here; may
     double span_count;
     SliderVector2 start_position;
     HOSlider *ho_data;
+
+    SliderVector2 *control_point;
+    unsigned int controlpoint_len;
+    SliderVector2 *calculate_path;
+    unsigned int calculatepath_len;
+    double *cumulative_length;
+    unsigned int cumulativelength_len;
+    
     HitObject *nested;
     unsigned int num_nested;
 } Slider;
