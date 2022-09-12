@@ -6,7 +6,11 @@ typedef struct Structure {
     int version;
 } Structure;
 
-void oos_structure_init(Structure **);
-void oos_structure_free(Structure *);
+/*
+
+    argsreturn
+    args
+*/
+void oos_structure_init(Structure *);
 
 #endif

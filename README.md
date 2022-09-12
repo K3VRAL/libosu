@@ -22,6 +22,6 @@ TODO
 
 ## Documentation
 
-God I'm going to hate this part
+God I'm going to hate this part; I'll probably make a github wiki on this one day
 
 TODO

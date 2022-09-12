@@ -1,16 +1,16 @@
 #include "object/ctb.h"
 
-void ooc_bananashower_init(CatchHitObject **object, HitObject *hit_object) {
-    if (!(hit_object->type == spinner || hit_object->type == nc_spinner)) {
+void ooc_bananashower_init(CatchHitObject *object, HitObject hit_object) {
+    if (!(hit_object.type == spinner || hit_object.type == nc_spinner)) {
         return;
     }
 
-    ooc_hitobject_init(object, hit_object->time, hit_object->x, 0);
-    (*object)->type = catchhitobject_bananashower;
-    (*object)->cho.bs.end_time = hit_object->ho.spinner.end_time;
-    (*object)->cho.bs.duration = hit_object->ho.spinner.end_time - hit_object->time;
-    (*object)->cho.bs.bananas = NULL;
-    (*object)->cho.bs.num_banana = 0;
+    ooc_hitobject_init(object, hit_object.time, hit_object.x, 0);
+    object->type = catchhitobject_bananashower;
+    object->cho.bs.end_time = hit_object.ho.spinner.end_time;
+    object->cho.bs.duration = hit_object.ho.spinner.end_time - hit_object.time;
+    object->cho.bs.bananas = NULL;
+    object->cho.bs.num_banana = 0;
 }
 
 void ooc_bananashower_createnestedbananas(CatchHitObject *object) {
@@ -25,17 +25,15 @@ void ooc_bananashower_createnestedbananas(CatchHitObject *object) {
     while (time <= object->cho.bs.end_time) {
         object->cho.bs.bananas = realloc(object->cho.bs.bananas, (object->cho.bs.num_banana + 1) * sizeof(*object->cho.bs.bananas));
         (object->cho.bs.bananas + object->cho.bs.num_banana)->start_time = time;
-        (object->cho.bs.bananas + object->cho.bs.num_banana)->type = catchhitobject_banana;
+        (object->cho.bs.bananas + object->cho.bs.num_banana++)->type = catchhitobject_banana;
         time += spacing;
-        object->cho.bs.num_banana++;
     }
 }
 
-void ooc_bananashower_free(BananaShower *banana_shower) {
-    if (banana_shower->bananas != NULL) {
-        free(banana_shower->bananas);
+void ooc_bananashower_free(BananaShower banana_shower) {
+    if (banana_shower.bananas != NULL) {
+        free(banana_shower.bananas);
     }
-    free(banana_shower);
 }
 
 void ooc_bananashower_xoffset(CatchHitObject *object, LegacyRandom *lr) {

@@ -1,20 +1,18 @@
 #include "object/ctb.h"
 
-void ooc_juicestream_init(CatchHitObject **object, Slider *slider) {
-    ooc_hitobject_init(object, slider->start_time, slider->start_position.x, 0);
-    (*object)->type = catchhitobject_juicestream;
-    (*object)->cho.js.slider_data = slider;
-    (*object)->cho.js.nested = NULL;
-    (*object)->cho.js.num_nested = 0;
+void ooc_juicestream_init(CatchHitObject *object, Difficulty difficulty, TimingPoint *timing_point, unsigned int timingpoint_len, HitObject hit_object) {
+    ooc_hitobject_init(object, hit_object.time, hit_object.x, 0);
+    object->type = catchhitobject_juicestream;
+    oos_slider_initwoherited(&object->cho.js.slider_data, difficulty, timing_point, timingpoint_len, hit_object);
+    object->cho.js.nested = NULL;
+    object->cho.js.num_nested = 0;
 }
 
-void ooc_juicestream_free(JuiceStream *juice_stream) {
-    if (juice_stream == NULL) {
-        return;
+void ooc_juicestream_free(JuiceStream juice_stream) {
+    if (juice_stream.nested != NULL) {
+        free(juice_stream.nested);
     }
-    if (juice_stream->nested != NULL) {
-        free(juice_stream->nested);
-    }
+    oos_slider_free(juice_stream.slider_data);
 }
 
 // https://github.com/ppy/osu/blob/master/osu.Game.Rulesets.Catch/Beatmaps/CatchBeatmapProcessor.cs
@@ -23,7 +21,7 @@ void ooc_juicestream_free(JuiceStream *juice_stream) {
 void ooc_juicestream_createnestedjuice(CatchHitObject *object) {
     SliderEventDescriptor *last_event = NULL;
     SliderEventDescriptor *e;
-    while ((e = oos_slider_generate(object->start_time, object->cho.js.slider_data->span_duration, object->cho.js.slider_data->velocity, object->cho.js.slider_data->tick_distance, object->cho.js.slider_data->path.distance, object->cho.js.slider_data->span_count, object->cho.js.slider_data->legacy_last_tick_offset)) != NULL) {
+    while ((e = oos_slider_generate(object->start_time, object->cho.js.slider_data.span_duration, object->cho.js.slider_data.velocity, object->cho.js.slider_data.tick_distance, object->cho.js.slider_data.path.distance, object->cho.js.slider_data.span_count, object->cho.js.slider_data.legacy_last_tick_offset)) != NULL) {
         if (last_event != NULL) {
             double since_last_tick = e->time - last_event->time;
             if (since_last_tick > 80) {
@@ -36,14 +34,13 @@ void ooc_juicestream_createnestedjuice(CatchHitObject *object) {
                     (object->cho.js.nested + object->cho.js.num_nested)->type = catchhitobject_tinydroplet;
                     (object->cho.js.nested + object->cho.js.num_nested)->start_time = t + last_event->time;
                     SliderVector2 position;
-                    oos_slider_positionat(&position, (last_event->path_progress + (t / since_last_tick) * (e->path_progress - last_event->path_progress)), object->cho.js.slider_data);
-                    (object->cho.js.nested + object->cho.js.num_nested)->x = object->x + position.x;
-                    object->cho.js.num_nested++;
+                    oos_slider_positionat(&position, (last_event->path_progress + (t / since_last_tick) * (e->path_progress - last_event->path_progress)), &object->cho.js.slider_data);
+                    (object->cho.js.nested + object->cho.js.num_nested++)->x = object->x + position.x;
                 }
             }
         }
         if (last_event == NULL) {
-            last_event = malloc(sizeof(*last_event));
+            last_event = calloc(1, sizeof(*last_event));
         }
         last_event->type = e->type;
         last_event->time = e->time;
@@ -56,9 +53,8 @@ void ooc_juicestream_createnestedjuice(CatchHitObject *object) {
                 (object->cho.js.nested + object->cho.js.num_nested)->type = catchhitobject_droplet;
                 (object->cho.js.nested + object->cho.js.num_nested)->start_time = e->time;
                 SliderVector2 position;
-                oos_slider_positionat(&position, e->path_progress, object->cho.js.slider_data);
-                (object->cho.js.nested + object->cho.js.num_nested)->x = object->x + position.x;
-                object->cho.js.num_nested++;
+                oos_slider_positionat(&position, e->path_progress, &object->cho.js.slider_data);
+                (object->cho.js.nested + object->cho.js.num_nested++)->x = object->x + position.x;
                 break;
             }
 
@@ -69,9 +65,8 @@ void ooc_juicestream_createnestedjuice(CatchHitObject *object) {
                 (object->cho.js.nested + object->cho.js.num_nested)->type = catchhitobject_fruit;
                 (object->cho.js.nested + object->cho.js.num_nested)->start_time = e->time;
                 SliderVector2 position;
-                oos_slider_positionat(&position, e->path_progress, object->cho.js.slider_data);
-                (object->cho.js.nested + object->cho.js.num_nested)->x = object->x + position.x;
-                object->cho.js.num_nested++;
+                oos_slider_positionat(&position, e->path_progress, &object->cho.js.slider_data);
+                (object->cho.js.nested + object->cho.js.num_nested++)->x = object->x + position.x;
                 break;
             }
 
@@ -84,9 +79,9 @@ void ooc_juicestream_createnestedjuice(CatchHitObject *object) {
 
 void ooc_juicestream_xoffset(CatchHitObject *object, float **last_position, double *last_start_time, LegacyRandom *rng) {
     if (*last_position == NULL) {
-        *last_position = malloc(sizeof(*last_position));
+        *last_position = calloc(1, sizeof(*last_position));
     }
-    **last_position = object->x + (object->cho.js.slider_data->controlpoint_len > 0 ? (object->cho.js.slider_data->control_point + object->cho.js.slider_data->controlpoint_len - 1)->x : 0);
+    **last_position = object->x + (object->cho.js.slider_data.controlpoint_len > 0 ? (object->cho.js.slider_data.control_point + object->cho.js.slider_data.controlpoint_len - 1)->x : 0);
     *last_start_time = object->start_time;
     for (int i = 0; i < object->cho.js.num_nested; i++) {
         (object->cho.js.nested + i)->x_offset = 0;

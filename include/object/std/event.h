@@ -43,6 +43,18 @@ typedef struct Event {
     EVParam param;
 } Event;
 
-void oos_event_free(Event *, unsigned int num);
+/*
+
+    argsreturn
+    args
+*/
+void oos_event_free(Event);
+
+/*
+
+    argsreturn
+    args
+*/
+void oos_event_freebulk(Event *, unsigned int num);
 
 #endif

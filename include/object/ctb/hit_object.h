@@ -7,7 +7,6 @@
 #include "fruit.h"
 #include "juice_stream.h"
 
-// TODO make TinyDroplet and Droplet
 typedef union CHO {
     Fruit f;
     JuiceStream js;
@@ -36,8 +35,25 @@ typedef struct CatchHitObject {
 
 extern const float ooc_hitobject_OBJECTRADIUS;
 
-void ooc_hitobject_init(CatchHitObject **, float, float, float);
-void ooc_hitobject_free(CatchHitObject *);
+/*
 
+    argsreturn
+    args
+*/
+void ooc_hitobject_init(CatchHitObject *, float, float, float);
+
+/*
+
+    argsreturn
+    args
+*/
+void ooc_hitobject_free(CatchHitObject);
+
+/*
+
+    argsreturn
+    args
+*/
+void ooc_hitobject_freebulk(CatchHitObject *object, unsigned int num);
 
 #endif

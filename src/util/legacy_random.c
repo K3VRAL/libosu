@@ -6,17 +6,12 @@ const unsigned int y_initial = 842502087;
 const unsigned int z_initial = 3579807591;
 const unsigned int w_initial = 273326509;
 
-void ou_legacyrandom_init(LegacyRandom **legacy_random, int seed) {
-    *legacy_random = malloc(sizeof(**legacy_random));
-    (*legacy_random)->x = (unsigned int) seed;
-    (*legacy_random)->y = y_initial;
-    (*legacy_random)->z = z_initial;
-    (*legacy_random)->w = w_initial;
-    (*legacy_random)->bitIndex = 32;
-}
-
-void ou_legacyrandom_free(LegacyRandom *legacy_random) {
-    free(legacy_random);
+void ou_legacyrandom_init(LegacyRandom *legacy_random, int seed) {
+    legacy_random->x = (unsigned int) seed;
+    legacy_random->y = y_initial;
+    legacy_random->z = z_initial;
+    legacy_random->w = w_initial;
+    legacy_random->bitIndex = 32;
 }
 
 unsigned int ou_legacyrandom_nextuint(LegacyRandom *legacy_random) {

@@ -3,7 +3,24 @@
 
 #include "object/std/event.h"
 
-void ofb_event_addfromstring(Event **, char *);
-void ofb_event_tostring(char *, Event *);
+/*
+    Converts from a string to an Event object
+
+    argsreturn
+        Event *
+    args
+        char *
+*/
+void ofb_event_addfromstring(Event *, char *);
+
+/*
+    Converts from a Event object to a string
+
+    argsreturn
+        char *
+    args
+        Event
+*/
+void ofb_event_tostring(char *, Event);
 
 #endif

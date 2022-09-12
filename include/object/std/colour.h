@@ -9,6 +9,11 @@ typedef struct Colour {
     unsigned char blue;
 } Colour;
 
-void oos_colour_free(Colour *);
+/*
+
+    argsreturn
+    args
+*/
+void oos_colour_free(Colour *colour);
 
 #endif

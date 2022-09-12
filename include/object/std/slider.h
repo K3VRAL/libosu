@@ -18,7 +18,7 @@ typedef enum SliderType {
     slidertype_linear = 'L',
     slidertype_perfectcurve = 'P'
 } SliderType;
-typedef struct SliderVector2 { // TODO make free
+typedef struct SliderVector2 {
     SliderType *type;
     float x;
     float y;
@@ -38,8 +38,6 @@ typedef struct SliderEventDescriptor {
     double span_start_time;
     double path_progress;
 } SliderEventDescriptor;
-SliderEventDescriptor *oos_slider_generate(double, double, double, double, double, int, double *);
-SliderEventDescriptor *oos_slider_generateticks(int, double, double, bool, double, double, double);
 
 typedef struct HitObject HitObject;
 typedef struct HOSlider HOSlider;
@@ -70,15 +68,89 @@ typedef struct Slider { // Some duplicated/relational variables exists here; may
     HitObject *nested;
     unsigned int num_nested;
 } Slider;
-void oos_slider_init(Slider **, Difficulty, InheritedTimingPoint *, UninheritedTimingPoint *, HitObject *);
-void oos_slider_initwouninandinherited(Slider **, Difficulty, TimingPoint *, unsigned int, HitObject *);
-void oos_slider_free(Slider *);
-void oos_slider_catmullfindpoint(SliderVector2 **, SliderVector2 *, SliderVector2 *, SliderVector2 *, SliderVector2 *, float);
-void oos_slider_catmullapproximate(SliderVector2 **, unsigned int *, SliderVector2 *, unsigned int *);
-void oos_slider_approximatecirculararc(SliderVector2 **, unsigned int *, SliderVector2 *, unsigned int *);
-void oos_slider_approximatebezier(SliderVector2 **, unsigned int *, SliderVector2 *, unsigned int *);
-void oos_slider_calculatesubpath(SliderVector2 **, unsigned int *, SliderVector2 *, unsigned int *, SliderType);
+
+/*
+
+    argsreturn
+    args
+*/
+void oos_slider_init(Slider *, Difficulty, InheritedTimingPoint, UninheritedTimingPoint, HitObject);
+
+/*
+
+    argsreturn
+    args
+*/
+void oos_slider_initwoherited(Slider *, Difficulty, TimingPoint *, unsigned int, HitObject);
+
+/*
+
+    argsreturn
+    args
+*/
+void oos_slider_free(Slider);
+
+/*
+
+    argsreturn
+    args
+*/
+void oos_slider_catmullfindpoint(SliderVector2 *, SliderVector2 *, SliderVector2 *, SliderVector2 *, SliderVector2 *, float);
+
+/*
+
+    argsreturn
+    args
+*/
+void oos_slider_catmullapproximate(SliderVector2 **, unsigned int *, SliderVector2 *, unsigned int);
+
+/*
+
+    argsreturn
+    args
+*/
+void oos_slider_approximatecirculararc(SliderVector2 **, unsigned int *, SliderVector2 *, unsigned int);
+
+/*
+
+    argsreturn
+    args
+*/
+void oos_slider_approximatebezier(SliderVector2 **, unsigned int *, SliderVector2 *, unsigned int);
+
+/*
+
+    argsreturn
+    args
+*/
+void oos_slider_calculatesubpath(SliderVector2 **, unsigned int *, SliderVector2 *, unsigned int, SliderType);
+
+/*
+
+    argsreturn
+    args
+*/
 void oos_slider_positionat(SliderVector2 *, double, Slider *);
+
+/*
+
+    argsreturn
+    args
+*/
 void oos_slider_createnestedhitobjects(Slider *);
+
+/*
+
+    argsreturn
+    args
+*/
+SliderEventDescriptor *oos_slider_generate(double, double, double, double, double, int, double *);
+
+/*
+
+    argsreturn
+    args
+*/
+SliderEventDescriptor *oos_slider_generateticks(int, double, double, bool, double, double, double);
 
 #endif

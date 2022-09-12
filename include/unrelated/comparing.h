@@ -7,17 +7,28 @@
 #include <string.h>
 #include <math.h>
 
+/*
+
+    argsreturn
+    args
+*/
 int ou_comparing_size(int);
+
+/*
+
+    argsreturn
+    args
+*/
 int ou_comparing_trailing(double, int);
 
 typedef struct ComparingEditor {
     char *name;
     union {
-        int *n;
-        double *d;
+        int n;
+        double d;
         struct {
-            int **p;
-            unsigned int *n;
+            int *p;
+            unsigned int n;
         } s;
     } info;
     enum {
@@ -26,27 +37,39 @@ typedef struct ComparingEditor {
         e_s,
     } type;
 } ComparingEditor;
+
+/*
+
+    argsreturn
+    args
+*/
 char *ou_comparing_editor(ComparingEditor *, unsigned int);
 
 typedef struct ComparingDifficulty {
     char *name;
-    double *info;
+    double info;
 } ComparingDifficulty;
+
+/*
+
+    argsreturn
+    args
+*/
 char *ou_comparing_difficulty(ComparingDifficulty *, unsigned int);
 
 typedef struct ComparingGeneral {
     char *name;
     union {
-        char **cp;
-        int *n;
-        double *d;
-        bool *b;
+        char *cp;
+        int n;
+        double d;
+        bool b;
     } info;
     union {
-        char **cp;
-        int *n;
-        double *d;
-        bool *b;
+        char *cp;
+        int n;
+        double d;
+        bool b;
     } original;
     enum {
         g_cp,
@@ -55,17 +78,23 @@ typedef struct ComparingGeneral {
         g_b,
     } type;
 } ComparingGeneral;
+
+/*
+
+    argsreturn
+    args
+*/
 char *ou_comparing_general(ComparingGeneral *, unsigned int);
 
 typedef struct ComparingMetadata {
     char *name;
     union {
-        char **cp;
+        char *cp;
         struct {
-            char ***cpp;
-            unsigned int *ui;
+            char **cpp;
+            unsigned int ui;
         } s;
-        int *n;
+        int n;
     } info;
     enum {
         m_cp,
@@ -73,6 +102,12 @@ typedef struct ComparingMetadata {
         m_n,
     } type;
 } ComparingMetadata;
+
+/*
+
+    argsreturn
+    args
+*/
 char *ou_comparing_metadata(ComparingMetadata *, unsigned int);
 
 #endif

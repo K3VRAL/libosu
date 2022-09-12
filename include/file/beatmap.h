@@ -20,11 +20,11 @@
 #include "unrelated/reading_line.h"
 
 typedef struct Beatmap {
-    Structure *structure;
-    General *general;
-    Editor *editor;
-    Metadata *metadata;
-    Difficulty *difficulty;
+    Structure structure;
+    General general;
+    Editor editor;
+    Metadata metadata;
+    Difficulty difficulty;
     
     Event *events;
     unsigned int num_event;
@@ -39,9 +39,40 @@ typedef struct Beatmap {
     unsigned int num_ho;
 } Beatmap;
 
-void of_beatmap_init(Beatmap **);
-void of_beatmap_free(Beatmap *);
+/*
+    Allows for the Beatmap struct to be easily initialised
+
+    argsreturn
+        Beatmap *
+*/
+void of_beatmap_init(Beatmap *);
+
+/*
+    Allows for the Beatmap struct to easily free all the data it houses
+
+    args
+        Beatmap
+*/
+void of_beatmap_free(Beatmap);
+
+/*
+    Converts from a file path (usually an `.osu` file) to a Beatmap object
+
+    argsreturn
+        Beatmap *
+    args
+        char *
+*/
 void of_beatmap_set(Beatmap *, char *);
-void of_beatmap_tofile(Beatmap *, FILE *);
+
+/*
+    Converts from a Beatmap object to a file output
+
+    argsreturn
+        FILE *
+    args
+        Beatmap
+*/
+void of_beatmap_tofile(FILE *, Beatmap);
 
 #endif

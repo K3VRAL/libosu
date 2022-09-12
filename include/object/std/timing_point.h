@@ -16,8 +16,25 @@ typedef struct TimingPoint {
     int effects;
 } TimingPoint;
 
+/*
+
+    argsreturn
+    args
+*/
 void oos_timingpoint_free(TimingPoint *);
+
+/*
+
+    argsreturn
+    args
+*/
 void oos_timingpoint_sort(TimingPoint *, unsigned int);
+
+/*
+
+    argsreturn
+    args
+*/
 void oos_timingpoint_attime(TimingPoint **, int, TimingPoint *, unsigned int);
 
 #endif

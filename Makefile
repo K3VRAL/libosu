@@ -52,6 +52,23 @@ install:
 	$(shell cp -r ./include /usr/local/include/osu)
 	$(shell rm -rf /usr/include/osu)
 	$(shell ln -s /usr/local/include/osu /usr/include/)
+# TODO
+	$(shell rm -rf /usr/lib/pkgconfig/libosu.pc)
+	$(shell echo -e "\
+				prefix=/usr\n\
+				exec_prefix=${prefix}\n\
+				includedir=${prefix}/include\n\
+				libdir=${exec_prefix}/lib\n\
+				\n\
+				Name: libosu\n\
+				Description: The osu source code implementation in C\n\
+				Version: 1.0\n\
+				Requires:\n\
+				Cflags: -I${includedir}/osu\n\
+				Libs: -L${libdir} -losu\n\
+			"\
+			| perl -pe "s/^ *//"\
+			> /usr/lib/pkgconfig/libosu.pc)
 
 # Uninstall
 uninstall:

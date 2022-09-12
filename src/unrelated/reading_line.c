@@ -1,9 +1,9 @@
 #include "unrelated/reading_line.h"
 
 static char *ou_readingline_removecrlf(char *line, int read) {
-    if (*(line + read - 2) == '\r') {
+    if (read >= 2 && *(line + read - 2) == '\r') {
         *(line + read - 2) = '\0';
-    } else if (*(line + read - 1) == '\n') {
+    } else if (read >= 1 && *(line + read - 1) == '\n') {
         *(line + read - 1) = '\0';
     }
     return line;
@@ -24,8 +24,7 @@ char *ou_readingline_line(FILE *fp) {
             while ((read = getline(&line, &len, fp)) != -1) {
                 ou_readingline_removecrlf(line, read);
                 if (strlen(line) == 0
-                    || ou_readingline_iscomment(line)
-                    || (*(line + 0) == '[' && *(line + read - 2) == ']')) {
+                    || ou_readingline_iscomment(line)) {
                     continue;
                 }
                 return line;

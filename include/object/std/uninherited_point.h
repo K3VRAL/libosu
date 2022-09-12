@@ -10,7 +10,18 @@ typedef struct UninheritedTimingPoint {
     unsigned int num;
 } UninheritedTimingPoint;
 
-void oos_uninheritedpoint_init(UninheritedTimingPoint **, TimingPoint *, unsigned int);
-void oos_uninheritedpoint_free(UninheritedTimingPoint *);
+/*
+
+    argsreturn
+    args
+*/
+void oos_uninheritedpoint_init(UninheritedTimingPoint *, TimingPoint *, unsigned int);
+
+/*
+
+    argsreturn
+    args
+*/
+void oos_uninheritedpoint_free(UninheritedTimingPoint);
 
 #endif

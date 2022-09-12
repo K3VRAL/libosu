@@ -6,6 +6,11 @@
 #include <stdbool.h>
 #include <string.h>
 
+/*
+
+    argsreturn
+    args
+*/
 char *ou_readingline_line(FILE *);
 
 #endif

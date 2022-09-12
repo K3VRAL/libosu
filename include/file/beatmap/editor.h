@@ -10,7 +10,24 @@
 #include "object/std/editor.h"
 #include "unrelated/comparing.h"
 
-void ofb_editor_setfromstring(Editor **, char *);
-void ofb_editor_tostring(char *, Editor *);
+/*
+    Converts from a string to a Difficulty object
+
+    argsreturn
+        Editor *
+    args
+        char *
+*/
+void ofb_editor_setfromstring(Editor *, char *);
+
+/*
+    Converts from a Difficulty object to a string
+
+    argsreturn
+        char *
+    args
+        Editor
+*/
+void ofb_editor_tostring(char *, Editor);
 
 #endif

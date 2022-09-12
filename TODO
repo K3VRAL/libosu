@@ -1,6 +1,5 @@
 Do each function and typedef documentation with links to the osu source code
 Refactor the test file and make a vigorous amount of test files that actually test things
-Finish implementing the `Slider`'s functionality
 Tie the `Slider` to the `JuiceStream`
 Implement ctb's `Processor`'s hyperdashes
 Figure out how `Storyboard`/`Event` works and implement it
@@ -9,10 +8,11 @@ Make `Makefile` install/use pkg-config
 Change all for loops to a pointer counter: https://youtu.be/443UNeGrFoM?t=4060
 Change all Unions to a sort of inheritance: https://youtu.be/443UNeGrFoM?t=4296
 Change all Pointers in structs to empty arrays: https://youtu.be/443UNeGrFoM?t=6322
-Change all relational variables to `unsigned int name_relation` for consistency
+Change all relational variables to `name_relation` for consistency
 Prioritise functions with a void return since C doesn't handle multiple returns
 Prioritise functions to have pointers as arguments to be the return value and non pointer arguments as read only arguments
 Don't make the `variable++` as their own line but tied to the line they are de/incrementing
+Use `stdint` instead of the inconsistent types that C provides
 
 (Optional)
 Do Taiko's objects

@@ -28,7 +28,18 @@ typedef struct General {
     bool samples_match_playback_rate;
 } General;
 
-void oos_general_init(General **);
-void oos_general_free(General *);
+/*
+
+    argsreturn
+    args
+*/
+void oos_general_init(General *);
+
+/*
+
+    argsreturn
+    args
+*/
+void oos_general_free(General);
 
 #endif
