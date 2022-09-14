@@ -9,10 +9,14 @@ void ooc_processor_applypositionoffset(CatchHitObject *objects, unsigned int num
 }
 
 void ooc_processor_applypositionoffsetrng(CatchHitObject *objects, unsigned int num, LegacyRandom *rng, bool enabled_hardrock) {
+    ooc_processor_applypositionoffsetrngstarttime(objects, 0, num, rng, enabled_hardrock);
+}
+
+void ooc_processor_applypositionoffsetrngstarttime(CatchHitObject *objects, unsigned int start, unsigned int num, LegacyRandom *rng, bool enabled_hardrock) {
     float *last_position = NULL;
     double last_start_time = 0;
     
-    for (int i = 0; i < num; i++) {
+    for (int i = start; i < num; i++) {
         switch ((objects + i)->type) {
             case catchhitobject_fruit:
                 if (enabled_hardrock) {
