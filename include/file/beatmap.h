@@ -63,7 +63,7 @@ void of_beatmap_free(Beatmap);
     args
         char *
 */
-void of_beatmap_set(Beatmap *, char *);
+void of_beatmap_set(Beatmap *, FILE *);
 
 /*
     Converts from a Beatmap object to a file output

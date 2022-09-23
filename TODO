@@ -13,6 +13,8 @@ Prioritise functions with a void return since C doesn't handle multiple returns
 Prioritise functions to have pointers as arguments to be the return value and non pointer arguments as read only arguments
 Don't make the `variable++` as their own line but tied to the line they are de/incrementing
 Use `stdint` instead of the inconsistent types that C provides
+When allocing, pre-increment the length variable on the same line as the alloc and use the length variable `- 1`
+Make setters to set variables of a struct that relies on other variables (I don't see a valid need for getters since you can just read from it already)
 
 (Optional)
 Do Taiko's objects

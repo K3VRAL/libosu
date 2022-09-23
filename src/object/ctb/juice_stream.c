@@ -2,8 +2,9 @@
 
 void ooc_juicestream_init(CatchHitObject *object, Difficulty difficulty, TimingPoint *timing_point, unsigned int timingpoint_len, HitObject hit_object) {
     ooc_hitobject_init(object, hit_object.time, hit_object.x, 0);
-    object->type = catchhitobject_juicestream;
     oos_slider_initwoherited(&object->cho.js.slider_data, difficulty, timing_point, timingpoint_len, hit_object);
+    object->type = catchhitobject_juicestream;
+    object->x_offset = 0;
     object->cho.js.nested = NULL;
     object->cho.js.num_nested = 0;
 }
@@ -11,6 +12,7 @@ void ooc_juicestream_init(CatchHitObject *object, Difficulty difficulty, TimingP
 void ooc_juicestream_free(JuiceStream juice_stream) {
     if (juice_stream.nested != NULL) {
         free(juice_stream.nested);
+        juice_stream.num_nested = 0;
     }
     oos_slider_free(juice_stream.slider_data);
 }
@@ -19,6 +21,7 @@ void ooc_juicestream_free(JuiceStream juice_stream) {
 // https://github.com/ppy/osu/blob/master/osu.Game.Rulesets.Catch/Objects/JuiceStream.cs
 // https://github.com/ppy/osu/blob/38064165413eb919b9a32433d8be5051fc1215f7/osu.Game/Rulesets/Objects/SliderEventGenerator.cs
 void ooc_juicestream_createnestedjuice(CatchHitObject *object) {
+    // TODO foreach item that is being added; check if the nested objects already exist
     SliderEventDescriptor *last_event = NULL;
     SliderEventDescriptor *e;
     while ((e = oos_slider_generate(object->start_time, object->cho.js.slider_data.span_duration, object->cho.js.slider_data.velocity, object->cho.js.slider_data.tick_distance, object->cho.js.slider_data.path.distance, object->cho.js.slider_data.span_count, object->cho.js.slider_data.legacy_last_tick_offset)) != NULL) {
@@ -30,11 +33,11 @@ void ooc_juicestream_createnestedjuice(CatchHitObject *object) {
                     time_between_tiny /= 2;
                 }
                 for (double t = time_between_tiny; t < since_last_tick; t += time_between_tiny) {
+                    SliderVector2 position;
+                    oos_slider_positionat(&position, (last_event->path_progress + (t / since_last_tick) * (e->path_progress - last_event->path_progress)), &object->cho.js.slider_data);
                     object->cho.js.nested = realloc(object->cho.js.nested, (object->cho.js.num_nested + 1) * sizeof(*object->cho.js.nested));
                     (object->cho.js.nested + object->cho.js.num_nested)->type = catchhitobject_tinydroplet;
                     (object->cho.js.nested + object->cho.js.num_nested)->start_time = t + last_event->time;
-                    SliderVector2 position;
-                    oos_slider_positionat(&position, (last_event->path_progress + (t / since_last_tick) * (e->path_progress - last_event->path_progress)), &object->cho.js.slider_data);
                     (object->cho.js.nested + object->cho.js.num_nested++)->x = object->x + position.x;
                 }
             }
@@ -49,11 +52,11 @@ void ooc_juicestream_createnestedjuice(CatchHitObject *object) {
         last_event->path_progress = e->path_progress;
         switch (e->type) {
             case sliderevent_tick: {
+                SliderVector2 position;
+                oos_slider_positionat(&position, e->path_progress, &object->cho.js.slider_data);
                 object->cho.js.nested = realloc(object->cho.js.nested, (object->cho.js.num_nested + 1) * sizeof(*object->cho.js.nested));
                 (object->cho.js.nested + object->cho.js.num_nested)->type = catchhitobject_droplet;
                 (object->cho.js.nested + object->cho.js.num_nested)->start_time = e->time;
-                SliderVector2 position;
-                oos_slider_positionat(&position, e->path_progress, &object->cho.js.slider_data);
                 (object->cho.js.nested + object->cho.js.num_nested++)->x = object->x + position.x;
                 break;
             }
@@ -61,11 +64,11 @@ void ooc_juicestream_createnestedjuice(CatchHitObject *object) {
             case sliderevent_head:
             case sliderevent_tail:
             case sliderevent_repeat: {
+                SliderVector2 position;
+                oos_slider_positionat(&position, e->path_progress, &object->cho.js.slider_data);
                 object->cho.js.nested = realloc(object->cho.js.nested, (object->cho.js.num_nested + 1) * sizeof(*object->cho.js.nested));
                 (object->cho.js.nested + object->cho.js.num_nested)->type = catchhitobject_fruit;
                 (object->cho.js.nested + object->cho.js.num_nested)->start_time = e->time;
-                SliderVector2 position;
-                oos_slider_positionat(&position, e->path_progress, &object->cho.js.slider_data);
                 (object->cho.js.nested + object->cho.js.num_nested++)->x = object->x + position.x;
                 break;
             }

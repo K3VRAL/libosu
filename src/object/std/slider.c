@@ -2,31 +2,23 @@
 #include "object/std.h"
 
 void oos_slider_init(Slider *slider, Difficulty difficulty, InheritedTimingPoint inherited, UninheritedTimingPoint uninherited, HitObject hit_object) {
-    TimingPoint *tp_inherited = NULL;
+    TimingPoint tp_inherited;
     oos_timingpoint_attime(&tp_inherited, hit_object.time, inherited.tp, inherited.num);
     
-    TimingPoint *tp_uninherited = NULL;
+    TimingPoint tp_uninherited;
     oos_timingpoint_attime(&tp_uninherited, hit_object.time, uninherited.tp, uninherited.num);
-    
-    double scoring_distance = oos_hitobject_BASESCORINGDISTANCE * difficulty.slider_multiplier * (-100 / tp_inherited->beat_length);
-    slider->tick_distance_multiplier = 1;
-    slider->velocity = scoring_distance / tp_uninherited->beat_length;
-    slider->tick_distance = scoring_distance / difficulty.slider_tick_rate * slider->tick_distance_multiplier;
-    slider->path.distance = hit_object.ho.slider.length;
-    slider->start_time = hit_object.time;
-    slider->span_count = hit_object.ho.slider.slides;
-    slider->end_time = slider->start_time + slider->span_count * slider->path.distance / slider->velocity;
-    slider->duration = slider->end_time - slider->start_time;
-    slider->span_duration = slider->duration / slider->span_count;
-    slider->legacy_last_tick_offset = calloc(1, sizeof(*slider->legacy_last_tick_offset));
-    *slider->legacy_last_tick_offset = 36;
-    slider->start_position.x = hit_object.x;
-    slider->start_position.y = hit_object.y;
+
+    slider->legacy_last_tick_offset = NULL;
+    oos_slider_calculateslider(slider, difficulty, tp_inherited, tp_uninherited, hit_object);
 
     slider->ho_data = calloc(1, sizeof(*slider->ho_data));
     slider->ho_data->curve_type = hit_object.ho.slider.curve_type;
-    slider->ho_data->curves = hit_object.ho.slider.curves;
     slider->ho_data->num_curve = hit_object.ho.slider.num_curve;
+    slider->ho_data->curves = calloc(slider->ho_data->num_curve, sizeof(*slider->ho_data->curves));
+    for (int i = 0; i < slider->ho_data->num_curve; i++) {
+        (slider->ho_data->curves + i)->x = (hit_object.ho.slider.curves + i)->x;
+        (slider->ho_data->curves + i)->y = (hit_object.ho.slider.curves + i)->y;
+    }
 
     slider->calculate_path = NULL;
     slider->calculatepath_len = 0;
@@ -37,9 +29,6 @@ void oos_slider_init(Slider *slider, Difficulty difficulty, InheritedTimingPoint
 
     slider->nested = NULL;
     slider->num_nested = 0;
-
-    oos_timingpoint_free(tp_inherited);
-    oos_timingpoint_free(tp_uninherited);
 }
 
 void oos_slider_initwoherited(Slider *slider, Difficulty difficulty, TimingPoint *timing_point, unsigned int num, HitObject hit_object) {
@@ -55,12 +44,32 @@ void oos_slider_initwoherited(Slider *slider, Difficulty difficulty, TimingPoint
     oos_uninheritedpoint_free(uninherited);
 }
 
-// TODO do it in this format for every other freeable object
+void oos_slider_calculateslider(Slider *slider, Difficulty difficulty, TimingPoint tp_inherited, TimingPoint tp_uninherited, HitObject hit_object) {
+    double scoring_distance = oos_hitobject_BASESCORINGDISTANCE * difficulty.slider_multiplier * (-100 / tp_inherited.beat_length);
+    slider->tick_distance_multiplier = 1;
+    slider->velocity = scoring_distance / tp_uninherited.beat_length;
+    slider->tick_distance = scoring_distance / difficulty.slider_tick_rate * slider->tick_distance_multiplier;
+    slider->path.distance = hit_object.ho.slider.length;
+    slider->start_time = hit_object.time;
+    slider->span_count = hit_object.ho.slider.slides;
+    slider->end_time = slider->start_time + slider->span_count * slider->path.distance / slider->velocity;
+    slider->duration = slider->end_time - slider->start_time;
+    slider->span_duration = slider->duration / slider->span_count;
+    if (slider->legacy_last_tick_offset != NULL) {
+        free(slider->legacy_last_tick_offset);
+    }
+    slider->legacy_last_tick_offset = calloc(1, sizeof(*slider->legacy_last_tick_offset));
+    *slider->legacy_last_tick_offset = 36;
+    slider->start_position.x = hit_object.x;
+    slider->start_position.y = hit_object.y;
+}
+
 void oos_slider_free(Slider slider) {
     if (slider.legacy_last_tick_offset != NULL) {
         free(slider.legacy_last_tick_offset);
     }
     if (slider.ho_data != NULL) {
+        oos_hitobject_freeslider(*slider.ho_data);
         free(slider.ho_data);
     }
     if (slider.calculate_path != NULL) {
@@ -146,7 +155,30 @@ void oos_slider_approximatecirculararc(SliderVector2 **result, unsigned int *len
 }
 
 void oos_slider_approximatebezier(SliderVector2 **result, unsigned int *len_result, SliderVector2 *vertices, unsigned int len) {
-    // TODO
+    // int p = 0;
+    // *result = calloc(1, sizeof(**result));
+    // int n = len - 1;
+    // if (n < 0) {
+    //     return;
+    // }
+    // SliderVector2 *to_flatten = calloc(1, sizeof(*to_flatten));
+    // SliderVector2 *free_buffers = calloc(1, sizeof(*to_flatten));
+    // if (p > 0 && p < n) {
+    //     for (int i = 0; i < n - p; i++) {
+    //         SliderVector2 *sub_bezier = calloc(p + 1, sizeof(*sub_bezier));
+    //         *(sub_bezier + 0) = *(vertices + i);
+    //         for (int j = 0; j < p - 1; j++) {
+    //             *(sub_bezier + j + 1) = *(vertices + i + 1);
+    //             for (int k = 1; k < 0 - j; k++) {
+    //                 int l = fminl(k, n - p - 1);
+    //                 (vertices + i + k)->x = (l * (vertices + i + k)->x + (vertices + i + k + 1)->x / (l + 1));
+    //                 (vertices + i + k)->y = (l * (vertices + i + k)->y + (vertices + i + k + 1)->y / (l + 1));
+    //             }
+    //         }
+    //         *(sub_bezier + p) = *(vertices + i + 1);
+    //          // TODO
+    //     }
+    // }
 }
 
 void oos_slider_calculatesubpath(SliderVector2 **result, unsigned int *len_result, SliderVector2 *vertices, unsigned int len, SliderType type) {

@@ -88,6 +88,13 @@ void oos_slider_initwoherited(Slider *, Difficulty, TimingPoint *, unsigned int,
     argsreturn
     args
 */
+void oos_slider_calculateslider(Slider *, Difficulty, TimingPoint, TimingPoint, HitObject);
+
+/*
+
+    argsreturn
+    args
+*/
 void oos_slider_free(Slider);
 
 /*

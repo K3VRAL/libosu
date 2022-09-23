@@ -26,12 +26,7 @@ void of_beatmap_free(Beatmap beatmap) {
     oos_hitobject_freebulk(beatmap.hit_objects, beatmap.num_ho);
 }
 
-void of_beatmap_set(Beatmap *beatmap, char *file_path) {
-    FILE *fp = fopen(file_path, "r");
-    if (fp == NULL) {
-        return;
-    }
-
+void of_beatmap_set(Beatmap *beatmap, FILE *fp) {
     enum {
         structure,
         general,
@@ -115,7 +110,6 @@ void of_beatmap_set(Beatmap *beatmap, char *file_path) {
                 break;
         }
     }
-    fclose(fp);
 }
 
 void of_beatmap_tofile(FILE *fp, Beatmap beatmap) {

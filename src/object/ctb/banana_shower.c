@@ -25,6 +25,8 @@ void ooc_bananashower_createnestedbananas(CatchHitObject *object) {
     while (time <= object->cho.bs.end_time) {
         object->cho.bs.bananas = realloc(object->cho.bs.bananas, (object->cho.bs.num_banana + 1) * sizeof(*object->cho.bs.bananas));
         (object->cho.bs.bananas + object->cho.bs.num_banana)->start_time = time;
+        (object->cho.bs.bananas + object->cho.bs.num_banana)->x = 0;
+        (object->cho.bs.bananas + object->cho.bs.num_banana)->x_offset = 0;
         (object->cho.bs.bananas + object->cho.bs.num_banana++)->type = catchhitobject_banana;
         time += spacing;
     }
@@ -37,11 +39,7 @@ void ooc_bananashower_free(BananaShower banana_shower) {
 }
 
 void ooc_bananashower_xoffset(CatchHitObject *object, LegacyRandom *lr) {
-    ooc_bananashower_xoffsetuntilindex(object, lr, object->cho.bs.num_banana);
-}
-
-void ooc_bananashower_xoffsetuntilindex(CatchHitObject *object, LegacyRandom *lr, int index) {
-    for (int i = 0; i < index; i++) {
+    for (int i = 0; i < object->cho.bs.num_banana; i++) {
         (object->cho.bs.bananas + i)->x_offset = (float) (ou_legacyrandom_nextdouble(lr) * ooc_playfield_WIDTH);
         ou_legacyrandom_next(lr);
         ou_legacyrandom_next(lr);

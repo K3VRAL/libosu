@@ -44,11 +44,4 @@ void ooc_bananashower_free(BananaShower);
 */
 void ooc_bananashower_xoffset(CatchHitObject *, LegacyRandom *);
 
-/*
-
-    argsreturn
-    args
-*/
-void ooc_bananashower_xoffsetuntilindex(CatchHitObject *, LegacyRandom *, int);
-
 #endif

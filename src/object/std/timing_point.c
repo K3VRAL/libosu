@@ -19,18 +19,17 @@ void oos_timingpoint_sort(TimingPoint *tp, unsigned int num) {
     }
 }
 
-void oos_timingpoint_attime(TimingPoint **timing_point, int time, TimingPoint *tp, unsigned int num) {
-    *timing_point = calloc(1, sizeof(**timing_point));
+void oos_timingpoint_attime(TimingPoint *timing_point, int time, TimingPoint *tp, unsigned int num) {
     if (tp == NULL || num == 0 || time < (tp + 0)->time) {
         const double default_beat_length = 60000.0 / 60.0;
         TimingPoint default_timing_point = { // Does this need expanding on?
             .beat_length = default_beat_length
         };
-        **timing_point = num > 0 ? *(tp + 0) : default_timing_point;
+        *timing_point = num > 0 ? *(tp + 0) : default_timing_point;
         return;
     }
     if (time >= (tp + num - 1)->time) {
-        **timing_point = *(tp + num - 1);
+        *timing_point = *(tp + num - 1);
         return;
     }
 
@@ -43,10 +42,10 @@ void oos_timingpoint_attime(TimingPoint **timing_point, int time, TimingPoint *t
         } else if ((tp + pivot)->time > time) {
             r = pivot - 1;
         } else {
-            **timing_point = *(tp + pivot);
+            *timing_point = *(tp + pivot);
             return;
         }
     }
-    **timing_point = *(tp + l - 1);
+    *timing_point = *(tp + l - 1);
     return;
 }

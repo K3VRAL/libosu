@@ -101,6 +101,13 @@ void oos_hitobject_freebulk(HitObject *, unsigned int);
     argsreturn
     args
 */
+void oos_hitobject_freeslider(HOSlider);
+
+/*
+
+    argsreturn
+    args
+*/
 void oos_hitobject_sort(HitObject *, unsigned int);
 
 #endif
