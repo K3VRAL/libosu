@@ -33,7 +33,7 @@ int main(void) {
             ho_js.ho.slider.curves = malloc(ho_js.ho.slider.num_curve * sizeof(*ho_js.ho.slider.curves));
             (ho_js.ho.slider.curves + 0)->x = 0;
             (ho_js.ho.slider.curves + 0)->y = 0;
-            ooc_juicestream_init((object + i), beatmap.difficulty, beatmap.timing_points, beatmap.num_tp, ho_js);
+            ooc_juicestream_initwslidertp((object + i), beatmap.difficulty, beatmap.timing_points, beatmap.num_tp, ho_js);
             ooc_juicestream_createnestedjuice((object + i));
         }
     }

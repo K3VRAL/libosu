@@ -20,7 +20,27 @@ typedef struct JuiceStream {
     argsreturn
     args
 */
-void ooc_juicestream_init(CatchHitObject *, Difficulty, TimingPoint *, unsigned int, HitObject);
+void ooc_juicestream_init(CatchHitObject *, HitObject);
+
+/*
+
+    argsreturn
+    args
+*/
+void ooc_juicestream_initwslidertp(CatchHitObject *, Difficulty, TimingPoint *, unsigned int, HitObject);
+
+/*
+
+    argsreturn
+    args
+*/
+void ooc_juicestream_initwsliderherit(CatchHitObject *, Difficulty, InheritedTimingPoint, UninheritedTimingPoint, HitObject);
+
+/*
+    argsreturn
+    args
+*/
+void ooc_juicestream_initwsliderspecific(CatchHitObject *, Difficulty, TimingPoint, TimingPoint, HitObject);
 
 /*
 

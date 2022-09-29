@@ -39,7 +39,7 @@ void oos_hitobject_sort(HitObject *hit_object, unsigned int num) {
     }
     for (int i = 0; i < num - 1; i++) {
         for (int j = 0; j < num - i - 1; j++) {
-            if ((hit_object + i)->time > (hit_object + j)->time) {
+            if ((hit_object + i)->time < (hit_object + j)->time) {
                 HitObject temp = *(hit_object + i);
                 *(hit_object + i) = *(hit_object + j);
                 *(hit_object + j) = temp;

@@ -1,12 +1,26 @@
 #include "object/ctb.h"
 
-void ooc_juicestream_init(CatchHitObject *object, Difficulty difficulty, TimingPoint *timing_point, unsigned int timingpoint_len, HitObject hit_object) {
+void ooc_juicestream_init(CatchHitObject *object, HitObject hit_object) {
     ooc_hitobject_init(object, hit_object.time, hit_object.x, 0);
-    oos_slider_initwoherited(&object->cho.js.slider_data, difficulty, timing_point, timingpoint_len, hit_object);
     object->type = catchhitobject_juicestream;
     object->x_offset = 0;
     object->cho.js.nested = NULL;
     object->cho.js.num_nested = 0;
+}
+
+void ooc_juicestream_initwslidertp(CatchHitObject *object, Difficulty difficulty, TimingPoint *timing_point, unsigned int timingpoint_len, HitObject hit_object) {
+    ooc_juicestream_init(object, hit_object);
+    oos_slider_initwtp(&object->cho.js.slider_data, difficulty, timing_point, timingpoint_len, hit_object);
+}
+
+void ooc_juicestream_initwsliderherit(CatchHitObject *object, Difficulty difficulty, InheritedTimingPoint inherit, UninheritedTimingPoint uninherit, HitObject hit_object) {
+    ooc_juicestream_init(object, hit_object);
+    oos_slider_initwherited(&object->cho.js.slider_data, difficulty, inherit, uninherit, hit_object);
+}
+
+void ooc_juicestream_initwsliderspecific(CatchHitObject *object, Difficulty difficulty, TimingPoint inherit, TimingPoint uninherit, HitObject hit_object) {
+    ooc_juicestream_init(object, hit_object);
+    oos_slider_init(&object->cho.js.slider_data, difficulty, inherit, uninherit, hit_object);
 }
 
 void ooc_juicestream_free(JuiceStream juice_stream) {
@@ -26,7 +40,7 @@ void ooc_juicestream_createnestedjuice(CatchHitObject *object) {
     SliderEventDescriptor *e;
     while ((e = oos_slider_generate(object->start_time, object->cho.js.slider_data.span_duration, object->cho.js.slider_data.velocity, object->cho.js.slider_data.tick_distance, object->cho.js.slider_data.path.distance, object->cho.js.slider_data.span_count, object->cho.js.slider_data.legacy_last_tick_offset)) != NULL) {
         if (last_event != NULL) {
-            double since_last_tick = e->time - last_event->time;
+            int since_last_tick = (int)(e->time - last_event->time);
             if (since_last_tick > 80) {
                 double time_between_tiny = since_last_tick;
                 while (time_between_tiny > 100) {

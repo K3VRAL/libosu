@@ -49,7 +49,7 @@ int main(void) {
         .slider_tick_rate = 2
     };
 
-    ooc_juicestream_init((object + 1), difficulty, tp, tp_len, ho_js);
+    ooc_juicestream_initwslidertp((object + 1), difficulty, tp, tp_len, ho_js);
     ooc_juicestream_createnestedjuice((object + 1));
 
     LegacyRandom rng;

@@ -1,13 +1,7 @@
 // https://www.geeksforgeeks.org/coroutines-in-c-cpp/
 #include "object/std.h"
 
-void oos_slider_init(Slider *slider, Difficulty difficulty, InheritedTimingPoint inherited, UninheritedTimingPoint uninherited, HitObject hit_object) {
-    TimingPoint tp_inherited;
-    oos_timingpoint_attime(&tp_inherited, hit_object.time, inherited.tp, inherited.num);
-    
-    TimingPoint tp_uninherited;
-    oos_timingpoint_attime(&tp_uninherited, hit_object.time, uninherited.tp, uninherited.num);
-
+void oos_slider_init(Slider *slider, Difficulty difficulty, TimingPoint tp_inherited, TimingPoint tp_uninherited, HitObject hit_object) {
     slider->legacy_last_tick_offset = NULL;
     oos_slider_calculateslider(slider, difficulty, tp_inherited, tp_uninherited, hit_object);
 
@@ -31,17 +25,27 @@ void oos_slider_init(Slider *slider, Difficulty difficulty, InheritedTimingPoint
     slider->num_nested = 0;
 }
 
-void oos_slider_initwoherited(Slider *slider, Difficulty difficulty, TimingPoint *timing_point, unsigned int num, HitObject hit_object) {
+void oos_slider_initwtp(Slider *slider, Difficulty difficulty, TimingPoint *timing_point, unsigned int num, HitObject hit_object) {
     InheritedTimingPoint inherited;
     oos_inheritedpoint_init(&inherited, timing_point, num);
 
     UninheritedTimingPoint uninherited;
     oos_uninheritedpoint_init(&uninherited, timing_point, num);
     
-    oos_slider_init(slider, difficulty, inherited, uninherited, hit_object);
+    oos_slider_initwherited(slider, difficulty, inherited, uninherited, hit_object);
     
     oos_inheritedpoint_free(inherited);
     oos_uninheritedpoint_free(uninherited);
+}
+
+void oos_slider_initwherited(Slider *slider, Difficulty difficulty, InheritedTimingPoint inherited, UninheritedTimingPoint uninherited, HitObject hit_object) {
+    TimingPoint tp_inherited;
+    oos_timingpoint_attime(&tp_inherited, hit_object.time, inherited.tp, inherited.num);
+    
+    TimingPoint tp_uninherited;
+    oos_timingpoint_attime(&tp_uninherited, hit_object.time, uninherited.tp, uninherited.num);
+    
+    oos_slider_init(slider, difficulty, tp_inherited, tp_uninherited, hit_object);
 }
 
 void oos_slider_calculateslider(Slider *slider, Difficulty difficulty, TimingPoint tp_inherited, TimingPoint tp_uninherited, HitObject hit_object) {

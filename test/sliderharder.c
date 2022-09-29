@@ -27,7 +27,7 @@ int main(void) {
     };
 
     Slider slider;
-    oos_slider_initwoherited(&slider, diff, tp, tp_len, hit_object);
+    oos_slider_initwtp(&slider, diff, tp, tp_len, hit_object);
     oos_slider_createnestedhitobjects(&slider);
 
     for (int i = 0; i < slider.num_nested; i++) {

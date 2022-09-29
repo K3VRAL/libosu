@@ -74,14 +74,21 @@ typedef struct Slider { // Some duplicated/relational variables exists here; may
     argsreturn
     args
 */
-void oos_slider_init(Slider *, Difficulty, InheritedTimingPoint, UninheritedTimingPoint, HitObject);
+void oos_slider_init(Slider *, Difficulty, TimingPoint, TimingPoint, HitObject);
 
 /*
 
     argsreturn
     args
 */
-void oos_slider_initwoherited(Slider *, Difficulty, TimingPoint *, unsigned int, HitObject);
+void oos_slider_initwherited(Slider *, Difficulty, InheritedTimingPoint, UninheritedTimingPoint, HitObject);
+
+/*
+
+    argsreturn
+    args
+*/
+void oos_slider_initwtp(Slider *, Difficulty, TimingPoint *, unsigned int, HitObject);
 
 /*
 
