@@ -32,8 +32,7 @@ $(TARGET): $(shell find include/ -type f -name "*.h" | perl -pe "s/^include\//sr
 #																					  ^We prepend the bin folder variable to the echo. Eg: opt_file.o => bin/opt_file.o
 
 # Test Executable
-# $(shell pkg-config --libs osu)
-LFLAGS_TEST=-g -Iinclude/ -losu
+LFLAGS_TEST=-g -Iinclude/ $(shell pkg-config --libs osu)
 TARGET_TEST=$(shell find test/*.c -type f | perl -pe "s/\..*//g")
 
 test: BINFLR=bin/
@@ -43,6 +42,20 @@ test: $(TARGET_TEST)
 	$(CC) -o $(BINFLR)$(shell echo "$@" | perl -pe "s/.+\//test_/g") $^ $(LFLAGS_TEST)
 
 # Install
+define PKG_CONFIG
+prefix=/usr
+exec_prefix=$${prefix}
+includedir=$${prefix}/include
+libdir=$${exec_prefix}/lib
+
+Name: libosu
+Description: The osu source code implementation in C
+Version: 1.0
+Requires:
+Cflags: -I$${includedir}/osu
+Libs: -L$${libdir} -losu
+endef
+	
 install:
 	$(shell rm -rf /usr/local/lib/$(TARGET))
 	$(shell cp ./bin/lib/$(TARGET) /usr/local/lib/$(TARGET))
@@ -52,23 +65,8 @@ install:
 	$(shell cp -r ./include /usr/local/include/osu)
 	$(shell rm -rf /usr/include/osu)
 	$(shell ln -s /usr/local/include/osu /usr/include/)
-# TODO
 	$(shell rm -rf /usr/lib/pkgconfig/libosu.pc)
-	$(shell echo -e "\
-				prefix=/usr\n\
-				exec_prefix=${prefix}\n\
-				includedir=${prefix}/include\n\
-				libdir=${exec_prefix}/lib\n\
-				\n\
-				Name: libosu\n\
-				Description: The osu source code implementation in C\n\
-				Version: 1.0\n\
-				Requires:\n\
-				Cflags: -I${includedir}/osu\n\
-				Libs: -L${libdir} -losu\n\
-			"\
-			| perl -pe "s/^ *//"\
-			> /usr/lib/pkgconfig/libosu.pc)
+	$(file > /usr/lib/pkgconfig/libosu.pc,$(PKG_CONFIG))
 
 # Uninstall
 uninstall:
