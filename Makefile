@@ -32,7 +32,7 @@ $(TARGET): $(shell find include/ -type f -name "*.h" | perl -pe "s/^include\//sr
 #																					  ^We prepend the bin folder variable to the echo. Eg: opt_file.o => bin/opt_file.o
 
 # Test Executable
-LFLAGS_TEST=-g -Iinclude/ $(shell pkg-config libosu --libs)
+LFLAGS_TEST=-g $(shell pkg-config libosu --cflags) $(shell pkg-config libosu --libs)
 TARGET_TEST=$(shell find test/*.c -type f | perl -pe "s/\..*//g")
 
 test: BINFLR=bin/
@@ -45,15 +45,15 @@ test: $(TARGET_TEST)
 define PKG_CONFIG
 prefix=/usr
 exec_prefix=$${prefix}
-includedir=$${prefix}/include
 libdir=$${exec_prefix}/lib
+includedir=$${prefix}/include
 
 Name: libosu
 Description: The osu source code implementation in C
-Version: 1.0
+Version: 1.0.0
 Requires:
-Cflags: -I$${includedir}/osu
 Libs: -L$${libdir} -losu
+Cflags: -I$${includedir}/osu
 endef
 	
 install:
