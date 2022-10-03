@@ -32,18 +32,3 @@ void ooc_hitobject_freebulk(CatchHitObject *object, unsigned int num) {
     }
     free(object);
 }
-
-void ooc_hitobject_sort(CatchHitObject *object, unsigned int num) {
-    if (object == NULL || num == 0) {
-        return;
-    }
-    for (int i = 0; i < num - 1; i++) {
-        for (int j = 0; j < num - i - 1; j++) {
-            if ((object + i)->start_time < (object + j)->start_time) {
-                CatchHitObject temp = *(object + i);
-                *(object + i) = *(object + j);
-                *(object + j) = temp;
-            }
-        }
-    }
-}

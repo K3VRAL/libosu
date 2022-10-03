@@ -56,11 +56,4 @@ void ooc_hitobject_free(CatchHitObject);
 */
 void ooc_hitobject_freebulk(CatchHitObject *object, unsigned int num);
 
-/*
-
-    argsreturn
-    args
-*/
-void ooc_hitobject_sort(CatchHitObject *object, unsigned int num);
-
 #endif

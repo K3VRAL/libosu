@@ -8,7 +8,6 @@ int main(void) {
         (hit_objects + j)->x = j;
         (hit_objects + j)->time = i;
     }
-    oos_hitobject_sort(hit_objects, len_hit_objects);
 
     for (int i = 0; i < len_hit_objects; i++) {
         printf("%d,192,%d,1,0\n", (hit_objects + i)->x, (hit_objects + i)->time);
