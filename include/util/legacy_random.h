@@ -15,60 +15,13 @@ typedef struct LegacyRandom {
     int bitIndex;
 } LegacyRandom;
 
-/*
-
-    argsreturn
-    args
-*/
 void ou_legacyrandom_init(LegacyRandom *, int);
-
-/*
-
-    argsreturn
-    args
-*/
 unsigned int ou_legacyrandom_nextuint(LegacyRandom *);
-
-/*
-
-    argsreturn
-    args
-*/
 int ou_legacyrandom_next(LegacyRandom *);
-
-/*
-
-    argsreturn
-    args
-*/
 double ou_legacyrandom_nextdouble(LegacyRandom *);
-
-/*
-
-    argsreturn
-    args
-*/
 int ou_legacyrandom_nextupper(LegacyRandom *, int);
-
-/*
-
-    argsreturn
-    args
-*/
 int ou_legacyrandom_nextlowerupper(LegacyRandom *, int, int);
-
-/*
-
-    argsreturn
-    args
-*/
 int ou_legacyrandom_nextdoublelowerupper(LegacyRandom *, double, double);
-
-/*
-
-    argsreturn
-    args
-*/
 bool ou_legacyrandom_nextbool(LegacyRandom *);
 
 #endif

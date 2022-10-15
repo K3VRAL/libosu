@@ -13,18 +13,7 @@ typedef struct Editor {
     double timeline_zoom;
 } Editor;
 
-/*
-
-    argsreturn
-    args
-*/
 void oos_editor_init(Editor *);
-
-/*
-
-    argsreturn
-    args
-*/
 void oos_editor_free(Editor);
 
 #endif

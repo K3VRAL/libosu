@@ -16,32 +16,9 @@ typedef struct BananaShower {
 
 // TODO maybe remove `HitObject` and replace with `Spinner`
 
-/*
-
-    argsreturn
-    args
-*/
 void ooc_bananashower_init(CatchHitObject *, HitObject);
-
-/*
-
-    argsreturn
-    args
-*/
 void ooc_bananashower_createnestedbananas(CatchHitObject *);
-
-/*
-
-    argsreturn
-    args
-*/
 void ooc_bananashower_free(BananaShower);
-
-/*
-
-    argsreturn
-    args
-*/
 void ooc_bananashower_xoffset(CatchHitObject *, LegacyRandom *);
 
 #endif

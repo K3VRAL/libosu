@@ -35,25 +35,8 @@ typedef struct CatchHitObject {
 
 extern const float ooc_hitobject_OBJECTRADIUS;
 
-/*
-
-    argsreturn
-    args
-*/
 void ooc_hitobject_init(CatchHitObject *, float, float, float);
-
-/*
-
-    argsreturn
-    args
-*/
 void ooc_hitobject_free(CatchHitObject);
-
-/*
-
-    argsreturn
-    args
-*/
 void ooc_hitobject_freebulk(CatchHitObject *object, unsigned int num);
 
 #endif

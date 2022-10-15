@@ -15,52 +15,12 @@ typedef struct JuiceStream {
     Slider slider_data;
 } JuiceStream;
 
-/*
-
-    argsreturn
-    args
-*/
 void ooc_juicestream_init(CatchHitObject *, HitObject);
-
-/*
-
-    argsreturn
-    args
-*/
 void ooc_juicestream_initwslidertp(CatchHitObject *, Difficulty, TimingPoint *, unsigned int, HitObject);
-
-/*
-
-    argsreturn
-    args
-*/
 void ooc_juicestream_initwsliderherit(CatchHitObject *, Difficulty, InheritedTimingPoint, UninheritedTimingPoint, HitObject);
-
-/*
-    argsreturn
-    args
-*/
 void ooc_juicestream_initwsliderspecific(CatchHitObject *, Difficulty, TimingPoint, TimingPoint, HitObject);
-
-/*
-
-    argsreturn
-    args
-*/
 void ooc_juicestream_free(JuiceStream);
-
-/*
-
-    argsreturn
-    args
-*/
 void ooc_juicestream_createnestedjuice(CatchHitObject *);
-
-/*
-
-    argsreturn
-    args
-*/
 void ooc_juicestream_xoffset(CatchHitObject *, float **, double *, LegacyRandom *);
 
 #endif

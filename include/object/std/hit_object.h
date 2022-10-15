@@ -82,25 +82,8 @@ typedef struct HitObject {
 
 extern const float oos_hitobject_BASESCORINGDISTANCE;
 
-/*
-
-    argsreturn
-    args
-*/
 void oos_hitobject_free(HitObject);
-
-/*
-
-    argsreturn
-    args
-*/
 void oos_hitobject_freebulk(HitObject *, unsigned int);
-
-/*
-
-    argsreturn
-    args
-*/
 void oos_hitobject_freeslider(HOSlider);
 
 #endif

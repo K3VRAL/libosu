@@ -11,11 +11,6 @@ typedef struct Difficulty {
     double slider_tick_rate;
 } Difficulty;
 
-/*
-
-    argsreturn
-    args
-*/
 void oos_difficulty_init(Difficulty *);
 
 #endif

@@ -18,18 +18,7 @@ typedef struct Metadata {
     int beatmap_set_id;
 } Metadata;
 
-/*
-
-    argsreturn
-    args
-*/
 void oos_metadata_init(Metadata *);
-
-/*
-
-    argsreturn
-    args
-*/
 void oos_metadata_free(Metadata);
 
 #endif

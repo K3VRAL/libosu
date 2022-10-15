@@ -7,18 +7,7 @@
 #include <string.h>
 #include <math.h>
 
-/*
-
-    argsreturn
-    args
-*/
 int ou_comparing_size(int);
-
-/*
-
-    argsreturn
-    args
-*/
 int ou_comparing_trailing(double, int);
 
 typedef struct ComparingEditor {
@@ -38,11 +27,6 @@ typedef struct ComparingEditor {
     } type;
 } ComparingEditor;
 
-/*
-
-    argsreturn
-    args
-*/
 char *ou_comparing_editor(ComparingEditor *, unsigned int);
 
 typedef struct ComparingDifficulty {
@@ -50,11 +34,6 @@ typedef struct ComparingDifficulty {
     double info;
 } ComparingDifficulty;
 
-/*
-
-    argsreturn
-    args
-*/
 char *ou_comparing_difficulty(ComparingDifficulty *, unsigned int);
 
 typedef struct ComparingGeneral {
@@ -79,11 +58,6 @@ typedef struct ComparingGeneral {
     } type;
 } ComparingGeneral;
 
-/*
-
-    argsreturn
-    args
-*/
 char *ou_comparing_general(ComparingGeneral *, unsigned int);
 
 typedef struct ComparingMetadata {
@@ -103,11 +77,6 @@ typedef struct ComparingMetadata {
     } type;
 } ComparingMetadata;
 
-/*
-
-    argsreturn
-    args
-*/
 char *ou_comparing_metadata(ComparingMetadata *, unsigned int);
 
 #endif

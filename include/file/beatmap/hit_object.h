@@ -11,24 +11,7 @@
 #include "object/std/hit_object.h"
 #include "unrelated/comparing.h"
 
-/*
-    Converts from a string to a HitObject object
-
-    argsreturn
-        HitObject *
-    args
-        char *
-*/
 void ofb_hitobject_addfromstring(HitObject *, char *);
-
-/*
-    Converts from a HitObject object to a string
-
-    argsreturn
-        char *
-    args
-        HitObject
-*/
-void ofb_hitobject_tostring(char *, HitObject);
+void ofb_hitobject_tostring(char **, HitObject);
 
 #endif

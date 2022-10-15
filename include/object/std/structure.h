@@ -6,11 +6,6 @@ typedef struct Structure {
     int version;
 } Structure;
 
-/*
-
-    argsreturn
-    args
-*/
 void oos_structure_init(Structure *);
 
 #endif

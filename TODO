@@ -15,6 +15,8 @@ Don't make the `variable++` as their own line but tied to the line they are de/i
 Use `stdint` instead of the inconsistent types that C provides
 When allocing, pre-increment the length variable on the same line as the alloc and use the length variable `- 1`
 Make setters to set variables of a struct that relies on other variables (I don't see a valid need for getters since you can just read from it already)
+Make every function that requires a pointer to be checked for memory safety
+Make every alloced variable to be assigned all of it's fields before used.
 
 (Optional)
 Do Taiko's objects

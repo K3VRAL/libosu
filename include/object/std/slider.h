@@ -7,6 +7,9 @@
 #include <stdbool.h>
 #include <math.h>
 
+#include "unrelated/linkedlist.h"
+#include "unrelated/stack.h"
+
 #include "timing_point.h"
 #include "inherited_point.h"
 #include "uninherited_point.h"
@@ -69,102 +72,19 @@ typedef struct Slider { // Some duplicated/relational variables exists here; may
     unsigned int num_nested;
 } Slider;
 
-/*
-
-    argsreturn
-    args
-*/
 void oos_slider_init(Slider *, Difficulty, TimingPoint, TimingPoint, HitObject);
-
-/*
-
-    argsreturn
-    args
-*/
 void oos_slider_initwherited(Slider *, Difficulty, InheritedTimingPoint, UninheritedTimingPoint, HitObject);
-
-/*
-
-    argsreturn
-    args
-*/
 void oos_slider_initwtp(Slider *, Difficulty, TimingPoint *, unsigned int, HitObject);
-
-/*
-
-    argsreturn
-    args
-*/
 void oos_slider_calculateslider(Slider *, Difficulty, TimingPoint, TimingPoint, HitObject);
-
-/*
-
-    argsreturn
-    args
-*/
 void oos_slider_free(Slider);
-
-/*
-
-    argsreturn
-    args
-*/
 void oos_slider_catmullfindpoint(SliderVector2 *, SliderVector2 *, SliderVector2 *, SliderVector2 *, SliderVector2 *, float);
-
-/*
-
-    argsreturn
-    args
-*/
 void oos_slider_catmullapproximate(SliderVector2 **, unsigned int *, SliderVector2 *, unsigned int);
-
-/*
-
-    argsreturn
-    args
-*/
 void oos_slider_approximatecirculararc(SliderVector2 **, unsigned int *, SliderVector2 *, unsigned int);
-
-/*
-
-    argsreturn
-    args
-*/
 void oos_slider_approximatebezier(SliderVector2 **, unsigned int *, SliderVector2 *, unsigned int);
-
-/*
-
-    argsreturn
-    args
-*/
 void oos_slider_calculatesubpath(SliderVector2 **, unsigned int *, SliderVector2 *, unsigned int, SliderType);
-
-/*
-
-    argsreturn
-    args
-*/
 void oos_slider_positionat(SliderVector2 *, double, Slider *);
-
-/*
-
-    argsreturn
-    args
-*/
 void oos_slider_createnestedhitobjects(Slider *);
-
-/*
-
-    argsreturn
-    args
-*/
 SliderEventDescriptor *oos_slider_generate(double, double, double, double, double, int, double *);
-
-/*
-
-    argsreturn
-    args
-*/
 SliderEventDescriptor *oos_slider_generateticks(int, double, double, bool, double, double, double);
 
 #endif

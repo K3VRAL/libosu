@@ -39,40 +39,9 @@ typedef struct Beatmap {
     unsigned int num_ho;
 } Beatmap;
 
-/*
-    Allows for the Beatmap struct to be easily initialised
-
-    argsreturn
-        Beatmap *
-*/
 void of_beatmap_init(Beatmap *);
-
-/*
-    Allows for the Beatmap struct to easily free all the data it houses
-
-    args
-        Beatmap
-*/
 void of_beatmap_free(Beatmap);
-
-/*
-    Converts from a file path (usually an `.osu` file) to a Beatmap object
-
-    argsreturn
-        Beatmap *
-    args
-        char *
-*/
 void of_beatmap_set(Beatmap *, FILE *);
-
-/*
-    Converts from a Beatmap object to a file output
-
-    argsreturn
-        FILE *
-    args
-        Beatmap
-*/
 void of_beatmap_tofile(FILE *, Beatmap);
 
 #endif
