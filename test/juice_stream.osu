@@ -1,0 +1,56 @@
+osu file format v14
+
+[General]
+AudioFilename: 
+AudioLeadIn: 0
+PreviewTime: 0
+Countdown: 0
+SampleSet: Normal
+StackLeniency: 0.7
+Mode: 2
+LetterboxInBreaks: 1
+WidescreenStoryboard: 0
+
+[Editor]
+DistanceSpacing: 0.8
+BeatDivisor: 4
+GridSize: 32
+TimelineZoom: 1
+
+[Metadata]
+Title:test
+TitleUnicode:test
+Artist:test
+ArtistUnicode:test
+Creator:K 3 V R A L
+Version:test
+Source:
+Tags:
+BeatmapID:0
+BeatmapSetID:-1
+
+[Difficulty]
+HPDrainRate:4
+CircleSize:4.2
+OverallDifficulty:10
+ApproachRate:10
+SliderMultiplier:1
+SliderTickRate:1
+
+[Events]
+//Background and Video events
+//Break Periods
+//Storyboard Layer 0 (Background)
+//Storyboard Layer 1 (Fail)
+//Storyboard Layer 2 (Pass)
+//Storyboard Layer 3 (Foreground)
+//Storyboard Layer 4 (Overlay)
+//Storyboard Sound Samples
+
+[TimingPoints]
+0,60,4,1,0,5,1,0
+0,-100,4,1,0,5,0,0
+
+
+[HitObjects]
+151,195,120,6,0,B|507:269|356:78|198:53|197:53,1,425

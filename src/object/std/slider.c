@@ -154,11 +154,79 @@ void oos_slider_catmullapproximate(SliderVector2 **result, unsigned int *len_res
 	}
 }
 
-// TODO fuck you peppy for the amount of bullshit I will have to endure just to finish this function
+// TODO not tested yet and still not very confident that this implementation is correct
 void oos_slider_approximatecirculararc(SliderVector2 **result, unsigned int *len_result, SliderVector2 *vertices, unsigned int len) {
-
-
+	// circularArcProperties
+	SliderVector2 a = *(vertices + 0);
+	SliderVector2 b = *(vertices + 1);
+	SliderVector2 c = *(vertices + 2);
+	const float float_epsilon = 1e-3f;
+	if (fabs(0 - ((b.y - a.y) * (c.x - a.x) - (b.x - a.x) * (c.y - a.y))) <= float_epsilon) {
+		oos_slider_approximatebezier(result, len_result, vertices, len);
+		return;
+	}
+	float d = 2 * (a.x * (b.y - c.y) + b.x * (c.y - a.y) + c.x * (a.y - b.y));
+	float a_sq = sqrtf(a.x * a.x + a.y * a.y);
+	a_sq *= a_sq;
+	float b_sq = sqrtf(b.x * b.x + b.y * b.y);
+	b_sq *= b_sq;
+	float c_sq = sqrtf(c.x * c.x + c.y * c.y);
+	c_sq *= c_sq;
+	SliderVector2 centre = {
+		.x = (a_sq * (b.y - c.y) + b_sq * (c.y - a.y) + c_sq * (a.y - b.y)) / d,
+		.y = (a_sq * (c.x - b.x) + b_sq * (a.x - c.x) + c_sq * (b.x - a.x)) / d
+	};
+	SliderVector2 d_a = {
+		.x = a.x - centre.x,
+		.y = a.y - centre.y
+	};
+	SliderVector2 d_c = {
+		.x = c.x - centre.x,
+		.y = c.y - centre.y
+	};
+	float radius = sqrtf(d_a.x * d_a.x + d_a.y * d_a.y);
+	double theta_start = atan2(d_a.y, d_a.x);
+	double theta_end = atan2(d_c.y, d_c.x);
+	while (theta_end < theta_start) {
+		theta_end += 2 * M_PI;
+	}
+	double direction = 1;
+	double theta_range = theta_end - theta_start;
+	SliderVector2 ortho_a_to_c = {
+		.x = c.x - a.x,
+		.y = c.y - a.y
+	};
+	float temp = ortho_a_to_c.x;
+	ortho_a_to_c.x = ortho_a_to_c.y;
+	ortho_a_to_c.y = -temp;
+	SliderVector2 dot = {
+		.x = b.x - a.x,
+		.y = b.y - a.y
+	};
+	if ((ortho_a_to_c.x * dot.x + ortho_a_to_c.y + dot.y) < 0) {
+		direction = -direction;
+		theta_range = 2 * M_PI - theta_range;
+	}
+	// end
 	const float circular_arc_tolerance = 0.1f;
+	int amount_points = 2 * radius <= circular_arc_tolerance ? 2 : (int) fmax(2, (int) ceil(theta_range / (2 * acos(1 - circular_arc_tolerance / radius))));
+	LinkedList *output = NULL;
+	for (int i = 0; i < amount_points; i++) {
+		double fract = (double) i / (amount_points - 1);
+		double theta = theta_start + direction * fract * theta_range;
+		SliderVector2 *o = calloc(1, sizeof(*o));
+		o->x = ((float) cos(theta) * radius) + centre.x;
+		o->y = ((float) sin(theta) * radius) + centre.y;
+		ou_linkedlist_add(&output, o, 0);
+	}
+	while (output != NULL) {
+		SliderVector2 *temp_data = NULL;
+		unsigned int temp_len = 0;
+		ou_linkedlist_remove(&output, (void *)&temp_data, &temp_len);
+		*result = realloc(*result, ++(*len_result) * sizeof(**result));
+		*(*result + *len_result - 1) = *temp_data;
+		// free(temp_data); // TODO may need to revisit this
+	}
 }
 
 void oos_slider_beziersubdivide(SliderVector2 *control_points, SliderVector2 *l, SliderVector2 *r, SliderVector2 *subdivision_buffer, int count) {
@@ -179,7 +247,7 @@ void oos_slider_beziersubdivide(SliderVector2 *control_points, SliderVector2 *l,
 	}
 }
 
-// TODO this is probably really wrong + need to clean up memory leaks as well
+// TODO implementation seems to be correct but then breaks everything else; may need to go very indepth on this
 void oos_slider_approximatebezier(SliderVector2 **result, unsigned int *len_result, SliderVector2 *vertices, unsigned int len) {
 	int p = 0;
 	LinkedList *output = NULL;
@@ -187,8 +255,8 @@ void oos_slider_approximatebezier(SliderVector2 **result, unsigned int *len_resu
 	if (n < 0) {
 		return;
 	}
-	Stack *to_flatten = calloc(1, sizeof(*to_flatten));
-	Stack *free_buffers = calloc(1, sizeof(*free_buffers));
+	Stack *to_flatten = NULL;
+	Stack *free_buffers = NULL;
 	if (p > 0 && p < n) {
 		for (int i = 0; i < n - p; i++) {
 			SliderVector2 *sub_bezier = calloc(p + 1, sizeof(*sub_bezier));
@@ -235,6 +303,7 @@ void oos_slider_approximatebezier(SliderVector2 **result, unsigned int *len_resu
 		}
 		if (bezier_is_flat_enough) {
 			// bezierApproximate
+			oos_slider_beziersubdivide(parent, subdivision_buffer2, subdivision_buffer1, subdivision_buffer1, p + 1);
 			for (int i = 0; i < p; i++) {
 				*(subdivision_buffer2 + p + 1 + i) = *(subdivision_buffer1 + i + 1);
 			}
@@ -267,15 +336,13 @@ void oos_slider_approximatebezier(SliderVector2 **result, unsigned int *len_resu
 		ou_stack_push(&to_flatten, &parent, parent_len);
 	}
 	ou_linkedlist_add(&output, (vertices + n), 0);
-	{
-		while (output != NULL) {
-			SliderVector2 *temp_data = NULL;
-			unsigned int temp_len = 0;
-			ou_linkedlist_remove(&output, (void *)&temp_data, &temp_len);
-			*result = realloc(*result, ++(*len_result) * sizeof(**result));
-			*(*result + *len_result - 1) = *temp_data;
-			free(temp_data);
-		}
+	while (output != NULL) {
+		SliderVector2 *temp_data = NULL;
+		unsigned int temp_len = 0;
+		ou_linkedlist_remove(&output, (void *)&temp_data, &temp_len);
+		*result = realloc(*result, ++(*len_result) * sizeof(**result));
+		*(*result + *len_result - 1) = *temp_data;
+		// free(temp_data); // TODO may need to revisit this
 	}
 
 	free(to_flatten);
