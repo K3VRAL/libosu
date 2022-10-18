@@ -154,7 +154,6 @@ void oos_slider_catmullapproximate(SliderVector2 **result, unsigned int *len_res
 	}
 }
 
-// TODO not tested yet and still not very confident that this implementation is correct
 void oos_slider_approximatecirculararc(SliderVector2 **result, unsigned int *len_result, SliderVector2 *vertices, unsigned int len) {
 	// circularArcProperties
 	SliderVector2 a = *(vertices + 0);
@@ -225,7 +224,6 @@ void oos_slider_approximatecirculararc(SliderVector2 **result, unsigned int *len
 		ou_linkedlist_remove(&output, (void *)&temp_data, &temp_len);
 		*result = realloc(*result, ++(*len_result) * sizeof(**result));
 		*(*result + *len_result - 1) = *temp_data;
-		// free(temp_data); // TODO may need to revisit this
 	}
 }
 
@@ -247,7 +245,6 @@ void oos_slider_beziersubdivide(SliderVector2 *control_points, SliderVector2 *l,
 	}
 }
 
-// TODO implementation seems to be correct but then breaks everything else; may need to go very indepth on this
 void oos_slider_approximatebezier(SliderVector2 **result, unsigned int *len_result, SliderVector2 *vertices, unsigned int len) {
 	int p = 0;
 	LinkedList *output = NULL;
@@ -342,7 +339,6 @@ void oos_slider_approximatebezier(SliderVector2 **result, unsigned int *len_resu
 		ou_linkedlist_remove(&output, (void *)&temp_data, &temp_len);
 		*result = realloc(*result, ++(*len_result) * sizeof(**result));
 		*(*result + *len_result - 1) = *temp_data;
-		// free(temp_data); // TODO may need to revisit this
 	}
 
 	free(to_flatten);
