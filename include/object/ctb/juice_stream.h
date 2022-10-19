@@ -15,10 +15,10 @@ typedef struct JuiceStream {
     Slider slider_data;
 } JuiceStream;
 
-void ooc_juicestream_init(CatchHitObject *, HitObject);
-void ooc_juicestream_initwslidertp(CatchHitObject *, Difficulty, TimingPoint *, unsigned int, HitObject);
-void ooc_juicestream_initwsliderherit(CatchHitObject *, Difficulty, InheritedTimingPoint, UninheritedTimingPoint, HitObject);
-void ooc_juicestream_initwsliderspecific(CatchHitObject *, Difficulty, TimingPoint, TimingPoint, HitObject);
+void ooc_juicestream_init(CatchHitObject *, HitObject *);
+void ooc_juicestream_initwslidertp(CatchHitObject *, Difficulty, TimingPoint *, unsigned int, HitObject *);
+void ooc_juicestream_initwsliderherit(CatchHitObject *, Difficulty, InheritedTimingPoint, UninheritedTimingPoint, HitObject *);
+void ooc_juicestream_initwsliderspecific(CatchHitObject *, Difficulty, TimingPoint, TimingPoint, HitObject *);
 void ooc_juicestream_free(JuiceStream);
 void ooc_juicestream_createnestedjuice(CatchHitObject *);
 void ooc_juicestream_xoffset(CatchHitObject *, float **, double *, LegacyRandom *);

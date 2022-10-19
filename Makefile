@@ -57,23 +57,19 @@ Cflags: -I$${includedir}/osu
 endef
 	
 install:
-	$(shell rm -rf /usr/local/lib/$(TARGET))
 	$(shell cp ./bin/lib/$(TARGET) /usr/local/lib/$(TARGET))
-	$(shell rm -rf /usr/lib/$(TARGET))
 	$(shell ln -s /usr/local/lib/$(TARGET) /usr/lib/)
-	$(shell rm -rf /usr/local/include/osu)
 	$(shell cp -r ./include /usr/local/include/osu)
-	$(shell rm -rf /usr/include/osu)
 	$(shell ln -s /usr/local/include/osu /usr/include/)
-	$(shell rm -rf /usr/lib/pkgconfig/libosu.pc)
 	$(file > /usr/lib/pkgconfig/libosu.pc,$(PKG_CONFIG))
 
 # Uninstall
 uninstall:
 	$(shell rm -rf /usr/local/lib/$(TARGET))
-	$(shell rm -rf /usr/lib/$(TARGET))
+	$(shell unlink /usr/lib/$(TARGET))
 	$(shell rm -rf /usr/local/include/osu)
-	$(shell rm -rf /usr/include/osu)
+	$(shell unlink /usr/include/osu)
+	$(shell rm -rf /usr/lib/pkgconfig/libosu.pc)
 
 # Make bin/ folder
 $(BINFLR):

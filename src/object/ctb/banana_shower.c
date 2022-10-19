@@ -1,14 +1,14 @@
 #include "object/ctb.h"
 
-void ooc_bananashower_init(CatchHitObject *object, HitObject hit_object) {
-	if (!(hit_object.type == spinner || hit_object.type == nc_spinner)) {
+void ooc_bananashower_init(CatchHitObject *object, HitObject *hit_object) {
+	if (!(hit_object->type == spinner || hit_object->type == nc_spinner)) {
 		return;
 	}
 
-	ooc_hitobject_init(object, hit_object.time, hit_object.x, 0);
+	ooc_hitobject_init(object, hit_object->time, hit_object->x, 0, hit_object);
 	object->type = catchhitobject_bananashower;
-	object->cho.bs.end_time = hit_object.ho.spinner.end_time;
-	object->cho.bs.duration = hit_object.ho.spinner.end_time - hit_object.time;
+	object->cho.bs.end_time = hit_object->ho.spinner.end_time;
+	object->cho.bs.duration = hit_object->ho.spinner.end_time - hit_object->time;
 	object->cho.bs.bananas = NULL;
 	object->cho.bs.num_banana = 0;
 }

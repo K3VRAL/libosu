@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 
+#include "object/std.h"
 #include "banana_shower.h"
 #include "fruit.h"
 #include "juice_stream.h"
@@ -31,11 +32,12 @@ typedef struct CatchHitObject {
     float x_offset;
     CHOType type;
     CHO cho;
+    HitObject *refer;
 } CatchHitObject;
 
 extern const float ooc_hitobject_OBJECTRADIUS;
 
-void ooc_hitobject_init(CatchHitObject *, float, float, float);
+void ooc_hitobject_init(CatchHitObject *, float, float, float, HitObject *);
 void ooc_hitobject_free(CatchHitObject);
 void ooc_hitobject_freebulk(CatchHitObject *object, unsigned int num);
 

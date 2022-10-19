@@ -2,10 +2,11 @@
 
 const float ooc_hitobject_OBJECTRADIUS = 64;
 
-void ooc_hitobject_init(CatchHitObject *object, float start_time, float x, float x_offset) {
+void ooc_hitobject_init(CatchHitObject *object, float start_time, float x, float x_offset, HitObject *refer) {
 	object->start_time = start_time;
 	object->x = x;
 	object->x_offset = x_offset;
+	object->refer = refer;
 }
 
 void ooc_hitobject_free(CatchHitObject object) {
@@ -23,6 +24,9 @@ void ooc_hitobject_free(CatchHitObject object) {
 		case catchhitobject_droplet:
 		case catchhitobject_tinydroplet:
 			break;
+	}
+	if (object.refer != NULL) {
+		oos_hitobject_freebulk(object.refer, 1);
 	}
 }
 

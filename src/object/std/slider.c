@@ -459,6 +459,7 @@ void oos_slider_positionat(SliderVector2 *vector, double progress, Slider *slide
 					slider->cumulative_length = realloc(slider->cumulative_length, (slider->cumulativelength_len - 1) * sizeof(*slider->cumulative_length));
 					slider->cumulativelength_len--;
 					for (int i = path_end_index; i < slider->calculatepath_len; i++) {
+						// TODO an error keep coming up here; test through the entire code to make sure this is working correctly
 						*(slider->cumulative_length + i) = *(slider->cumulative_length + i + 1);
 					}
 					slider->calculatepath_len--;

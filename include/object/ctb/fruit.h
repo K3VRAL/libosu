@@ -12,7 +12,7 @@ typedef struct CatchHitObject CatchHitObject;
 
 extern const float ooc_fruit_OBJECTRADIUS;
 
-void ooc_fruit_init(CatchHitObject *, HitObject);
+void ooc_fruit_init(CatchHitObject *, HitObject *);
 void ooc_fruit_applyhardrockoffset(CatchHitObject *, float **, double *, LegacyRandom *);
 void ooc_fruit_applyrandomoffset(float *, double, LegacyRandom *);
 void ooc_fruit_applyoffset(float *, float);
