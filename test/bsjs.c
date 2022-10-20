@@ -6,7 +6,7 @@ int main(void) {
 
 	// Banana Shower
 	HitObject ho_bs = { .x = 256, .y = 192, .time = 1, .type = spinner, .hit_sound = 0, .ho.spinner.end_time = 262, .hit_sample = {0} };
-	ooc_bananashower_init((object + 0), ho_bs);
+	ooc_bananashower_init((object + 0), &ho_bs);
 	ooc_bananashower_createnestedbananas((object + 0));
 
 	// Juice Stream
@@ -49,7 +49,7 @@ int main(void) {
 		.slider_tick_rate = 2
 	};
 
-	ooc_juicestream_initwslidertp((object + 1), difficulty, tp, tp_len, ho_js);
+	ooc_juicestream_initwslidertp((object + 1), difficulty, tp, tp_len, &ho_js);
 	ooc_juicestream_createnestedjuice((object + 1));
 
 	LegacyRandom rng;

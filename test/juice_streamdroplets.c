@@ -27,7 +27,7 @@ int main(void) {
 	(ho_js.ho.slider.curves + 0)->x = 256;
 	(ho_js.ho.slider.curves + 0)->y = 0;
 	CatchHitObject object_js;
-	ooc_juicestream_initwslidertp(&object_js, beatmap.difficulty, beatmap.timing_points, beatmap.num_tp, ho_js);
+	ooc_juicestream_initwslidertp(&object_js, beatmap.difficulty, beatmap.timing_points, beatmap.num_tp, &ho_js);
 	ooc_juicestream_createnestedjuice(&object_js);
 
 	ooc_processor_applypositionoffsetrng(&object_js, 1, &rng, false);

@@ -29,12 +29,12 @@ int main(void) {
 	ho_js.ho.slider.curves = realloc(ho_js.ho.slider.curves, ++ho_js.ho.slider.num_curve * sizeof(*ho_js.ho.slider.curves));
 	(ho_js.ho.slider.curves + 0)->x = 256;
 	(ho_js.ho.slider.curves + 0)->y = 0;
-	ooc_juicestream_initwslidertp((banana_shower + 0), beatmap.difficulty, beatmap.timing_points, beatmap.num_tp, ho_js);
+	ooc_juicestream_initwslidertp((banana_shower + 0), beatmap.difficulty, beatmap.timing_points, beatmap.num_tp, &ho_js);
 	ooc_juicestream_createnestedjuice((banana_shower + 0));
 
 	// Banana Shower
 	HitObject hit_object = { .x = 256, .y = 192, .time = 1, .type = spinner, .hit_sound = 0, .ho.spinner.end_time = 2, .hit_sample = {0} };
-	ooc_bananashower_init((banana_shower + 1), hit_object);
+	ooc_bananashower_init((banana_shower + 1), &hit_object);
 	ooc_bananashower_createnestedbananas((banana_shower + 1));
 
 	ooc_processor_applypositionoffsetrng(banana_shower, banana_shower_len, &rng, false);

@@ -16,6 +16,7 @@ int main(void) {
 	oos_slider_createnestedhitobjects(&slider);
 
 	of_beatmap_free(beatmap);
+	oos_slider_free(slider);
 
 	return 0;
 }

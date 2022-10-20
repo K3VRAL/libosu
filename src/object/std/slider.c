@@ -388,7 +388,7 @@ void oos_slider_positionat(SliderVector2 *vector, double progress, Slider *slide
 			if ((slider->control_point + slider->controlpoint_len - 1)->x != (slider->ho_data->curves + i)->x - slider->start_position.x
 				|| (slider->control_point + slider->controlpoint_len - 1)->y != (slider->ho_data->curves + i)->y - slider->start_position.y) {
 				slider->control_point = realloc(slider->control_point, (slider->controlpoint_len + 1) * sizeof(*slider->control_point));
-				(slider->control_point + slider->controlpoint_len)->type = slider->ho_data->num_curve > i + 1 ? &slider->ho_data->curve_type : NULL;
+				(slider->control_point + slider->controlpoint_len)->type = slider->ho_data->num_curve > i + 1 ? &slider->ho_data->curve_type : NULL; // TODO look into this with all different curve type
 				(slider->control_point + slider->controlpoint_len)->x = (slider->ho_data->curves + i)->x - slider->start_position.x;
 				(slider->control_point + slider->controlpoint_len)->y = (slider->ho_data->curves + i)->y - slider->start_position.y;
 				slider->controlpoint_len++;

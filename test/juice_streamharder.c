@@ -27,7 +27,7 @@ int main(void) {
 	};
 
 	CatchHitObject object;
-	ooc_juicestream_initwslidertp(&object, diff, tp, tp_len, hit_object);
+	ooc_juicestream_initwslidertp(&object, diff, tp, tp_len, &hit_object);
 	ooc_juicestream_createnestedjuice(&object);
 	ooc_processor_applypositionoffset(&object, 1, false);
 
