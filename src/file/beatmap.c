@@ -1,11 +1,16 @@
 #include "osu.h"
 
 void of_beatmap_init(Beatmap *beatmap) {
-	oos_structure_init(&beatmap->structure);
-	oos_general_init(&beatmap->general);
-	oos_editor_init(&beatmap->editor);
-	oos_metadata_init(&beatmap->metadata);
-	oos_difficulty_init(&beatmap->difficulty);
+	beatmap->structure = calloc(1, sizeof(*beatmap->structure));
+	oos_structure_init(beatmap->structure);
+	beatmap->general = calloc(1, sizeof(*beatmap->general));
+	oos_general_init(beatmap->general);
+	beatmap->editor = calloc(1, sizeof(*beatmap->editor));
+	oos_editor_init(beatmap->editor);
+	beatmap->metadata = calloc(1, sizeof(*beatmap->metadata));
+	oos_metadata_init(beatmap->metadata);
+	beatmap->difficulty = calloc(1, sizeof(*beatmap->difficulty));
+	oos_difficulty_init(beatmap->difficulty);
 	beatmap->events = NULL;
 	beatmap->num_event = 0;
 	beatmap->timing_points = NULL;
@@ -17,9 +22,14 @@ void of_beatmap_init(Beatmap *beatmap) {
 }
 
 void of_beatmap_free(Beatmap beatmap) {
-	oos_general_free(beatmap.general);
-	oos_editor_free(beatmap.editor);
-	oos_metadata_free(beatmap.metadata);
+	free(beatmap.structure);
+	oos_general_free(*beatmap.general);
+	free(beatmap.general);
+	oos_editor_free(*beatmap.editor);
+	free(beatmap.editor);
+	oos_metadata_free(*beatmap.metadata);
+	free(beatmap.metadata);
+	free(beatmap.difficulty);
 	oos_event_freebulk(beatmap.events, beatmap.num_event);
 	oos_timingpoint_free(beatmap.timing_points);
 	oos_colour_free(beatmap.colours);
@@ -70,23 +80,23 @@ void of_beatmap_set(Beatmap *beatmap, FILE *fp) {
 
 		switch (curr_item) {
 			case structure:
-				ofb_structure_setfromstring(&beatmap->structure, line);
+				ofb_structure_setfromstring(beatmap->structure, line);
 				break;
 
 			case general:
-				ofb_general_setfromstring(&beatmap->general, line);
+				ofb_general_setfromstring(beatmap->general, line);
 				break;
 
 			case editor:
-				ofb_editor_setfromstring(&beatmap->editor, line);
+				ofb_editor_setfromstring(beatmap->editor, line);
 				break;
 
 			case metadata:
-				ofb_metadata_setfromstring(&beatmap->metadata, line);
+				ofb_metadata_setfromstring(beatmap->metadata, line);
 				break;
 
 			case difficulty:
-				ofb_difficulty_setfromstring(&beatmap->difficulty, line);
+				ofb_difficulty_setfromstring(beatmap->difficulty, line);
 				break;
 
 			case events:
@@ -115,7 +125,7 @@ void of_beatmap_set(Beatmap *beatmap, FILE *fp) {
 void of_beatmap_tofile(FILE *fp, Beatmap beatmap) {
 	{
 		char *temp = NULL;
-		ofb_structure_tostring(temp, beatmap.structure);
+		ofb_structure_tostring(temp, *beatmap.structure);
 		fputs(temp, fp);
 		free(temp);
 		fputs("\n", fp);
@@ -124,7 +134,7 @@ void of_beatmap_tofile(FILE *fp, Beatmap beatmap) {
 	{
 		fputs("[General]\n", fp);
 		char *temp = NULL;
-		ofb_general_tostring(temp, beatmap.general);
+		ofb_general_tostring(temp, *beatmap.general);
 		fputs(temp, fp);
 		free(temp);
 		fputs("\n", fp);
@@ -133,7 +143,7 @@ void of_beatmap_tofile(FILE *fp, Beatmap beatmap) {
 	{
 		fputs("[Editor]\n", fp);
 		char *temp = NULL;
-		ofb_editor_tostring(temp, beatmap.editor);
+		ofb_editor_tostring(temp, *beatmap.editor);
 		fputs(temp, fp);
 		free(temp);
 		fputs("\n", fp);
@@ -142,7 +152,7 @@ void of_beatmap_tofile(FILE *fp, Beatmap beatmap) {
 	{   
 		fputs("[Metadata]\n", fp);
 		char *temp = NULL;
-		ofb_metadata_tostring(temp, beatmap.metadata);
+		ofb_metadata_tostring(temp, *beatmap.metadata);
 		fputs(temp, fp);
 		free(temp);
 		fputs("\n", fp);
@@ -151,7 +161,7 @@ void of_beatmap_tofile(FILE *fp, Beatmap beatmap) {
 	{
 		fputs("[Difficulty]\n", fp);
 		char *temp = NULL;
-		ofb_difficulty_tostring(temp, beatmap.difficulty);
+		ofb_difficulty_tostring(temp, *beatmap.difficulty);
 		fputs(temp, fp);
 		free(temp);
 		fputs("\n", fp);

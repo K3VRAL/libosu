@@ -15,15 +15,22 @@ void ofb_event_addfromstring(Event *event, char *string) {
 	}
 	event->start_time = (int) strtol(strtok(NULL, ","), NULL, 10);
 	switch (event->type) {
-		case background:
+		case background: {
 			event->param.bg.filename = strdup(strtok(NULL, "\""));
-			event->param.bg.x_offset = (int) strtol(strtok(NULL, ","), NULL, 10);
+			char *x = strtok(NULL, ",");
+			if (x == NULL) {
+				break;
+			}
+			event->param.bg.x_offset = (int) strtol(x, NULL, 10);
 			event->param.bg.y_offset = (int) strtol(strtok(NULL, ","), NULL, 10);
 			break;
-
+		}
+		
 		case video: // In case they update this
 			event->param.vid.filename = strdup(strtok(NULL, "\""));
-			strtok(NULL, ",");
+			if (strtok(NULL, ",") == NULL) {
+				break;
+			}
 			event->param.vid.x_offset = (int) strtol(strtok(NULL, ","), NULL, 10);
 			event->param.vid.y_offset = (int) strtol(strtok(NULL, ","), NULL, 10);
 			break;

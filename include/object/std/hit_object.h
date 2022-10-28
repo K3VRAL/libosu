@@ -10,7 +10,7 @@
 typedef struct HOCircle {} HOCircle;
 
 // https://osu.ppy.sh/wiki/en/Client/File_formats/Osu_%28file_format%29#sliders
-typedef struct {
+typedef struct HOSliderEdge {
     int normal;
     int additional;
 } HOSliderEdge;
@@ -62,10 +62,6 @@ typedef enum HOType {
     nc_spinner = 12
 } HOType;
 
-typedef union HONested {
-    Slider s;
-} HONested;
-
 // https://osu.ppy.sh/wiki/en/Client/File_formats/Osu_%28file_format%29#hit-objects
 typedef struct HitObject {
     int x;
@@ -75,9 +71,6 @@ typedef struct HitObject {
     int hit_sound;
     HO ho;
     HOSample hit_sample;
-
-    // For nesting
-    HONested nested;
 } HitObject;
 
 extern const float oos_hitobject_BASESCORINGDISTANCE;

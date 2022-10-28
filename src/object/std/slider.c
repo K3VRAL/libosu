@@ -706,7 +706,7 @@ SliderEventDescriptor *oos_slider_generate(double start_time, double span_durati
 			{
 				state = 5;
 				object = calloc(1, sizeof(*object));
-				// Ssource code seems to break so I'm just copying pasting parts of legacylasttick
+				// Source code seems to break so I'm just copying pasting parts of legacylasttick
 				object->type = sliderevent_tail;
 				object->span_index = final_span_index;
 				object->span_start_time = start_time + (span_count - 1) * span_duration;
