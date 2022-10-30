@@ -10,9 +10,9 @@ typedef struct Droplet {} Droplet;
 typedef struct TinyDroplet {} TinyDroplet;
 
 typedef struct JuiceStream {
-    CatchHitObject *nested;
-    unsigned int num_nested;
-    Slider slider_data;
+	CatchHitObject *nested;
+	unsigned int num_nested;
+	Slider slider_data;
 } JuiceStream;
 
 void ooc_juicestream_init(CatchHitObject *, HitObject *);

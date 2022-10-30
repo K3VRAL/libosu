@@ -16,60 +16,60 @@
 #include "difficulty.h"
 
 typedef enum SliderType {
-    slidertype_catmull = 'C',
-    slidertype_bezier = 'B',
-    slidertype_linear = 'L',
-    slidertype_perfectcurve = 'P'
+	slidertype_catmull = 'C',
+	slidertype_bezier = 'B',
+	slidertype_linear = 'L',
+	slidertype_perfectcurve = 'P'
 } SliderType;
 typedef struct SliderVector2 {
-    SliderType *type;
-    float x;
-    float y;
+	SliderType *type;
+	float x;
+	float y;
 } SliderVector2;
 
 typedef enum SliderEventType {
-    sliderevent_tick,
-    sliderevent_legacylasttick,
-    sliderevent_head,
-    sliderevent_tail,
-    sliderevent_repeat
+	sliderevent_tick,
+	sliderevent_legacylasttick,
+	sliderevent_head,
+	sliderevent_tail,
+	sliderevent_repeat
 } SliderEventType;
 typedef struct SliderEventDescriptor {
-    SliderEventType type;
-    double time;
-    int span_index;
-    double span_start_time;
-    double path_progress;
+	SliderEventType type;
+	double time;
+	int span_index;
+	double span_start_time;
+	double path_progress;
 } SliderEventDescriptor;
 
 typedef struct HitObject HitObject;
 typedef struct HOSlider HOSlider;
 typedef struct SliderPath {
-    double distance;
+	double distance;
 } SliderPath;
 typedef struct Slider { // Some duplicated/relational variables exists here; maybe I should refactor, and for each variable called the original operation can be done
-    double start_time;
-    double end_time;
-    double duration;
-    SliderPath path;
-    double *legacy_last_tick_offset;
-    double span_duration;
-    double tick_distance_multiplier;
-    double velocity;
-    double tick_distance;
-    double span_count;
-    SliderVector2 start_position;
-    HOSlider *ho_data;
+	double start_time;
+	double end_time;
+	double duration;
+	SliderPath path;
+	double *legacy_last_tick_offset;
+	double span_duration;
+	double tick_distance_multiplier;
+	double velocity;
+	double tick_distance;
+	double span_count;
+	SliderVector2 start_position;
+	HOSlider *ho_data;
 
-    SliderVector2 *control_point;
-    unsigned int controlpoint_len;
-    SliderVector2 *calculate_path;
-    unsigned int calculatepath_len;
-    double *cumulative_length;
-    unsigned int cumulativelength_len;
-    
-    HitObject *nested;
-    unsigned int num_nested;
+	SliderVector2 *control_point;
+	unsigned int controlpoint_len;
+	SliderVector2 *calculate_path;
+	unsigned int calculatepath_len;
+	double *cumulative_length;
+	unsigned int cumulativelength_len;
+	
+	HitObject *nested;
+	unsigned int num_nested;
 } Slider;
 
 void oos_slider_init(Slider *, Difficulty, TimingPoint, TimingPoint, HitObject);

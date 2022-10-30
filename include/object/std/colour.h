@@ -4,9 +4,9 @@
 #include <stdlib.h>
 
 typedef struct Colour {
-    unsigned char red;
-    unsigned char green;
-    unsigned char blue;
+	unsigned char red;
+	unsigned char green;
+	unsigned char blue;
 } Colour;
 
 void oos_colour_free(Colour *colour);

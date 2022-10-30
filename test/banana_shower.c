@@ -29,7 +29,7 @@ int main(void) {
 	ho_js.ho.slider.curves = realloc(ho_js.ho.slider.curves, ++ho_js.ho.slider.num_curve * sizeof(*ho_js.ho.slider.curves));
 	(ho_js.ho.slider.curves + 0)->x = 256;
 	(ho_js.ho.slider.curves + 0)->y = 0;
-	ooc_juicestream_initwslidertp((banana_shower + 0), beatmap.difficulty, beatmap.timing_points, beatmap.num_tp, &ho_js);
+	ooc_juicestream_initwslidertp((banana_shower + 0), *beatmap.difficulty, beatmap.timing_points, beatmap.num_tp, &ho_js);
 	ooc_juicestream_createnestedjuice((banana_shower + 0));
 
 	// Banana Shower

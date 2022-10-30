@@ -9,30 +9,30 @@
 #include "juice_stream.h"
 
 typedef union CHO {
-    Fruit f;
-    JuiceStream js;
-    BananaShower bs;
-    Banana b;
-    Droplet d;
-    TinyDroplet td;
+	Fruit f;
+	JuiceStream js;
+	BananaShower bs;
+	Banana b;
+	Droplet d;
+	TinyDroplet td;
 } CHO;
 
 typedef enum CHOType {
-    catchhitobject_fruit,
-    catchhitobject_juicestream,
-    catchhitobject_bananashower,
-    catchhitobject_banana,
-    catchhitobject_droplet,
-    catchhitobject_tinydroplet
+	catchhitobject_fruit,
+	catchhitobject_juicestream,
+	catchhitobject_bananashower,
+	catchhitobject_banana,
+	catchhitobject_droplet,
+	catchhitobject_tinydroplet
 } CHOType;
 
 typedef struct CatchHitObject {
-    float start_time;
-    float x;
-    float x_offset;
-    CHOType type;
-    CHO cho;
-    HitObject *refer;
+	float start_time;
+	float x;
+	float x_offset;
+	CHOType type;
+	CHO cho;
+	HitObject *refer;
 } CatchHitObject;
 
 extern const float ooc_hitobject_OBJECTRADIUS;

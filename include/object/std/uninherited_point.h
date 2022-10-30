@@ -6,8 +6,8 @@
 #include "timing_point.h"
 
 typedef struct UninheritedTimingPoint {
-    TimingPoint *tp;
-    unsigned int num;
+	TimingPoint *tp;
+	unsigned int num;
 } UninheritedTimingPoint;
 
 void oos_uninheritedpoint_init(UninheritedTimingPoint *, TimingPoint *, unsigned int);

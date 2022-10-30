@@ -12,7 +12,7 @@ int main(void) {
 
 	
 	Slider slider;
-	oos_slider_initwtp(&slider, beatmap.difficulty, beatmap.timing_points, beatmap.num_tp, *(beatmap.hit_objects + 0));
+	oos_slider_initwtp(&slider, *beatmap.difficulty, beatmap.timing_points, beatmap.num_tp, *(beatmap.hit_objects + 0));
 	oos_slider_createnestedhitobjects(&slider);
 
 	of_beatmap_free(beatmap);

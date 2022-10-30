@@ -4,8 +4,7 @@
 #include "object/std.h"
 #include "util/legacy_random.h"
 
-typedef struct Fruit {
-} Fruit;
+typedef struct Fruit {} Fruit;
 
 // TODO maybe remove `HitObject` and replace with `Circle`
 typedef struct CatchHitObject CatchHitObject;

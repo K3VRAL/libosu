@@ -8,10 +8,10 @@
 
 typedef struct CatchHitObject CatchHitObject; // Forward Declaration
 typedef struct BananaShower {
-    int end_time;
-    int duration;
-    CatchHitObject *bananas;
-    unsigned int num_banana;
+	int end_time;
+	int duration;
+	CatchHitObject *bananas;
+	unsigned int num_banana;
 } BananaShower;
 
 // TODO maybe remove `HitObject` and replace with `Spinner`

@@ -20,23 +20,23 @@
 #include "unrelated/reading_line.h"
 
 typedef struct Beatmap {
-    Structure *structure;
-    General *general;
-    Editor *editor;
-    Metadata *metadata;
-    Difficulty *difficulty;
-    
-    Event *events;
-    unsigned int num_event;
-    
-    TimingPoint *timing_points;
-    unsigned int num_tp;
-    
-    Colour *colours;
-    unsigned int num_colour;
-    
-    HitObject *hit_objects;
-    unsigned int num_ho;
+	Structure *structure;
+	General *general;
+	Editor *editor;
+	Metadata *metadata;
+	Difficulty *difficulty;
+	
+	Event *events;
+	unsigned int num_event;
+	
+	TimingPoint *timing_points;
+	unsigned int num_tp;
+	
+	Colour *colours;
+	unsigned int num_colour;
+	
+	HitObject *hit_objects;
+	unsigned int num_ho;
 } Beatmap;
 
 void of_beatmap_init(Beatmap *);

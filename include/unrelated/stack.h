@@ -4,9 +4,9 @@
 #include <stdlib.h>
 
 typedef struct Stack {
-    void *data;
-    unsigned int len;
-    struct Stack *next;
+	void *data;
+	unsigned int len;
+	struct Stack *next;
 } Stack;
 
 void ou_stack_push(Stack **, void *, unsigned int);

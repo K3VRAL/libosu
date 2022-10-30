@@ -7,12 +7,12 @@
 
 // https://github.com/ppy/osu/blob/200f0d9f5540e0542a29d6bb0dc4da77d6c16f52/osu.Game/Utils/LegacyRandom.cs
 typedef struct LegacyRandom {
-    unsigned int x;
-    unsigned int y;
-    unsigned int z;
-    unsigned int w;
-    unsigned int bitBuffer;
-    int bitIndex;
+	unsigned int x;
+	unsigned int y;
+	unsigned int z;
+	unsigned int w;
+	unsigned int bitBuffer;
+	int bitIndex;
 } LegacyRandom;
 
 void ou_legacyrandom_init(LegacyRandom *, int);
