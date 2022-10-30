@@ -28,11 +28,8 @@ void ofb_event_addfromstring(Event *event, char *string) {
 		
 		case video: // In case they update this
 			event->param.vid.filename = strdup(strtok(NULL, "\""));
-			if (strtok(NULL, ",") == NULL) {
-				break;
-			}
-			event->param.vid.x_offset = (int) strtol(strtok(NULL, ","), NULL, 10);
-			event->param.vid.y_offset = (int) strtol(strtok(NULL, ","), NULL, 10);
+			event->param.vid.x_offset = strtok(NULL, ",") != NULL ? (int) strtol(strtok(NULL, ","), NULL, 10) : 0;
+			event->param.vid.y_offset = strtok(NULL, ",") != NULL ? (int) strtol(strtok(NULL, ","), NULL, 10) : 0;
 			break;
 
 		case breaks:
