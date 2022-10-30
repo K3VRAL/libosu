@@ -125,7 +125,7 @@ void of_beatmap_set(Beatmap *beatmap, FILE *fp) {
 void of_beatmap_tofile(FILE *fp, Beatmap beatmap) {
 	{
 		char *temp = NULL;
-		ofb_structure_tostring(temp, *beatmap.structure);
+		ofb_structure_tostring(&temp, *beatmap.structure);
 		fputs(temp, fp);
 		free(temp);
 		fputs("\n", fp);
@@ -134,7 +134,7 @@ void of_beatmap_tofile(FILE *fp, Beatmap beatmap) {
 	{
 		fputs("[General]\n", fp);
 		char *temp = NULL;
-		ofb_general_tostring(temp, *beatmap.general);
+		ofb_general_tostring(&temp, *beatmap.general);
 		fputs(temp, fp);
 		free(temp);
 		fputs("\n", fp);
@@ -143,7 +143,7 @@ void of_beatmap_tofile(FILE *fp, Beatmap beatmap) {
 	{
 		fputs("[Editor]\n", fp);
 		char *temp = NULL;
-		ofb_editor_tostring(temp, *beatmap.editor);
+		ofb_editor_tostring(&temp, *beatmap.editor);
 		fputs(temp, fp);
 		free(temp);
 		fputs("\n", fp);
@@ -152,7 +152,7 @@ void of_beatmap_tofile(FILE *fp, Beatmap beatmap) {
 	{   
 		fputs("[Metadata]\n", fp);
 		char *temp = NULL;
-		ofb_metadata_tostring(temp, *beatmap.metadata);
+		ofb_metadata_tostring(&temp, *beatmap.metadata);
 		fputs(temp, fp);
 		free(temp);
 		fputs("\n", fp);
@@ -161,7 +161,7 @@ void of_beatmap_tofile(FILE *fp, Beatmap beatmap) {
 	{
 		fputs("[Difficulty]\n", fp);
 		char *temp = NULL;
-		ofb_difficulty_tostring(temp, *beatmap.difficulty);
+		ofb_difficulty_tostring(&temp, *beatmap.difficulty);
 		fputs(temp, fp);
 		free(temp);
 		fputs("\n", fp);
@@ -171,7 +171,7 @@ void of_beatmap_tofile(FILE *fp, Beatmap beatmap) {
 		fputs("[Events]\n", fp);
 		for (int i = 0; i < beatmap.num_event; i++) {
 			char *temp = NULL;
-			ofb_event_tostring(temp, *(beatmap.events + i));
+			ofb_event_tostring(&temp, *(beatmap.events + i));
 			fputs(temp, fp);
 			free(temp);
 		}
@@ -182,7 +182,7 @@ void of_beatmap_tofile(FILE *fp, Beatmap beatmap) {
 		fputs("[TimingPoints]\n", fp);
 		for (int i = 0; i < beatmap.num_tp; i++) {
 			char *temp = NULL;
-			ofb_timingpoint_tostring(temp, *(beatmap.timing_points + i));
+			ofb_timingpoint_tostring(&temp, *(beatmap.timing_points + i));
 			fputs(temp, fp);
 			free(temp);
 		}
@@ -193,7 +193,7 @@ void of_beatmap_tofile(FILE *fp, Beatmap beatmap) {
 		fputs("[Colours]\n", fp);
 		for (int i = 0; i < beatmap.num_colour; i++) {
 			char *temp = NULL;
-			ofb_colour_tostring(temp, *(beatmap.colours + i), i + 1);
+			ofb_colour_tostring(&temp, *(beatmap.colours + i), i + 1);
 			fputs(temp, fp);
 			free(temp);
 		}

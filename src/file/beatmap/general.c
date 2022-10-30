@@ -72,7 +72,7 @@ void ofb_general_setfromstring(General *general, char *key_value_pair) {
 	free(key);
 }
 
-void ofb_general_tostring(char *output, General general) {
+void ofb_general_tostring(char **output, General general) {
 	General original;
 	oos_general_init(&original);
 	ComparingGeneral data[] = {
@@ -173,6 +173,6 @@ void ofb_general_tostring(char *output, General general) {
 			.type = g_b,
 		},
 	};
-	output = ou_comparing_general(data, 19);
+	*output = ou_comparing_general(data, 19);
 	oos_general_free(original);
 }

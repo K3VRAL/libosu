@@ -11,6 +11,6 @@
 #include "unrelated/comparing.h"
 
 void ofb_metadata_setfromstring(Metadata *, char *);
-void ofb_metadata_tostring(char *, Metadata);
+void ofb_metadata_tostring(char **, Metadata);
 
 #endif

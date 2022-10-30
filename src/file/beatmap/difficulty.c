@@ -32,7 +32,7 @@ void ofb_difficulty_setfromstring(Difficulty *difficulty, char *key_value_pair) 
 	free(key);
 }
 
-void ofb_difficulty_tostring(char *output, Difficulty difficulty) {
+void ofb_difficulty_tostring(char **output, Difficulty difficulty) {
 	ComparingDifficulty data[] = {
 		{
 			.name = "HPDrainRate",
@@ -54,5 +54,5 @@ void ofb_difficulty_tostring(char *output, Difficulty difficulty) {
 			.info = difficulty.slider_tick_rate,
 		},
 	};
-	output = ou_comparing_difficulty(data, 6);
+	*output = ou_comparing_difficulty(data, 6);
 }

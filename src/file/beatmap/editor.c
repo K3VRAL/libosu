@@ -36,7 +36,7 @@ void ofb_editor_setfromstring(Editor *editor, char *key_value_pair) {
 	free(key);
 }
 
-void ofb_editor_tostring(char *output, Editor editor) {
+void ofb_editor_tostring(char **output, Editor editor) {
 	ComparingEditor data[] = {
 		{
 			.name = "Bookmarks",
@@ -63,5 +63,5 @@ void ofb_editor_tostring(char *output, Editor editor) {
 			.type = e_d,
 		},
 	};
-	output = ou_comparing_editor(data, 5);
+	*output = ou_comparing_editor(data, 5);
 }

@@ -10,6 +10,6 @@
 #include "unrelated/comparing.h"
 
 void ofb_colour_addfromstring(Colour *, char *);
-void ofb_colour_tostring(char *, Colour, int);
+void ofb_colour_tostring(char **, Colour, int);
 
 #endif

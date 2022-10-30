@@ -46,7 +46,7 @@ void ofb_metadata_setfromstring(Metadata *metadata, char *key_value_pair) {
 	free(key);
 }
 
-void ofb_metadata_tostring(char *output, Metadata metadata) {
+void ofb_metadata_tostring(char **output, Metadata metadata) {
 	ComparingMetadata data[] = {
 		{
 			.name = "Title",
@@ -100,5 +100,5 @@ void ofb_metadata_tostring(char *output, Metadata metadata) {
 			.type = m_n,
 		},
 	};
-	output = ou_comparing_metadata(data, 10);
+	*output = ou_comparing_metadata(data, 10);
 }

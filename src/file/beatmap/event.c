@@ -44,13 +44,13 @@ void ofb_event_addfromstring(Event *event, char *string) {
 	}
 }
 
-void ofb_event_tostring(char *output, Event event) {
+void ofb_event_tostring(char **output, Event event) {
 	int size_type = ou_comparing_size(event.type);
 	int size_start_time = ou_comparing_size(event.start_time);
 	int size_total = size_type + 1 + size_start_time;
 	int len = size_total + (1 + 1);
-	output = calloc(len, sizeof(*output));
-	snprintf(output, len, "%d,%d", event.type, event.start_time);
+	*output = calloc(len, sizeof(**output));
+	snprintf(*output, len, "%d,%d", event.type, event.start_time);
 	switch (event.type) {
 		case background: {
 			int size_filename = strlen(event.param.bg.filename);
@@ -61,8 +61,8 @@ void ofb_event_tostring(char *output, Event event) {
 			snprintf(buffer, len_buffer, ",\"%s\",%d,%d", event.param.bg.filename, event.param.bg.x_offset, event.param.bg.y_offset);
 
 			len += len_buffer;
-			output = realloc(output, len * sizeof(*output));
-			strcat(output, buffer);
+			*output = realloc(*output, len * sizeof(**output));
+			strcat(*output, buffer);
 			free(buffer);
 			break;
 		}
@@ -76,8 +76,8 @@ void ofb_event_tostring(char *output, Event event) {
 			snprintf(buffer, len_buffer, ",\"%s\",%d,%d", event.param.vid.filename, event.param.vid.x_offset, event.param.vid.y_offset);
 
 			len += len_buffer;
-			output = realloc(output, len * sizeof(*output));
-			strcat(output, buffer);
+			*output = realloc(*output, len * sizeof(**output));
+			strcat(*output, buffer);
 			free(buffer);
 			break;
 		}
@@ -89,8 +89,8 @@ void ofb_event_tostring(char *output, Event event) {
 			snprintf(buffer, len_buffer, ",%d", event.param.brk.end_time);
 
 			len += len_buffer;
-			output = realloc(output, len * sizeof(*output));
-			strcat(output, buffer);
+			*output = realloc(*output, len * sizeof(**output));
+			strcat(*output, buffer);
 			free(buffer);
 			break;
 		}
@@ -98,5 +98,5 @@ void ofb_event_tostring(char *output, Event event) {
 		case storyboard:
 			break;
 	}
-	strcat(output, "\n");
+	strcat(*output, "\n");
 }

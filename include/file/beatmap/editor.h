@@ -11,6 +11,6 @@
 #include "unrelated/comparing.h"
 
 void ofb_editor_setfromstring(Editor *, char *);
-void ofb_editor_tostring(char *, Editor);
+void ofb_editor_tostring(char **, Editor);
 
 #endif
