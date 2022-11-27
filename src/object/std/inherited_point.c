@@ -13,6 +13,18 @@ void oos_inheritedpoint_init(InheritedTimingPoint *intp, TimingPoint *timing_poi
 			intp->num++;
 		}
 	}
+	if (intp->tp == NULL || intp->num == 0) {
+		intp->tp = realloc(intp->tp, (intp->num + 1) * sizeof(*intp->tp));
+		(intp->tp + 0)->time = 0;
+		(intp->tp + 0)->beat_length = -100;
+		(intp->tp + 0)->meter = 4;
+		(intp->tp + 0)->sample_set = 1;
+		(intp->tp + 0)->sample_index = 0;
+		(intp->tp + 0)->volume = 100;
+		(intp->tp + 0)->uninherited = 0;
+		(intp->tp + 0)->effects = 0;
+		intp->num++;
+	}
 }
 
 void oos_inheritedpoint_free(InheritedTimingPoint intp) {
