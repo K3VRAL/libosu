@@ -35,7 +35,6 @@ void ooc_juicestream_free(JuiceStream juice_stream) {
 // https://github.com/ppy/osu/blob/master/osu.Game.Rulesets.Catch/Objects/JuiceStream.cs
 // https://github.com/ppy/osu/blob/38064165413eb919b9a32433d8be5051fc1215f7/osu.Game/Rulesets/Objects/SliderEventGenerator.cs
 void ooc_juicestream_createnestedjuice(CatchHitObject *object) {
-	// TODO foreach item that is being added; check if the nested objects already exist
 	SliderEventDescriptor *last_event = NULL;
 	SliderEventDescriptor *e;
 	while ((e = oos_slider_generate(object->start_time, object->cho.js.slider_data.span_duration, object->cho.js.slider_data.velocity, object->cho.js.slider_data.tick_distance, object->cho.js.slider_data.path.distance, object->cho.js.slider_data.span_count, object->cho.js.slider_data.legacy_last_tick_offset)) != NULL) {

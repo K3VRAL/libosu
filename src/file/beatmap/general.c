@@ -9,6 +9,7 @@ void ofb_general_setfromstring(General *general, char *key_value_pair) {
 	char *key = strdup(token);
 	char *value = strtok(NULL, "\0");
 	if (value == NULL) {
+		free(key);
 		return;
 	}
 	

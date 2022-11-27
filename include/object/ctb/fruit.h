@@ -6,7 +6,6 @@
 
 typedef struct Fruit {} Fruit;
 
-// TODO maybe remove `HitObject` and replace with `Circle`
 typedef struct CatchHitObject CatchHitObject;
 
 extern const float ooc_fruit_OBJECTRADIUS;
