@@ -17,6 +17,15 @@ void ooc_processor_applypositionoffsetrng(CatchHitObject *objects, unsigned int 
 	ooc_processor_applypositionoffsetrngstarttime(objects, 0, num, rng, enabled_hardrock, last_position, last_start_time);
 }
 
+void ooc_processor_applypositionoffsetrngwo(CatchHitObject *objects, unsigned int num, LegacyRandom *rng, bool enabled_hardrock) {
+	float *last_position = NULL;
+	double last_start_time = 0;
+	ooc_processor_applypositionoffsetrngstarttime(objects, 0, num, rng, enabled_hardrock, &last_position, &last_start_time);
+	if (last_position != NULL) {
+		free(last_position);
+	}
+}
+
 void ooc_processor_applypositionoffsetrngstarttime(CatchHitObject *objects, unsigned int start, unsigned int num, LegacyRandom *rng, bool enabled_hardrock, float **last_position, double *last_start_time) {
 	for (int i = start; i < num; i++) {
 		switch ((objects + i)->type) {
