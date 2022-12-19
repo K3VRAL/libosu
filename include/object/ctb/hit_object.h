@@ -9,12 +9,12 @@
 #include "juice_stream.h"
 
 typedef union CHO {
-	Fruit f;
-	JuiceStream js;
-	BananaShower bs;
-	Banana b;
-	Droplet d;
-	TinyDroplet td;
+	Fruit *f;
+	JuiceStream *js;
+	BananaShower *bs;
+	Banana *b;
+	Droplet *d;
+	TinyDroplet *td;
 } CHO;
 
 typedef enum CHOType {

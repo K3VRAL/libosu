@@ -301,15 +301,15 @@ void ofb_hitobject_catchtostring(char **output, CatchHitObject object) {
 			{
 				len_buffer += 1 + 1;
 				buffer = realloc(buffer, len_buffer * sizeof(*buffer));
-				snprintf(buffer, len_buffer, ",%c", object.cho.js.slider_data.ho_data->curve_type);
+				snprintf(buffer, len_buffer, ",%c", object.cho.js->slider_data->ho_data->curve_type);
 			}
 			
-			for (int j = 0; j < object.cho.js.slider_data.ho_data->num_curve; j++) {
-				int len_buffer_x = ou_comparing_size((object.cho.js.slider_data.ho_data->curves + j)->x);
-				int len_buffer_y = ou_comparing_size((object.cho.js.slider_data.ho_data->curves + j)->y);
+			for (int j = 0; j < object.cho.js->slider_data->ho_data->num_curve; j++) {
+				int len_buffer_x = ou_comparing_size((object.cho.js->slider_data->ho_data->curves + j)->x);
+				int len_buffer_y = ou_comparing_size((object.cho.js->slider_data->ho_data->curves + j)->y);
 				int len_buffer_curve = 1 + len_buffer_x + 1 + len_buffer_y + 1;
 				char *buffer_curve = calloc(len_buffer_curve, sizeof(*buffer_curve));
-				snprintf(buffer_curve, len_buffer_curve, "|%d:%d", (object.cho.js.slider_data.ho_data->curves + j)->x, (object.cho.js.slider_data.ho_data->curves + j)->y);
+				snprintf(buffer_curve, len_buffer_curve, "|%d:%d", (object.cho.js->slider_data->ho_data->curves + j)->x, (object.cho.js->slider_data->ho_data->curves + j)->y);
 
 				len_buffer += len_buffer_curve;
 				buffer = realloc(buffer, len_buffer * sizeof(*buffer));
@@ -318,12 +318,12 @@ void ofb_hitobject_catchtostring(char **output, CatchHitObject object) {
 			}
 
 			{
-				int len_buffer_slides = ou_comparing_size((int) object.cho.js.slider_data.span_count);
-				int len_buffer_length = ou_comparing_size(object.cho.js.slider_data.path.distance);
-				int trailing_zeros = ou_comparing_trailing(object.cho.js.slider_data.path.distance, len_buffer_length);
+				int len_buffer_slides = ou_comparing_size((int) object.cho.js->slider_data->span_count);
+				int len_buffer_length = ou_comparing_size(object.cho.js->slider_data->path.distance);
+				int trailing_zeros = ou_comparing_trailing(object.cho.js->slider_data->path.distance, len_buffer_length);
 				int len_buffer_sl = 1 + len_buffer_slides + 1 + (len_buffer_length + (trailing_zeros != 0 ? 1 : 0) + trailing_zeros + 1);
 				char *buffer_sl = calloc(len_buffer_sl, sizeof(*buffer_sl));
-				snprintf(buffer_sl, len_buffer_sl, ",%d,%.*f", (int) object.cho.js.slider_data.span_count, trailing_zeros, object.cho.js.slider_data.path.distance);
+				snprintf(buffer_sl, len_buffer_sl, ",%d,%.*f", (int) object.cho.js->slider_data->span_count, trailing_zeros, object.cho.js->slider_data->path.distance);
 
 				len_buffer += len_buffer_sl;
 				buffer = realloc(buffer, len_buffer * sizeof(*buffer));
@@ -331,12 +331,12 @@ void ofb_hitobject_catchtostring(char **output, CatchHitObject object) {
 				free(buffer_sl);
 			}
 
-			if (object.cho.js.slider_data.ho_data->edge_sounds != NULL || object.cho.js.slider_data.ho_data->num_edge_sound > 0) {
-				for (int j = 0; j < object.cho.js.slider_data.ho_data->num_edge_sound; j++) {
-					int len_buffer_edge_sound = ou_comparing_size(*(object.cho.js.slider_data.ho_data->edge_sounds + j));
+			if (object.cho.js->slider_data->ho_data->edge_sounds != NULL || object.cho.js->slider_data->ho_data->num_edge_sound > 0) {
+				for (int j = 0; j < object.cho.js->slider_data->ho_data->num_edge_sound; j++) {
+					int len_buffer_edge_sound = ou_comparing_size(*(object.cho.js->slider_data->ho_data->edge_sounds + j));
 					int len_edge_sound = 1 + len_buffer_edge_sound + 1;
 					char *buffer_edge_sound = calloc(len_edge_sound, sizeof(*buffer_edge_sound));
-					snprintf(buffer_edge_sound, len_edge_sound, (j != 0 ? "|%d" : ",%d"), *(object.cho.js.slider_data.ho_data->edge_sounds + j));
+					snprintf(buffer_edge_sound, len_edge_sound, (j != 0 ? "|%d" : ",%d"), *(object.cho.js->slider_data->ho_data->edge_sounds + j));
 
 					len_buffer += len_edge_sound;
 					buffer = realloc(buffer, len_buffer * sizeof(*buffer));
@@ -345,13 +345,13 @@ void ofb_hitobject_catchtostring(char **output, CatchHitObject object) {
 				}
 			}
 
-			if (object.cho.js.slider_data.ho_data->edge_sounds != NULL || object.cho.js.slider_data.ho_data->num_edge_sound > 0) {
-				for (int j = 0; j < object.cho.js.slider_data.ho_data->num_edge_set; j++) {
-					int len_buffer_edge_set_normal = ou_comparing_size((object.cho.js.slider_data.ho_data->edge_sets + j)->normal);
-					int len_buffer_edge_set_additional = ou_comparing_size((object.cho.js.slider_data.ho_data->edge_sets + j)->additional);
+			if (object.cho.js->slider_data->ho_data->edge_sounds != NULL || object.cho.js->slider_data->ho_data->num_edge_sound > 0) {
+				for (int j = 0; j < object.cho.js->slider_data->ho_data->num_edge_set; j++) {
+					int len_buffer_edge_set_normal = ou_comparing_size((object.cho.js->slider_data->ho_data->edge_sets + j)->normal);
+					int len_buffer_edge_set_additional = ou_comparing_size((object.cho.js->slider_data->ho_data->edge_sets + j)->additional);
 					int len_edge_set = 1 + len_buffer_edge_set_normal + 1 + len_buffer_edge_set_additional + 1;
 					char *buffer_edge_set = calloc(len_edge_set, sizeof(*buffer_edge_set));
-					snprintf(buffer_edge_set, len_edge_set, (j != 0 ? "|%d:%d" : ",%d:%d"), (object.cho.js.slider_data.ho_data->edge_sets + j)->normal, (object.cho.js.slider_data.ho_data->edge_sets + j)->additional);
+					snprintf(buffer_edge_set, len_edge_set, (j != 0 ? "|%d:%d" : ",%d:%d"), (object.cho.js->slider_data->ho_data->edge_sets + j)->normal, (object.cho.js->slider_data->ho_data->edge_sets + j)->additional);
 				
 					len_buffer += len_edge_set;
 					buffer = realloc(buffer, len_buffer * sizeof(*buffer));
@@ -369,10 +369,10 @@ void ofb_hitobject_catchtostring(char **output, CatchHitObject object) {
 
 		case spinner:
 		case nc_spinner: {
-			int size_spinner = ou_comparing_size(object.cho.bs.end_time);
+			int size_spinner = ou_comparing_size(object.cho.bs->end_time);
 			int len_buffer = 1 + size_spinner + 1;
 			char *buffer = calloc(len_buffer, sizeof(*buffer));
-			snprintf(buffer, len_buffer, ",%d", object.cho.bs.end_time);
+			snprintf(buffer, len_buffer, ",%d", object.cho.bs->end_time);
 
 			len += len_buffer;
 			*output = realloc(*output, len * sizeof(**output));

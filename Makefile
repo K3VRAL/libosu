@@ -71,6 +71,11 @@ uninstall:
 	$(shell unlink /usr/include/osu)
 	$(shell rm -rf /usr/lib/pkgconfig/libosu.pc)
 
+# Reinstall
+reinstall:
+	$(install)
+	$(uninstall)
+
 # Make bin/ folder
 $(BINFLR):
 	$(shell mkdir -p $@/lib)

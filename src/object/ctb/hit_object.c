@@ -12,11 +12,17 @@ void ooc_hitobject_init(CatchHitObject *object, float start_time, float x, float
 void ooc_hitobject_free(CatchHitObject object) {
 	switch (object.type) {
 		case catchhitobject_juicestream:
-			ooc_juicestream_free(object.cho.js);
+			if (object.cho.js != NULL) {
+				ooc_juicestream_free(*object.cho.js);
+				free(object.cho.js);
+			}
 			break;
 
 		case catchhitobject_bananashower:
-			ooc_bananashower_free(object.cho.bs);
+			if (object.cho.bs != NULL) {
+				ooc_bananashower_free(*object.cho.bs);
+				free(object.cho.bs);
+			}
 			break;
 
 		case catchhitobject_fruit:

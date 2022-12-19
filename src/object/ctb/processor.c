@@ -5,22 +5,24 @@ const int ooc_processor_RNGSEED = 1337;
 void ooc_processor_applypositionoffset(CatchHitObject *objects, unsigned int num, bool enabled_hardrock) {
 	LegacyRandom rng;
 	ou_legacyrandom_init(&rng, ooc_processor_RNGSEED);
-	ooc_processor_applypositionoffsetrng(objects, num, &rng, enabled_hardrock);
-}
-
-void ooc_processor_applypositionoffsetrng(CatchHitObject *objects, unsigned int num, LegacyRandom *rng, bool enabled_hardrock) {
-	ooc_processor_applypositionoffsetrngstarttime(objects, 0, num, rng, enabled_hardrock);
-}
-
-void ooc_processor_applypositionoffsetrngstarttime(CatchHitObject *objects, unsigned int start, unsigned int num, LegacyRandom *rng, bool enabled_hardrock) {
 	float *last_position = NULL;
 	double last_start_time = 0;
-	
+	ooc_processor_applypositionoffsetrng(objects, num, &rng, enabled_hardrock, &last_position, &last_start_time);
+	if (last_position != NULL) {
+		free(last_position);
+	}
+}
+
+void ooc_processor_applypositionoffsetrng(CatchHitObject *objects, unsigned int num, LegacyRandom *rng, bool enabled_hardrock, float **last_position, double *last_start_time) {
+	ooc_processor_applypositionoffsetrngstarttime(objects, 0, num, rng, enabled_hardrock, last_position, last_start_time);
+}
+
+void ooc_processor_applypositionoffsetrngstarttime(CatchHitObject *objects, unsigned int start, unsigned int num, LegacyRandom *rng, bool enabled_hardrock, float **last_position, double *last_start_time) {
 	for (int i = start; i < num; i++) {
 		switch ((objects + i)->type) {
 			case catchhitobject_fruit:
 				if (enabled_hardrock) {
-					ooc_fruit_applyhardrockoffset((objects + i), &last_position, &last_start_time, rng);
+					ooc_fruit_applyhardrockoffset((objects + i), last_position, last_start_time, rng);
 				}
 				break;
 			
@@ -29,7 +31,7 @@ void ooc_processor_applypositionoffsetrngstarttime(CatchHitObject *objects, unsi
 				break;
 
 			case catchhitobject_juicestream:
-				ooc_juicestream_xoffset((objects + i), &last_position, &last_start_time, rng);
+				ooc_juicestream_xoffset((objects + i), last_position, last_start_time, rng);
 				break;
 
 			case catchhitobject_banana:
@@ -45,4 +47,5 @@ void ooc_processor_applypositionoffsetrngstarttime(CatchHitObject *objects, unsi
 }
 
 void ooc_processor_inithyperdash(Difficulty difficulty, CatchHitObject *hit_object, unsigned int num) {
+	// TODO
 }

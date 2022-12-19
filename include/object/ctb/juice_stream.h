@@ -12,7 +12,7 @@ typedef struct TinyDroplet {} TinyDroplet;
 typedef struct JuiceStream {
 	CatchHitObject *nested;
 	unsigned int num_nested;
-	Slider slider_data;
+	Slider *slider_data;
 } JuiceStream;
 
 void ooc_juicestream_init(CatchHitObject *, HitObject *);
