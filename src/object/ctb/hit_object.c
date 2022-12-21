@@ -31,9 +31,6 @@ void ooc_hitobject_free(CatchHitObject object) {
 		case catchhitobject_tinydroplet:
 			break;
 	}
-	if (object.refer != NULL) {
-		oos_hitobject_freebulk(object.refer, 1);
-	}
 }
 
 void ooc_hitobject_freebulk(CatchHitObject *object, unsigned int num) {
@@ -41,4 +38,10 @@ void ooc_hitobject_freebulk(CatchHitObject *object, unsigned int num) {
 		ooc_hitobject_free(*(object + i));
 	}
 	free(object);
+}
+
+void ooc_hitobject_freebulkrefer(CatchHitObject *object, unsigned int num) {
+	for (int i = 0; i < num; i++) {
+		oos_hitobject_freebulk((object + i)->refer, 1);
+	}
 }

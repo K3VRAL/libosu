@@ -49,10 +49,6 @@ void ooc_processor_applypositionoffsetrngstarttime(CatchHitObject *objects, unsi
 				break;
 		}
 	}
-
-	if (last_position != NULL) {
-		free(last_position);
-	}
 }
 
 void ooc_processor_inithyperdash(Difficulty difficulty, CatchHitObject *hit_object, unsigned int num) {

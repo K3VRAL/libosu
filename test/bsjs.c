@@ -54,16 +54,16 @@ int main(void) {
 
 	LegacyRandom rng;
 	ou_legacyrandom_init(&rng, ooc_processor_RNGSEED);
-	ooc_processor_applypositionoffsetrng(object, object_len, &rng, false);
+	ooc_processor_applypositionoffsetrngwo(object, object_len, &rng, false);
 
 	for (int i = 0; i < object_len; i++) {
 		if ((object + i)->type == catchhitobject_bananashower) {
-			for (int j = 0; j < (object + i)->cho.bs.num_banana; j++) {
-				printf("%d,192,%d,1,0\n", (int) (((object + i)->cho.bs.bananas + j)->x + ((object + i)->cho.bs.bananas + j)->x_offset), (int) ((object + i)->cho.bs.bananas + j)->start_time);
+			for (int j = 0; j < (object + i)->cho.bs->num_banana; j++) {
+				printf("%d,192,%d,1,0\n", (int) (((object + i)->cho.bs->bananas + j)->x + ((object + i)->cho.bs->bananas + j)->x_offset), (int) ((object + i)->cho.bs->bananas + j)->start_time);
 			}
 		} else if ((object + i)->type == catchhitobject_juicestream) {
-			for (int j = 0; j < (object + i)->cho.js.num_nested; j++) {
-				printf("%d,192,%d,1,0\n", (int) (((object + i)->cho.js.nested + j)->x + ((object + i)->cho.js.nested + j)->x_offset), (int) ((object + i)->cho.js.nested + j)->start_time);
+			for (int j = 0; j < (object + i)->cho.js->num_nested; j++) {
+				printf("%d,192,%d,1,0\n", (int) (((object + i)->cho.js->nested + j)->x + ((object + i)->cho.js->nested + j)->x_offset), (int) ((object + i)->cho.js->nested + j)->start_time);
 			}
 		}
 	}

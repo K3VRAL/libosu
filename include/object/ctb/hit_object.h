@@ -39,6 +39,7 @@ extern const float ooc_hitobject_OBJECTRADIUS;
 
 void ooc_hitobject_init(CatchHitObject *, float, float, float, HitObject *);
 void ooc_hitobject_free(CatchHitObject);
-void ooc_hitobject_freebulk(CatchHitObject *object, unsigned int num);
+void ooc_hitobject_freebulk(CatchHitObject *, unsigned int);
+void ooc_hitobject_freebulkrefer(CatchHitObject *, unsigned int);
 
 #endif

@@ -31,8 +31,8 @@ int main(void) {
 	ooc_juicestream_createnestedjuice(&object);
 	ooc_processor_applypositionoffset(&object, 1, false);
 
-	for (int i = 0; i < object.cho.js.num_nested; i++) {
-		printf("%d,192,%d,1,0\n", (int) ((object.cho.js.nested + i)->x + (object.cho.js.nested + i)->x_offset), (int) (object.cho.js.nested + i)->start_time);
+	for (int i = 0; i < object.cho.js->num_nested; i++) {
+		printf("%d,192,%d,1,0\n", (int) ((object.cho.js->nested + i)->x + (object.cho.js->nested + i)->x_offset), (int) (object.cho.js->nested + i)->start_time);
 	}
 
 	ooc_hitobject_free(object);

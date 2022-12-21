@@ -37,16 +37,16 @@ int main(void) {
 	ooc_bananashower_init((banana_shower + 1), &hit_object);
 	ooc_bananashower_createnestedbananas((banana_shower + 1));
 
-	ooc_processor_applypositionoffsetrng(banana_shower, banana_shower_len, &rng, false);
+	ooc_processor_applypositionoffsetrngwo(banana_shower, banana_shower_len, &rng, false);
 
 	for (int i = 0; i < banana_shower_len; i++) {
 		if ((banana_shower + i)->type == catchhitobject_bananashower) {
-			for (int j = 0; j < (banana_shower + i)->cho.bs.num_banana; j++) {
-				printf("bs %f\n", ((banana_shower + i)->cho.bs.bananas + j)->x + ((banana_shower + i)->cho.bs.bananas + j)->x_offset);
+			for (int j = 0; j < (banana_shower + i)->cho.bs->num_banana; j++) {
+				printf("bs %f\n", ((banana_shower + i)->cho.bs->bananas + j)->x + ((banana_shower + i)->cho.bs->bananas + j)->x_offset);
 			}
 		} else if ((banana_shower + i)->type == catchhitobject_juicestream) {
-			for (int j = 0; j < (banana_shower + i)->cho.js.num_nested; j++) {
-				printf("js %f\n", ((banana_shower + i)->cho.js.nested + j)->x + ((banana_shower + i)->cho.js.nested + j)->x_offset);
+			for (int j = 0; j < (banana_shower + i)->cho.js->num_nested; j++) {
+				printf("js %f\n", ((banana_shower + i)->cho.js->nested + j)->x + ((banana_shower + i)->cho.js->nested + j)->x_offset);
 			}
 		}
 	}

@@ -30,10 +30,10 @@ int main(void) {
 	ooc_juicestream_initwslidertp(&object_js, *beatmap.difficulty, beatmap.timing_points, beatmap.num_tp, &ho_js);
 	ooc_juicestream_createnestedjuice(&object_js);
 
-	ooc_processor_applypositionoffsetrng(&object_js, 1, &rng, false);
+	ooc_processor_applypositionoffsetrngwo(&object_js, 1, &rng, false);
 
-	for (int j = 0; j < object_js.cho.js.num_nested; j++) {
-		printf("js %f\n", (object_js.cho.js.nested + j)->x + (object_js.cho.js.nested + j)->x_offset);
+	for (int j = 0; j < object_js.cho.js->num_nested; j++) {
+		printf("js %f\n", (object_js.cho.js->nested + j)->x + (object_js.cho.js->nested + j)->x_offset);
 	}
 
 	ooc_hitobject_free(object_js);
