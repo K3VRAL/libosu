@@ -16,13 +16,13 @@ libosu is a library meant to implement the source code of osu!lazer to C. This i
 
 The tools you will also need before you can do anything is `make`, `gcc`/`gcc-mingw`, and `pkg-config`.
 
-For Linux:
+### For Linux:
 
 Once you have the necessary tools and the project has been cloned, in your terminal while still in the same folder location of this project's `Makefile`, write `make` to compile the project to a library, then `sudo make install`, to install the library.
 
 If you wish to uninstall the program, do `sudo make uninstall` and that should get rid of everything.
 
-For Windows:
+### For Windows:
 
 Once you have the necessary tools and the project has been cloned, in your terminal while in the same folder location of this project's `Makefile`, write `make win` to compile the project to a dynamic linked library. Move the compiled DLL to the folder of the project you want to run.
 
