@@ -1,14 +1,17 @@
-CC=gcc
-BINFLR=bin/
+CC	= gcc
+BINFLR	= bin/
+CFLAGS	= -Wall -c -Iinclude/
+LFLAGS	= -lm -shared
+TARGET	= libosu.so
 
-# Main Library
-CFLAGS=-Wall -c -Iinclude/
-LFLAGS=-lm -shared
-TARGET=libosu.so
+all: 	BINFLR = bin/lib/
+all: 	CFLAGS += -fPIC -g
+all: 	$(TARGET)
 
-all: BINFLR=bin/lib/
-all: CFLAGS+=-fPIC -g
-all: $(TARGET)
+TARGET_WIN	= libosu.dll
+win:	CC = x86_64-w64-mingw32-gcc
+win:	BINFLR = bin/lib/
+win:	$(TARGET_WIN)
 
 perlModify=perl -pe "s/^src\//osu\//g" | perl -pe "s/((\/.|^.)\K).*?(?=\/)//g" | perl -pe "s/\/(?=[^.]*\/)//g" | perl -pe "s/\//_/g"
 #		   ^^^^^^^^^^^^^^^^^^^^^^^^^^    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^   ^^^^^^^^^^^^^^^^^^^
@@ -30,6 +33,10 @@ $(TARGET): $(shell find include/ -type f -name "*.h" | perl -pe "s/^include\//sr
 #						 ^We need to go through each file which we use linux's shell commands as they make the process of modifying the strings more specific than GNUmake's core commands
 #													 ^We need to echo the file's path since piping requires the data to be put to stdout
 #																					  ^We prepend the bin folder variable to the echo. Eg: opt_file.o => bin/opt_file.o
+
+# Copy pasted because `make` is annoyed when I try to change the `TARGET`'s variable
+$(TARGET_WIN): $(shell find include/ -type f -name "*.h" | perl -pe "s/^include\//src\//g" | perl -pe "s/\..*/.o/g")
+	$(CC) -o $(BINFLR)$@ $(foreach file, $^, $(shell echo "$(file)" | $(perlModify) | (echo -n $(BINFLR) && cat))) $(LFLAGS)
 
 # Test Executable
 LFLAGS_TEST=-g $(shell pkg-config libosu --cflags) $(shell pkg-config libosu --libs)
@@ -82,7 +89,4 @@ $(BINFLR):
 
 # Clean up
 clean:
-	$(shell rm -rf $(BINFLR)*)
-
-cleanlib:
-	$(shell rm -rf $(BINFLR)lib/*)
+	$(shell rm -rf $(BINFLR))
