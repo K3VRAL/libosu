@@ -18,7 +18,7 @@ The tools you will also need before you can do anything is `make`, `gcc`/`gcc-mi
 
 ### For Linux:
 
-Once you have the necessary tools and the project has been cloned, in your terminal while still in the same folder location of this project's `Makefile`, write `make` to compile the project to a library, then `sudo make install`, to install the library.
+Once you have the necessary tools and the project has been cloned, in your terminal while still in the same folder location of this project's `Makefile`, write `make unix` to compile the project to a library for release, or write `make` to compile the project to a library with (debug) symbols, then `sudo make install` to install the library.
 
 If you wish to uninstall the program, do `sudo make uninstall` and that should get rid of everything.
 

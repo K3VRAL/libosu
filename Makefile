@@ -8,6 +8,9 @@ all: 	BINFLR = bin/lib/
 all: 	CFLAGS += -fPIC -g
 all: 	$(TARGET)
 
+unix: 	BINFLR = bin/lib/
+unix: 	$(TARGET)
+
 TARGET_WIN	= libosu.dll
 win:	CC = x86_64-w64-mingw32-gcc
 win:	BINFLR = bin/lib/
@@ -49,26 +52,12 @@ test: $(TARGET_TEST)
 	$(CC) -o $(BINFLR)$(shell echo "$@" | perl -pe "s/.+\//test_/g") $^ $(LFLAGS_TEST)
 
 # Install
-define PKG_CONFIG
-prefix=/usr
-exec_prefix=$${prefix}
-libdir=$${exec_prefix}/lib
-includedir=$${prefix}/include
-
-Name: libosu
-Description: The osu source code implementation in C
-Version: 1.0.0
-Requires:
-Libs: -L$${libdir} -losu
-Cflags: -I$${includedir}/osu
-endef
-	
 install:
 	$(shell cp ./bin/lib/$(TARGET) /usr/local/lib/$(TARGET))
 	$(shell ln -s /usr/local/lib/$(TARGET) /usr/lib/)
 	$(shell cp -r ./include /usr/local/include/osu)
 	$(shell ln -s /usr/local/include/osu /usr/include/)
-	$(file > /usr/lib/pkgconfig/libosu.pc,$(PKG_CONFIG))
+	$(shell pkg-config --variable pc_path pkg-config | cut -d ":" -f 1 | xargs cp ./doc/libosu.pc)
 
 # Uninstall
 uninstall:

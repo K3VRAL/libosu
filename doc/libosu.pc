@@ -1,0 +1,11 @@
+prefix=/usr
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: libosu
+Description: The osu source code implementation in C
+Version: 1.0.0
+Requires:
+Libs: -L${libdir} -losu
+Cflags: -I${includedir}/osu
