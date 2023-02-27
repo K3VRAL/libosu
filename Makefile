@@ -9,6 +9,7 @@ all: 	CFLAGS += -fPIC -g
 all: 	$(TARGET)
 
 unix: 	BINFLR = bin/lib/
+unix: 	CFLAGS += -fPIC
 unix: 	$(TARGET)
 
 TARGET_WIN	= libosu.dll
