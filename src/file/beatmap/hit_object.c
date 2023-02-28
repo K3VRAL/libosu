@@ -128,9 +128,12 @@ void ofb_hitobject_addfromstring(HitObject *hit_object, char *string) {
 	hit_object->hit_sample.normal_set = (int) strtol(token, NULL, 10);
 	hit_object->hit_sample.addition_set = (int) strtol(strtok(NULL, ":"), NULL, 10);
 	hit_object->hit_sample.index = (int) strtol(strtok(NULL, ":"), NULL, 10);
-	hit_object->hit_sample.volume = (int) strtol(strtok(NULL, ":"), NULL, 10);
 	if ((token = strtok(NULL, ":")) != NULL) {
-		hit_object->hit_sample.filename = strdup(token);
+		hit_object->hit_sample.volume = (int) strtol(strtok(NULL, ":"), NULL, 10);
+
+		if ((token = strtok(NULL, ":")) != NULL) {
+			hit_object->hit_sample.filename = strdup(token);
+		}
 	}
 }
 
