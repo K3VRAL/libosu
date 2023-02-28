@@ -52,26 +52,26 @@ test: $(TARGET_TEST)
 .c:
 	$(CC) -o $(BINFLR)$(shell echo "$@" | perl -pe "s/.+\//test_/g") $^ $(LFLAGS_TEST)
 
+libver = ""
+ifeq ("$(shell uname -m)","x86_64")
+	libver = "64"
+endif
+
 # Install
 install:
-	$(shell cp ./bin/lib/$(TARGET) /usr/local/lib/$(TARGET))
-	$(shell ln -s /usr/local/lib/$(TARGET) /usr/lib/)
+	$(shell cp ./bin/lib/$(TARGET) /usr/local/lib$(libver)/$(TARGET))
+	$(shell ln -s /usr/local/lib$(libver)/$(TARGET) /usr/lib$(libver)/)
 	$(shell cp -r ./include /usr/local/include/osu)
 	$(shell ln -s /usr/local/include/osu /usr/include/)
 	$(shell cp ./doc/libosu.pc /usr/share/pkgconfig/)
 
 # Uninstall
 uninstall:
-	$(shell rm -rf /usr/local/lib/$(TARGET))
-	$(shell unlink /usr/lib/$(TARGET))
+	$(shell rm -rf /usr/local/lib$(libver)/$(TARGET))
+	$(shell unlink /usr/lib$(libver)/$(TARGET))
 	$(shell rm -rf /usr/local/include/osu)
 	$(shell unlink /usr/include/osu)
-	$(shell rm -rf /usr/lib/pkgconfig/libosu.pc)
-
-# Reinstall
-reinstall:
-	$(install)
-	$(uninstall)
+	$(shell rm -rf /usr/share/pkgconfig/libosu.pc)
 
 # Make bin/ folder
 $(BINFLR):
