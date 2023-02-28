@@ -59,15 +59,15 @@ endif
 
 # Install
 install:
-	$(shell cp ./bin/lib/$(TARGET) /usr/local/lib$(libver)/$(TARGET))
-	$(shell ln -s /usr/local/lib$(libver)/$(TARGET) /usr/lib$(libver)/)
+	$(shell cp ./bin/lib/$(TARGET) /usr/local/lib/$(TARGET))
+	$(shell ln -s /usr/local/lib/$(TARGET) /usr/lib$(libver)/)
 	$(shell cp -r ./include /usr/local/include/osu)
 	$(shell ln -s /usr/local/include/osu /usr/include/)
 	$(shell cp ./doc/libosu.pc /usr/share/pkgconfig/)
 
 # Uninstall
 uninstall:
-	$(shell rm -rf /usr/local/lib$(libver)/$(TARGET))
+	$(shell rm -rf /usr/local/lib/$(TARGET))
 	$(shell unlink /usr/lib$(libver)/$(TARGET))
 	$(shell rm -rf /usr/local/include/osu)
 	$(shell unlink /usr/include/osu)
