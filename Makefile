@@ -58,7 +58,7 @@ install:
 	$(shell ln -s /usr/local/lib/$(TARGET) /usr/lib/)
 	$(shell cp -r ./include /usr/local/include/osu)
 	$(shell ln -s /usr/local/include/osu /usr/include/)
-	$(shell pkg-config --variable pc_path pkg-config | cut -d ":" -f 1 | xargs cp ./doc/libosu.pc)
+	$(shell cp ./doc/libosu.pc /usr/share/pkgconfig/)
 
 # Uninstall
 uninstall:
