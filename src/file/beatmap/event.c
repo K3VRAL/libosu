@@ -47,9 +47,6 @@ void ofb_event_tostring(char **output, Event event) {
 	int size_total = size_type + 1 + size_start_time;
 	int len = size_total + (1 + 1);
 	*output = calloc(len, sizeof(**output));
-	if (event.type <= storyboard) {
-		return;
-	}
 	snprintf(*output, len, "%d,%d", event.type, event.start_time);
 	switch (event.type) {
 		case background: {

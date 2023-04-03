@@ -13,35 +13,14 @@ static bool ou_readingline_iscomment(char *line) {
 	return strncmp(line, "//", 2) == 0;
 }
 
-#ifdef _WIN32
-static int getline_win(char **line, size_t *len, FILE *fp) {
-	char *end = *line + *len - 1;
-	char *dst = *line;
-	int c;
-	while ((c = fgetc(fp)) != EOF && c != '\n' && dst < end) {
-		*dst++ = c;
-	}
-	*dst = '\0';
-	return (c == EOF && dst == *line) ? EOF : dst - *line;
-}
-#endif
-
 char *ou_readingline_line(FILE *fp) {
 	static int state = 0;
-	static char *line = NULL;
-	static size_t len;
-	static int read;
+	static char line[2048] = {0};
 	switch (state) {
 		case 0:
 			state = 1;
-
-#ifdef _WIN32
-                       while ((read = getline_win(&line, &len, fp)) != -1) {
-#endif
-#ifdef __unix__
-			while ((read = getline(&line, &len, fp)) != -1) {
-#endif
-				ou_readingline_removecrlf(line, read);
+			while (fgets(line, sizeof(line), fp)) {
+				ou_readingline_removecrlf(line, strlen(line));
 				if (strlen(line) == 0
 					|| ou_readingline_iscomment(line)) {
 					continue;
@@ -51,9 +30,5 @@ char *ou_readingline_line(FILE *fp) {
 			}
 	}
 	state = 0;
-	if (line != NULL) {
-		free(line);
-		line = NULL;
-	}
 	return NULL;
 }

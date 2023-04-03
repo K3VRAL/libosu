@@ -8,14 +8,23 @@ all: 	BINFLR = bin/lib/
 all: 	CFLAGS += -fPIC -g
 all: 	$(TARGET)
 
-unix: 	BINFLR = bin/lib/
-unix: 	CFLAGS += -fPIC
-unix: 	$(TARGET)
+unix64:	BINFLR = bin/lib/
+unix64:	CFLAGS += -fPIC -m64
+unix64:	$(TARGET)
+
+unix32:	BINFLR = bin/lib/
+unix32:	CFLAGS += -fPIC -m32
+unix32:	$(TARGET)
 
 TARGET_WIN	= libosu.dll
-win:	CC = x86_64-w64-mingw32-gcc
-win:	BINFLR = bin/lib/
-win:	$(TARGET_WIN)
+
+win64:	CC = x86_64-w64-mingw32-gcc
+win64:	BINFLR = bin/lib/
+win64:	$(TARGET_WIN)
+
+win32:	CC = i686-w64-mingw32-gcc
+win32:	BINFLR = bin/lib/
+win32:	$(TARGET_WIN)
 
 perlModify=perl -pe "s/^src\//osu\//g" | perl -pe "s/((\/.|^.)\K).*?(?=\/)//g" | perl -pe "s/\/(?=[^.]*\/)//g" | perl -pe "s/\//_/g"
 #		   ^^^^^^^^^^^^^^^^^^^^^^^^^^    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^   ^^^^^^^^^^^^^^^^^^^

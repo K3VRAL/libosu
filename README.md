@@ -18,13 +18,15 @@ The tools you will also need before you can do anything is `make`, `gcc`/`gcc-mi
 
 ### For Linux:
 
-Once you have the necessary tools and the project has been cloned, in your terminal while still in the same folder location of this project's `Makefile`, write `make unix` to compile the project to a library for release, or write `make` to compile the project to a library with (debug) symbols, then `sudo make install` to install the library.
+Once you have the necessary tools and the project has been cloned, in your terminal while still in the same folder location of this project's `Makefile`, for the 64-bit version, use `make unix64`, for the 32-bit version, use `make unix32`, to compile the project to a library for release, or write `make` to compile the project to a library with (debug) symbols, then `sudo make install` to install the library.
 
 If you wish to uninstall the program, do `sudo make uninstall` and that should get rid of everything.
 
 ### For Windows:
 
-Once you have the necessary tools and the project has been cloned, in your terminal while in the same folder location of this project's `Makefile`, write `make win` to compile the project to a dynamic linked library. Move the compiled DLL to the folder of the project you want to run.
+Once you have the necessary tools and the project has been cloned, in your terminal while in the same folder location of this project's `Makefile`, for the 64-bit version, write `make win64`, for the 32-bit version, write `make win32`, to compile the project to a dynamic linked library.
+
+Move the compiled DLL to the folder of the project you want to run.
 
 <a name="doc"></a>
 
