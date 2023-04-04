@@ -15,7 +15,7 @@ static bool ou_readingline_iscomment(char *line) {
 
 char *ou_readingline_line(FILE *fp) {
 	static int state = 0;
-	static char line[2048] = {0};
+	static char line[8192] = {0};
 	switch (state) {
 		case 0:
 			state = 1;
