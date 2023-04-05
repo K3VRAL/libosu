@@ -61,18 +61,21 @@ libver = "$(shell file /usr/local/lib/libosu.so | grep -o "ELF.*-bit" | cut -d "
 install:
 	$(shell cp ./bin/$(TARGET)$(EXTNSN) /usr/local/lib/)
 	$(shell ln -s /usr/local/lib/$(TARGET)$(EXTNSN) /usr/lib$(libver)/)
+	$(shell ln -s /usr/local/lib/$(TARGET)$(EXTNSN) /usr/lib/)
 	$(shell cp -r ./include /usr/local/include/osu)
 	$(shell ln -s /usr/local/include/osu /usr/include/)
 	$(shell cp ./doc/libosu.pc /usr/share/pkgconfig/)
+	$(shell sed -i "s/lib$$/lib$(libver)/m" /usr/share/pkgconfig/libosu.pc)
 
 # Uninstall
 uninstall:
-	$(shell rm -rf /usr/local/lib/$(TARGET)$(EXTNSN))
-	$(shell unlink /usr/lib32/$(TARGET)$(EXTNSN))
-	$(shell unlink /usr/lib64/$(TARGET)$(EXTNSN))
-	$(shell rm -rf /usr/local/include/osu)
-	$(shell unlink /usr/include/osu)
-	$(shell rm -rf /usr/share/pkgconfig/libosu.pc)
+	$(shell test -f /usr/local/lib/$(TARGET)$(EXTNSN) && rm -rf /usr/local/lib/$(TARGET)$(EXTNSN))
+	$(shell test -L /usr/lib/$(TARGET)$(EXTNSN) && unlink /usr/lib/$(TARGET)$(EXTNSN))
+	$(shell test -L /usr/lib32/$(TARGET)$(EXTNSN) && unlink /usr/lib32/$(TARGET)$(EXTNSN))
+	$(shell test -L /usr/lib64/$(TARGET)$(EXTNSN) && unlink /usr/lib64/$(TARGET)$(EXTNSN))
+	$(shell test -d  && rm -rf /usr/local/include/osu)
+	$(shell test -L /usr/include/osu && unlink /usr/include/osu)
+	$(shell test -f /usr/share/pkgconfig/libosu.pc && rm -rf /usr/share/pkgconfig/libosu.pc)
 
 # Make bin/ folder
 $(BINFLR):
