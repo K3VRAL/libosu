@@ -18,6 +18,8 @@ When allocing, pre-increment the length variable on the same line as the alloc a
 Make every function that requires a pointer to be checked for memory safety
 Make every alloced variable to be assigned all of it's fields before used.
 Redo all files (including other projects) to have the header files include necessary files
+Fix timing value trailing zeros (maybe use a double).
+Fix issues with outputting timing point values.
 
 (Optional)
 Do Taiko's objects
