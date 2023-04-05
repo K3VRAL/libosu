@@ -1,5 +1,5 @@
 CC	= gcc
-BINFLR	= bin/lib/
+BINFLR	= bin/
 CFLAGS	= -Wall -c -Iinclude/
 LFLAGS	= -lm -shared
 TARGET	= libosu
@@ -55,23 +55,21 @@ test: $(TARGET_TEST)
 .c:
 	$(CC) -o $(BINFLR)$(shell echo "$@" | perl -pe "s/.+\//test_/g") $^ $(LFLAGS_TEST)
 
-libver = ""
-ifeq ("$(shell uname -m)","x86_64")
-	libver = "64"
-endif
+libver = "$(shell file bin/lib/libosu.so | grep -o "ELF.*-bit" | cut -d " " -f 2 | cut -d "-" -f 1)"
 
 # Install
 install:
-	$(shell cp ./bin/lib/$(TARGET) /usr/local/lib/$(TARGET))
-	$(shell ln -s /usr/local/lib/$(TARGET) /usr/lib$(libver)/)
+	$(shell cp ./bin/lib/$(TARGET)$(EXTNSN) /usr/local/lib/)
+	$(shell ln -s /usr/local/lib/$(TARGET)$(EXTNSN) /usr/lib$(libver)/)
 	$(shell cp -r ./include /usr/local/include/osu)
 	$(shell ln -s /usr/local/include/osu /usr/include/)
 	$(shell cp ./doc/libosu.pc /usr/share/pkgconfig/)
 
 # Uninstall
 uninstall:
-	$(shell rm -rf /usr/local/lib/$(TARGET))
-	$(shell unlink /usr/lib$(libver)/$(TARGET))
+	$(shell rm -rf /usr/local/lib/$(TARGET)$(EXTNSN))
+	$(shell unlink /usr/lib32/$(TARGET)$(EXTNSN))
+	$(shell unlink /usr/lib64/$(TARGET)$(EXTNSN))
 	$(shell rm -rf /usr/local/include/osu)
 	$(shell unlink /usr/include/osu)
 	$(shell rm -rf /usr/share/pkgconfig/libosu.pc)
