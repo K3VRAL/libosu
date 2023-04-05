@@ -55,11 +55,11 @@ test: $(TARGET_TEST)
 .c:
 	$(CC) -o $(BINFLR)$(shell echo "$@" | perl -pe "s/.+\//test_/g") $^ $(LFLAGS_TEST)
 
-libver = "$(shell file bin/lib/libosu.so | grep -o "ELF.*-bit" | cut -d " " -f 2 | cut -d "-" -f 1)"
+libver = "$(shell file /usr/local/lib/libosu.so | grep -o "ELF.*-bit" | cut -d " " -f 2 | cut -d "-" -f 1)"
 
 # Install
 install:
-	$(shell cp ./bin/lib/$(TARGET)$(EXTNSN) /usr/local/lib/)
+	$(shell cp ./bin/$(TARGET)$(EXTNSN) /usr/local/lib/)
 	$(shell ln -s /usr/local/lib/$(TARGET)$(EXTNSN) /usr/lib$(libver)/)
 	$(shell cp -r ./include /usr/local/include/osu)
 	$(shell ln -s /usr/local/include/osu /usr/include/)
@@ -76,7 +76,7 @@ uninstall:
 
 # Make bin/ folder
 $(BINFLR):
-	$(shell mkdir -p $@/lib)
+	$(shell mkdir -p $@)
 
 # Clean up
 clean:
