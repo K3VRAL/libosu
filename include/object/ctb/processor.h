@@ -2,6 +2,7 @@
 #define OOC_PROCESSOR_H
 
 #include <stdbool.h>
+#include <math.h>
 
 #include "object/std.h"
 #include "util/legacy_random.h"

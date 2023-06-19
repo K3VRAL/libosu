@@ -30,6 +30,7 @@ typedef struct CatchHitObject {
 	float start_time;
 	float x;
 	float x_offset;
+	float to_hyper;
 	CHOType type;
 	CHO cho;
 	HitObject *refer;

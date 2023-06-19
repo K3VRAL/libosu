@@ -6,6 +6,7 @@ void ooc_hitobject_init(CatchHitObject *object, float start_time, float x, float
 	object->start_time = start_time;
 	object->x = x;
 	object->x_offset = x_offset;
+	object->to_hyper = 0;
 	object->refer = refer;
 }
 
